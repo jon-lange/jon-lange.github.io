@@ -18,702 +18,253 @@
 <meta property="og:image:alt" content="I publish claims, then try to prove them wrong. Twelve dots showing each entry's verdict: five failed, five narrowed, two confirmed.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-/* Field register. Paper is a pale sage-grey, not cream; the accents are the
-   three verdicts a claim can earn, so colour here is data rather than trim. */
+/* A session transcript, not a shell impression.
+   Monospace throughout, so hierarchy has to come from weight, colour and space
+   rather than from changing family. The three accents are the three verdicts a
+   claim can earn — colour is data here, the same as everywhere else. */
 :root {
   --paper:#E7E9E3; --ink:#14171A; --rule:#C7CBC2; --muted:#6E7772;
   --failed:#A8321E; --narrowed:#B5761F; --confirmed:#2F6F5E;
-  --measure:34rem;
+  --chrome:#DDE0DA;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper:#14171A; --ink:#E4E7E0; --rule:#2E332F; --muted:#8B948C;
+    --paper:#14171A; --ink:#E4E7E0; --rule:#2C312D; --muted:#8B948C;
     --failed:#E4795F; --narrowed:#DFA84B; --confirmed:#5FA98F;
+    --chrome:#1C2020;
   }
 }
 *,*::before,*::after { box-sizing:border-box; }
 html { -webkit-text-size-adjust:100%; }
 body {
   margin:0; background:var(--paper); color:var(--ink);
-  font:300 1.0625rem/1.65 Newsreader, Georgia, serif;
-  font-synthesis-weight:none;
+  font:400 14px/1.75 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-ligatures:none;
 }
-.wrap { width:min(72rem, 100% - 2.5rem); margin-inline:auto; }
+@media (min-width:48rem) { body { font-size:14.5px; } }
 a { color:inherit; }
 :focus-visible { outline:2px solid var(--failed); outline-offset:3px; }
 
-/* label = the utility voice: mono, tracked, small caps energy */
-.label {
-  font:500 .6875rem/1 "IBM Plex Mono", ui-monospace, monospace;
-  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+.win { width:min(78rem, 100% - 1.5rem); margin:1.5rem auto 3rem; }
+
+/* window chrome — the one piece of decoration, and it does the work of saying
+   "terminal" so nothing else has to */
+.bar {
+  display:flex; align-items:center; gap:.5rem;
+  background:var(--chrome); border:1px solid var(--rule); border-bottom:0;
+  padding:.55rem .8rem; border-radius:6px 6px 0 0;
+}
+.bar i { width:.65rem; height:.65rem; border-radius:50%; flex:none; }
+.bar .t {
+  margin-left:.5rem; color:var(--muted); font-size:.75rem; letter-spacing:.04em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.pane {
+  border:1px solid var(--rule); border-radius:0 0 6px 6px;
+  padding:1.6rem clamp(.9rem,3vw,2rem) 2.4rem;
 }
 
-/* ---------- masthead ---------- */
-.masthead {
-  display:flex; justify-content:space-between; align-items:baseline; gap:1.5rem;
-  padding:1.75rem 0 1.25rem; flex-wrap:wrap;
-}
-.masthead__name {
-  font:600 1.0625rem/1 Archivo, system-ui, sans-serif;
-  letter-spacing:-.01em; text-decoration:none;
-}
-/* Wraps. Adding two nav items pushed this 43px past a 390px viewport and gave
-   the whole page a horizontal scrollbar — the one layout failure that is never
-   acceptable. */
-.masthead nav { display:flex; gap:1.5rem; flex-wrap:wrap; row-gap:.5rem; }
-@media (max-width:30rem) { .masthead nav { gap:1rem; row-gap:.5rem; } }
-.masthead nav a { text-decoration:none; }
-.masthead nav a:hover { color:var(--ink); }
+/* the transcript grammar */
+.cmd { margin:2.4rem 0 .9rem; display:flex; gap:.6rem; flex-wrap:wrap; }
+.cmd:first-child { margin-top:0; }
+.cmd .p { color:var(--failed); user-select:none; font-weight:600; }
+.cmd .k { font-weight:600; }
+.out { color:var(--muted); margin:0 0 .9rem; max-width:78ch; }
+.out strong { color:var(--ink); font-weight:600; }
+.out.ink { color:var(--ink); }
+.hi { color:var(--ink); font-weight:600; }
+.ok { color:var(--confirmed); } .no { color:var(--failed); } .wa { color:var(--narrowed); }
+.dim { color:var(--muted); }
 
-/* ---------- hero ---------- */
-.hero { padding:clamp(3rem,11vw,7.5rem) 0 clamp(2.5rem,6vw,4rem); }
-.hero__thesis {
-  font:600 clamp(2.1rem,6.2vw,4.25rem)/1.04 Archivo, system-ui, sans-serif;
-  letter-spacing:-.032em; margin:0 0 1.75rem; max-width:20ch;
-  font-stretch:105%;
+/* the banner, printed the way a shell prints one */
+.motd { margin:0 0 .4rem; }
+.motd b {
+  display:block; font-size:clamp(1.6rem,5.2vw,2.6rem); line-height:1.15;
+  font-weight:600; letter-spacing:-.02em; margin-bottom:.5rem;
 }
-.hero__thesis em { font-style:normal; color:var(--failed); }
-.hero__sub { max-width:var(--measure); margin:0 0 2rem; font-size:1.1875rem; }
-.hero__meta { display:flex; gap:2rem; flex-wrap:wrap; align-items:baseline; }
+.motd b em { font-style:normal; color:var(--failed); }
 
-/* ---------- section scaffolding ---------- */
-.section { padding-block:clamp(3rem,7vw,5rem); border-top:1px solid var(--rule); }
-.section__head {
-  display:flex; justify-content:space-between; align-items:baseline;
-  gap:1rem; margin-bottom:2rem; flex-wrap:wrap;
+/* The output blocks carry fixed-width tables whose right-hand column is the
+   whole point — CAUGHT vs NOT CAUGHT, the failure counts. Left at body size
+   they run off a phone and the verdict is the part that disappears. Scaled to
+   the viewport so the longest line fits, with horizontal scroll as a floor
+   rather than the primary way to read it. */
+pre {
+  margin:0 0 .9rem; overflow-x:auto; color:var(--muted);
+  font-size:clamp(9px, 2.42vw, 14.5px);
+  line-height:1.7;
 }
-.section__title {
-  font:600 clamp(1.35rem,3vw,1.9rem)/1.1 Archivo, system-ui, sans-serif;
-  letter-spacing:-.02em; margin:0;
-}
-.section__note { max-width:var(--measure); color:var(--muted); margin:0; }
+@media (min-width:44rem) { pre { font-size:inherit; } }
+pre .ok { color:var(--confirmed); } pre .no { color:var(--failed); }
 
-/* ---------- the register: the signature ---------- */
-/* A ledger only reads as one if the eye can get from the name to the verdict.
-   Full-width rows on a large screen put 800px between them and the pairing
-   breaks. */
-.register { border-top:1px solid var(--rule); max-width:56rem; }
-.tally { max-width:56rem; }
+/* the register */
 .row { border-bottom:1px solid var(--rule); }
+.row:first-of-type { border-top:1px solid var(--rule); }
 .row > summary {
-  display:grid; grid-template-columns:2.75rem 1fr auto; gap:1rem;
-  align-items:baseline; padding:.95rem .25rem; cursor:pointer;
-  list-style:none; transition:background .18s ease;
+  display:grid; grid-template-columns:2.5rem minmax(0,1fr) auto; gap:.75rem;
+  padding:.5rem .2rem; cursor:pointer; list-style:none; align-items:baseline;
 }
 .row > summary::-webkit-details-marker { display:none; }
-.row > summary:hover { background:color-mix(in srgb, var(--ink) 4%, transparent); }
-.row__n {
-  font:500 .8125rem/1.5 "IBM Plex Mono", monospace; color:var(--muted);
-}
-.row__name {
-  font:500 1.0625rem/1.35 Archivo, system-ui, sans-serif; letter-spacing:-.011em;
-}
-.row__verdict {
-  display:inline-flex; align-items:center; gap:.55rem; white-space:nowrap;
-  font:400 .75rem/1 "IBM Plex Mono", monospace; letter-spacing:.06em;
-  color:var(--muted);
-}
+.row > summary:hover { background:color-mix(in srgb, var(--ink) 5%, transparent); }
+.c-n { color:var(--muted); }
+.c-name { font-weight:500; }
+.c-v { display:inline-flex; align-items:center; gap:.5rem; white-space:nowrap; color:var(--muted); font-size:.8125rem; }
 .mark { width:.5rem; height:.5rem; border-radius:50%; flex:none; }
-.row--failed    .mark { background:var(--failed); }
-.row--narrowed  .mark { background:var(--narrowed); }
+.row--failed .mark { background:var(--failed); }
+.row--narrowed .mark { background:var(--narrowed); }
 .row--confirmed .mark { background:transparent; box-shadow:inset 0 0 0 1.5px var(--confirmed); }
-/* the five that did not hold carry the weight */
-.row--failed .row__name { font-weight:600; }
-.row--failed .row__verdict { color:var(--failed); }
+.row--failed .c-v { color:var(--failed); }
+.row--failed .c-name { font-weight:600; }
+.row__body { padding:.4rem .2rem 1.2rem 3.25rem; max-width:76ch; }
+.kv { display:grid; grid-template-columns:5.5rem minmax(0,1fr); gap:.5rem; margin-bottom:.3rem; }
+.kv span:first-child { color:var(--muted); }
+.lnk { display:inline-block; margin-top:.6rem; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule); }
+.lnk:hover { border-color:currentColor; }
 
-.row__body {
-  padding:.25rem .25rem 1.6rem 3.75rem; max-width:var(--measure);
+/* listings */
+.ls { list-style:none; margin:0 0 .9rem; padding:0; }
+.ls li { border-bottom:1px solid var(--rule); }
+.ls li:first-child { border-top:1px solid var(--rule); }
+.ls a {
+  display:grid; grid-template-columns:2.5rem minmax(0,1fr) minmax(0,1.1fr);
+  gap:.75rem; padding:.55rem .2rem; text-decoration:none; align-items:baseline;
 }
-.row__claim { margin:0 0 1rem; }
-.row__data { margin:0 0 1rem; display:grid; grid-template-columns:auto 1fr; gap:.3rem 1rem; }
-.row__data dt {
-  font:500 .6875rem/1.7 "IBM Plex Mono", monospace; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--muted);
-}
-.row__data dd { margin:0; font-size:.9875rem; }
-.row__data b { font:500 .875rem/1.6 "IBM Plex Mono", monospace; font-weight:500; }
-.row__link { font:500 .8125rem/1 Archivo, sans-serif; text-decoration:none; border-bottom:1px solid var(--rule); }
-.row__link:hover { border-color:currentColor; }
+.ls a:hover { background:color-mix(in srgb, var(--ink) 5%, transparent); }
+.ls .n { color:var(--muted); }
+.ls .t { font-weight:500; }
+.ls .f { color:var(--muted); font-size:.8125rem; }
 
-.tally { display:flex; gap:1.75rem; flex-wrap:wrap; margin-top:1.75rem; }
-.tally div { display:flex; align-items:center; gap:.5rem; }
+.grep { list-style:none; margin:0 0 .9rem; padding:0; }
+.grep li { padding:.3rem 0; }
+.grep a { text-decoration:none; color:var(--muted); }
+.grep a:hover { color:var(--ink); }
+.grep b { color:var(--failed); font-weight:600; }
 
-/* ---------- dimensions ---------- */
-.dims { list-style:none; margin:0; padding:0; max-width:44rem; }
-.dims li {
-  display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
-  padding:.7rem 0; border-bottom:1px solid var(--rule);
-  font:400 1.0625rem/1.4 Archivo, system-ui, sans-serif; color:var(--muted);
-}
-.dims .has-evidence { color:var(--ink); font-weight:500; }
-.tag {
-  font:500 .625rem/1 "IBM Plex Mono", monospace; letter-spacing:.11em;
-  text-transform:uppercase; color:var(--confirmed); white-space:nowrap;
-  text-decoration:none; border-bottom:1px solid transparent;
-}
-a.tag:hover { border-bottom-color:currentColor; }
-.card code {
-  display:block; margin-top:.55rem; color:var(--ink);
-  font-size:.6875rem; line-height:1.5;
-  /* Break between path segments, never inside "jon-lange". */
-  /* The break is placed by hand above; never split a name. */
-  overflow-wrap:normal; word-break:keep-all;
-}
+.dims { list-style:none; margin:0 0 .9rem; padding:0; }
+.dims li { display:grid; grid-template-columns:1.5rem minmax(0,1fr) auto; gap:.75rem; padding:.28rem 0; color:var(--muted); }
+.dims .m { color:var(--ink); }
+.dims a { text-decoration:none; font-size:.8125rem; }
+.dims .m a { color:var(--confirmed); }
+.dims a:hover { text-decoration:underline; }
 
-/* ---------- cards ---------- */
-.cards { display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(17rem,1fr)); }
-.card { border:1px solid var(--rule); padding:1.4rem; text-decoration:none; display:block; }
-.card:hover { border-color:var(--ink); }
-.card h3 {
-  font:600 1.0625rem/1.3 Archivo, sans-serif; margin:.6rem 0 .5rem; letter-spacing:-.01em;
-}
-.card p { margin:0; font-size:.9375rem; color:var(--muted); }
-.card code { font:400 .8125rem/1 "IBM Plex Mono", monospace; }
-
-/* ---------- terminal ----------
-   Not a metaphor. Every command below exists in the repositories and the
-   output is what it actually prints, captured rather than written. A fake
-   terminal on a page about evidence would be the joke. */
-.term {
-  border:1px solid var(--rule); background:color-mix(in srgb, var(--ink) 3%, transparent);
-  padding:1.1rem 1.25rem; overflow-x:auto; margin:0 0 1.25rem;
-  font:400 .8125rem/1.75 "IBM Plex Mono", ui-monospace, monospace;
-}
-.term pre { margin:0; white-space:pre; }
-.term .p { color:var(--failed); user-select:none; }
-.term .c { color:var(--ink); font-weight:500; }
-.term .o { color:var(--muted); }
-.term .ok { color:var(--confirmed); }
-.term .no { color:var(--failed); }
-
-/* ---------- honest volume ---------- */
-.stats { border-top:1px solid var(--rule); padding-block:2.25rem; }
-.stats dl {
-  margin:0; display:grid; gap:1.75rem 2.5rem;
-  grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));
-}
-.stats dt {
-  font:500 .625rem/1.4 "IBM Plex Mono",monospace; letter-spacing:.13em;
-  text-transform:uppercase; color:var(--muted);
-}
-.stats dd {
-  margin:.3rem 0 0; font:600 2rem/1 Archivo,sans-serif; letter-spacing:-.03em;
-}
-.stats dd span { font:400 .875rem/1 "IBM Plex Mono",monospace; color:var(--muted); }
-
-/* ---------- the six labs ---------- */
-.labs { list-style:none; margin:0; padding:0; counter-reset:none; }
-.labs li { border-bottom:1px solid var(--rule); }
-.labs li:first-child { border-top:1px solid var(--rule); }
-.labs a {
-  display:grid; grid-template-columns:2.5rem minmax(0,1fr) minmax(0,1.15fr);
-  gap:1rem; align-items:baseline; padding:.95rem .25rem; text-decoration:none;
-  transition:background .18s ease;
-}
-.labs a:hover { background:color-mix(in srgb, var(--ink) 4%, transparent); }
-.labs__n { font:500 .8125rem/1.6 "IBM Plex Mono",monospace; color:var(--muted); }
-.labs__t { font:500 1.0125rem/1.35 Archivo,sans-serif; letter-spacing:-.01em; }
-.labs__f { font:400 .875rem/1.45 Newsreader,Georgia,serif; color:var(--muted); }
-@media (max-width:44rem) {
-  .labs a { grid-template-columns:2rem minmax(0,1fr); row-gap:.3rem; }
-  .labs__f { grid-column:2; }
-}
-
-/* the four demonstrated dimensions read quieter than the two measured */
-.dims .has-demo { color:var(--ink); }
-.dims .has-demo .tag { color:var(--muted); }
-
-/* ---------- symptom router ---------- */
-.triage { list-style:none; margin:0; padding:0; columns:2; column-gap:2.5rem; }
-.triage li { break-inside:avoid; margin:0 0 .1rem; }
-.triage a {
-  display:block; padding:.6rem 0; border-bottom:1px solid var(--rule);
-  text-decoration:none; font-size:1.0125rem;
-}
-.triage a:hover { color:var(--failed); }
-@media (max-width:44rem) { .triage { columns:1; } }
-
-/* ---------- close ---------- */
-.close { border-top:1px solid var(--rule); padding-block:clamp(3rem,7vw,5rem); }
-.close h2 {
-  font:600 clamp(1.5rem,3.4vw,2.25rem)/1.15 Archivo,sans-serif;
-  letter-spacing:-.025em; margin:0 0 1.25rem; max-width:22ch;
-}
-
-/* ---------- prose + footer ---------- */
-.prose { max-width:var(--measure); }
-.prose p { margin:0 0 1.15rem; }
-.prose a { text-decoration-thickness:1px; text-underline-offset:.18em; }
-footer { border-top:1px solid var(--rule); padding:2.5rem 0 3.5rem; }
-footer .links { display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.25rem; }
-footer a { font:500 .9375rem/1 Archivo, sans-serif; text-decoration:none; border-bottom:1px solid var(--rule); }
-footer a:hover { border-color:currentColor; }
-footer small { color:var(--muted); font-size:.8125rem; }
-
-/* ---------- one orchestrated moment: results arriving ---------- */
+.foot { margin-top:2.6rem; padding-top:1.2rem; border-top:1px solid var(--rule); color:var(--muted); font-size:.8125rem; }
+.foot a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule); }
+.foot a:hover { border-color:currentColor; }
+.cursor { display:inline-block; width:.55em; height:1.05em; background:var(--failed); vertical-align:-.18em; }
 @media (prefers-reduced-motion: no-preference) {
-  .js .row { opacity:0; transform:translateY(6px); }
-  .js .row.in {
-    opacity:1; transform:none;
-    transition:opacity .5s ease calc(var(--i) * 45ms), transform .5s ease calc(var(--i) * 45ms);
-  }
-  .js .row .mark { transform:scale(0); }
-  .js .row.in .mark { transform:scale(1); transition:transform .32s cubic-bezier(.2,1.4,.4,1) calc(var(--i) * 45ms + 260ms); }
+  .cursor { animation:blink 1.15s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
 }
-@media (max-width:34rem) {
-  .row > summary { grid-template-columns:2rem 1fr; row-gap:.3rem; }
-  .row__verdict { grid-column:2; }
+@media (max-width:40rem) {
+  .row > summary { grid-template-columns:2rem minmax(0,1fr); }
+  .c-v { grid-column:2; }
   .row__body { padding-left:2rem; }
+  .ls a { grid-template-columns:2rem minmax(0,1fr); row-gap:.2rem; }
+  .ls .f { grid-column:2; }
+  .kv { grid-template-columns:1fr; gap:0; }
 }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="win">
 
-<header class="masthead">
-  <a class="masthead__name" href="/">Jon Lange</a>
-  <nav class="label">
-    <a href="#register">register</a>
-    <a href="#start">start here</a>
-    <a href="#work">work</a>
-    <a href="#learn">learn</a>
-    <a href="#method">method</a>
-    <a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">linkedin</a>
-  </nav>
-</header>
+<div class="bar">
+  <i style="background:#E0685F"></i><i style="background:#E4B14C"></i><i style="background:#5FA98F"></i>
+  <span class="t">jon-lange@github — ~/not-evidence — 80×24</span>
+</div>
 
-<main>
-<section class="hero">
-  <h1 class="hero__thesis">I publish claims about AI systems, then try to <em>prove them wrong</em>.</h1>
-  <p class="hero__sub">
-    I work on AI platforms for a living — evaluation, guardrails, and the half of
-    the problem that is knowing when a system should decline. What I publish comes
-    with the measurement that tested it, including the measurements that went
-    against me.
-  </p>
-  <div class="term" role="img" aria-label="Terminal showing mutcheck --demo: one assertion caught the mutation, two did not.">
-<pre><span class="p">$</span> <span class="c">python3 tools/mutcheck.py --demo</span>
-<span class="o">
-  implementation                            mutation caught?
+<div class="pane">
+
+<div class="motd">
+  <b>Jon Lange <span class="dim">·</span> AI architect</b>
+</div>
+<p class="out ink">I publish claims about AI systems, then try to <span class="no">prove them wrong</span>.<br>
+Evaluation, guardrails, and the half of the problem that is knowing when a system should decline.</p>
+<p class="out">Everything below is a real command. The output is what it prints.</p>
+
+<div class="cmd"><span class="p">$</span><span class="k">python3 tools/mutcheck.py --demo</span></div>
+<pre>  implementation                            mutation caught?
   ---------------------------------------   ----------------
-  redaction works                           </span><span class="ok">CAUGHT</span><span class="o">
-  rollout flag off — nothing is logged      </span><span class="no">NOT CAUGHT</span><span class="o">
-  schema change — field no longer carried   </span><span class="no">NOT CAUGHT</span><span class="o">
+  redaction works                           <span class="ok">CAUGHT</span>
+  rollout flag off — nothing is logged      <span class="no">NOT CAUGHT</span>
+  schema change — field no longer carried   <span class="no">NOT CAUGHT</span>
 
-  The assertion passed in all three.</span></pre>
-  </div>
-  <div class="hero__meta label">
-    <span>AI architect</span>
-    <span>Enterprise platforms · LLMOps · Evaluation</span>
-  </div>
-</section>
+  The assertion passed in all three. Two were never watching.</pre>
 
-<section class="section" id="checks" style="border-top:1px solid var(--rule)">
-  <div class="term" role="img" aria-label="Terminal showing make check output: twelve guarded surfaces, zero failures.">
-<pre><span class="p">$</span> <span class="c">make consistency</span>
-<span class="o">  metadata consistent — checked: 12 patterns, 12 README rows, 5 skills,
-  12 triage routes, 12 evidence rows, 12 specimen index rows, 5 plugin skills,
-  12 adjudications, 16 derived count claims, 12 falsification conditions,
-  208 relative links, 21 make references</span>
-  <span class="ok">0 failure(s)</span>
+<div class="cmd"><span class="p">$</span><span class="k">make check</span></div>
+<pre>  12 patterns
+  12 adjudications
+  <span class="hi">16 derived count claims</span>
+  12 falsification conditions
+  208 relative links
+  <span class="ok">0 failure(s)</span></pre>
+<p class="out">Every published count is derived from the twelve specimens. Rephrase a sentence
+and the check fails rather than quietly stopping.</p>
 
-<span class="p">$</span> <span class="c">make okf-check</span>
-<span class="o">  OKF bundle current — 27 concepts</span>
+<div class="cmd"><span class="p">$</span><span class="k">cat register.tsv</span> <span class="dim"># 12 claims · all measured · 7 survived</span></div>
+<p class="out">Each was written as a claim, put in front of real models or a real adversary,
+then rewritten to whatever came back. <span class="hi">7 survived that; 5 did not</span>, and the 5
+are why the 7 are worth anything. Open a row for what was predicted and what happened.</p>
+<details class="row row--failed"><summary><span class="c-n">01</span> <span class="c-name">Grounded or Refuse</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to answer without evidence</span></div><div class="kv"><span>measured</span><span>Confabulation under the naive &quot;say you don&#x27;t know&quot; fix, 4 models, 148 completions</span></div><div class="kv"><span>result</span><span><b>0 out of 36</b> — the predicted failure never occurred</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/01-grounded-or-refuse/RESULTS.md">open specimens/01-grounded-or-refuse/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">02</span> <span class="c-name">Refuse the Class, Not the Case</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>a whole dangerous input class, with one identical error</span></div><div class="kv"><span>measured</span><span>Three boundaries over a reference space of <b>48,000</b> items, accepted sets compared</span></div><div class="kv"><span>result</span><span>Class refusal: 2 predicates, 0 table entries, 0 unintended accepts</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/02-refuse-the-class/RESULTS.md">open specimens/02-refuse-the-class/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">03</span> <span class="c-name">Deterministic Over Prompted</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to rely on instructing a model to disbelieve its source</span></div><div class="kv"><span>measured</span><span>A six-rung prompt-defence ladder against one poison document, 5 models, 140 calls</span></div><div class="kv"><span>result</span><span>Converged to <b>0/20</b> at rung 4 — the ladder did close</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/03-deterministic-over-prompted/RESULTS.md">open specimens/03-deterministic-over-prompted/RESULTS.md</a></div></details><details class="row row--confirmed"><summary><span class="c-n">04</span> <span class="c-name">Meta-Injection Is Not Content-Relay</span><span class="c-v"><i class="mark"></i>held</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to treat a refused meta-attack as a defended surface</span></div><div class="kv"><span>measured</span><span>One good guardrail against two poison classes, 3 models</span></div><div class="kv"><span>result</span><span>Meta-injection REFUSED; content-relay <b>RELAYED</b> by every model</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/04-injection-classes/RESULTS.md">open specimens/04-injection-classes/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">05</span> <span class="c-name">The Judge Cannot Share a Family</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to let a same-lineage judge gate a promotion</span></div><div class="kv"><span>measured</span><span>3 judges, 12 items, absolute then pairwise in both orders</span></div><div class="kv"><span>result</span><span>Two judges produced <b>NO SIGNAL</b>; one flipped on 6 of 12 by position alone</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/05-judge-family/RESULTS.md">open specimens/05-judge-family/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">06</span> <span class="c-name">Refuse to Score Unratified Weights</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to produce a number the domain owner never endorsed</span></div><div class="kv"><span>measured</span><span>The share of the weight simplex that reverses a real scorecard verdict</span></div><div class="kv"><span>result</span><span><b>40.6%</b> of defensible weightings pick the other candidate</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/06-unratified-weights/RESULTS.md">open specimens/06-unratified-weights/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">07</span> <span class="c-name">Gate Over-Refusal Separately</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to quote quality without refusal beside it</span></div><div class="kv"><span>measured</span><span>False-refusal rate across 5 models, 2 vendors, 25 items, oldest to newest</span></div><div class="kv"><span>result</span><span><b>flat — no difference</b>; the &quot;newer models refuse more&quot; claim did not reproduce</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/07-over-refusal/RESULTS.md">open specimens/07-over-refusal/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">08</span> <span class="c-name">A Remembered Figure Is Never a Current Figure</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to let a stored value stand in for a live one</span></div><div class="kv"><span>measured</span><span>Stale reuse of a remembered value across 6 conditions, 5 models, 117 calls</span></div><div class="kv"><span>result</span><span><b>3/10</b> — and only under the adversarial condition; the default was to call the tool</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/08-remembered-is-not-current/RESULTS.md">open specimens/08-remembered-is-not-current/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">09</span> <span class="c-name">Keep New Modalities Off the Reasoning Path</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to widen the trusted surface for a new input type</span></div><div class="kv"><span>measured</span><span>Specimen 04&#x27;s byte-identical payloads delivered as images, 4 vision models</span></div><div class="kv"><span>result</span><span><b>62/63</b> relay cells relayed; the guardrail refused every meta-injection in both channels</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/09-modality-surface/RESULTS.md">open specimens/09-modality-surface/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">10</span> <span class="c-name">Never Auto-Commit a Lossy Transducer</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to execute on a plausible substitution</span></div><div class="kv"><span>measured</span><span>Three transcription models against three inputs containing no speech</span></div><div class="kv"><span>result</span><span>Invented content from silence, including <b>Merci d&#x27;avoir regardé!</b></span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/10-lossy-transducer/RESULTS.md">open specimens/10-lossy-transducer/RESULTS.md</a></div></details><details class="row row--confirmed"><summary><span class="c-n">11</span> <span class="c-name">Green Is Not Evidence</span><span class="c-v"><i class="mark"></i>held</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to trust an absence-test that was never mutation-checked</span></div><div class="kv"><span>measured</span><span>One absence assertion across six variants, two of them silently broken</span></div><div class="kv"><span>result</span><span>Two <b>NOT CAUGHT</b> cells — the test passed while the thing it guarded was broken</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/11-mutation-check/RESULTS.md">open specimens/11-mutation-check/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">12</span> <span class="c-name">Distrust the Sanitization Label</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to publish on someone&#x27;s assurance that it was scrubbed</span></div><div class="kv"><span>measured</span><span>Re-identification of a correctly-sanitised release, 60 projects, 62,700 trials</span></div><div class="kv"><span>result</span><span><b>60 / 60 rows re-linked, 0 wrong</b> from the numbers alone</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/12-sanitization-label/RESULTS.md">open specimens/12-sanitization-label/RESULTS.md</a></div></details>
+<p class="out" style="margin-top:.9rem">
+<span class="no">●</span> 5 did not hold &nbsp;&nbsp;<span class="wa">●</span> 5 held, narrowed &nbsp;&nbsp;<span class="ok">○</span> 2 held</p>
 
-<span class="p">$</span> <span class="c">make test</span>
-<span class="o">  all suites green, nothing skipped</span></pre>
-  </div>
-  <p class="section__note">
-    Sixteen of those are published counts checked against the twelve specimens
-    that produced them. Rephrase a sentence and the check fails rather than
-    quietly stopping — a rule that silently stops checking is the failure this
-    whole catalogue is about.
-  </p>
-</section>
+<div class="cmd"><span class="p">$</span><span class="k">grep -rl "$SYMPTOM" patterns/</span></div>
+<ul class="grep">
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/11-green-is-not-evidence.html"><b>&gt;</b> "The suite is green and I can't say what that proves"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/05-judge-cannot-share-a-family.html"><b>&gt;</b> "A model grades another model, and the score gates a release"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/09-modalities-off-the-reasoning-path.html"><b>&gt;</b> "We shipped image upload and the injection suite didn't change"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/03-deterministic-over-prompted.html"><b>&gt;</b> "Our defence is a prompt telling the model to ignore instructions"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/12-distrust-the-sanitization-label.html"><b>&gt;</b> "Someone handed me a file marked sanitised and asked me to publish it"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/08-remembered-is-not-current.html"><b>&gt;</b> "The agent quoted a figure it had seen earlier instead of fetching it"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/07-gate-over-refusal-separately.html"><b>&gt;</b> "Quality went up and nobody measured what we started refusing"</a></li>
+<li><a href="https://jon-lange.github.io/not-evidence/patterns/10-never-auto-commit-a-transducer.html"><b>&gt;</b> "A transcript or extraction gets acted on automatically"</a></li>
+</ul>
 
-<section class="stats">
-  <dl>
-    <div><dt>patterns</dt><dd>12</dd></div>
-    <div><dt>specimens</dt><dd>12</dd></div>
-    <div><dt>models measured</dt><dd>11</dd></div>
-    <div><dt>vendors</dt><dd>2</dd></div>
-    <div><dt>citations verified</dt><dd>24</dd></div>
-    <div><dt>claims that survived</dt><dd>7 <span>of 12</span></dd></div>
-  </dl>
-</section>
+<div class="cmd"><span class="p">$</span><span class="k">cat ~/context-engineering/dimensions</span></div>
+<ul class="dims"><li><span>1</span><span>Data inputs</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/03-data-inputs">demonstrated &rarr;</a></li><li><span>2</span><span>Prompt engineering</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/04-prompting">demonstrated &rarr;</a></li><li><span>3</span><span>Model selection</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/05-model-selection">demonstrated &rarr;</a></li><li><span>4</span><span>Workflow architecture</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/06-workflow">demonstrated &rarr;</a></li><li class="m"><span>5</span><span>Evaluation pipelines</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">measured &rarr;</a></li><li class="m"><span>6</span><span>Continuous monitoring</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">measured &rarr;</a></li></ul>
+<p class="out">Two came from specimens that ship their harness. Four are runnable demonstrations —
+the failure is real, and nothing here measured how often it happens.</p>
 
-<section class="section" id="register">
-  <div class="section__head">
-    <h2 class="section__title">The register</h2>
-    <span class="label">12 claims · all measured · 7 survived</span>
-  </div>
-  <p class="section__note">
-    Every entry in <a href="https://github.com/jon-lange/not-evidence">not-evidence</a>
-    was written as a claim, put in front of real models or a real adversary, and
-    then rewritten to whatever came back. 7 survived that; 5 did not, and
-    the 5 are why the 7 are worth anything. Open a row to see what was
-    predicted and what happened.
-  </p>
+<div class="cmd"><span class="p">$</span><span class="k">ls training/</span> <span class="dim"># 45–60 min each, no API key</span></div>
+<ol class="ls"><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation"><span class="n">01</span><span class="t">is your eval suite telling the truth?</span><span class="f">39.1% of 53,130 weightings pick the other candidate</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring"><span class="n">02</span><span class="t">is your dashboard?</span><span class="f">one alert queries a metric nothing emits — it can never fire</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/03-data-inputs"><span class="n">03</span><span class="t">is what reaches the model what you think?</span><span class="f">three cited sources that are 91% identical — one document</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/04-prompting"><span class="n">04</span><span class="t">did your prompt really improve?</span><span class="f">v2 wins by 4.9% and drops one class from 80% to 10%</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/05-model-selection"><span class="n">05</span><span class="t">are those two models interchangeable?</span><span class="f">0.7% apart overall, 49 points apart on one slice</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/06-workflow"><span class="n">06</span><span class="t">what did your pipeline actually do?</span><span class="f">five stages green: one retried, one fell back, one did nothing</span></a></li></ol>
 
-  <div class="register">
-      <details class="row row--failed" style="--i:0">
-        <summary>
-          <span class="row__n">01</span>
-          <span class="row__name">Grounded or Refuse</span>
-          <span class="row__verdict"><i class="mark"></i>did not hold</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to answer without evidence.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>Confabulation under the naive &quot;say you don&#x27;t know&quot; fix, 4 models, 148 completions</dd>
-            <dt>result</dt><dd><b>0 out of 36</b> — the predicted failure never occurred</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/01-grounded-or-refuse/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--narrowed" style="--i:1">
-        <summary>
-          <span class="row__n">02</span>
-          <span class="row__name">Refuse the Class, Not the Case</span>
-          <span class="row__verdict"><i class="mark"></i>held, narrowed</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses a whole dangerous input class, with one identical error.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>Three boundaries over a reference space of <b>48,000</b> items, accepted sets compared</dd>
-            <dt>result</dt><dd>Class refusal: 2 predicates, 0 table entries, 0 unintended accepts</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/02-refuse-the-class/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--failed" style="--i:2">
-        <summary>
-          <span class="row__n">03</span>
-          <span class="row__name">Deterministic Over Prompted</span>
-          <span class="row__verdict"><i class="mark"></i>did not hold</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to rely on instructing a model to disbelieve its source.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>A six-rung prompt-defence ladder against one poison document, 5 models, 140 calls</dd>
-            <dt>result</dt><dd>Converged to <b>0/20</b> at rung 4 — the ladder did close</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/03-deterministic-over-prompted/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--confirmed" style="--i:3">
-        <summary>
-          <span class="row__n">04</span>
-          <span class="row__name">Meta-Injection Is Not Content-Relay</span>
-          <span class="row__verdict"><i class="mark"></i>held</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to treat a refused meta-attack as a defended surface.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>One good guardrail against two poison classes, 3 models</dd>
-            <dt>result</dt><dd>Meta-injection REFUSED; content-relay <b>RELAYED</b> by every model</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/04-injection-classes/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--failed" style="--i:4">
-        <summary>
-          <span class="row__n">05</span>
-          <span class="row__name">The Judge Cannot Share a Family</span>
-          <span class="row__verdict"><i class="mark"></i>did not hold</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to let a same-lineage judge gate a promotion.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>3 judges, 12 items, absolute then pairwise in both orders</dd>
-            <dt>result</dt><dd>Two judges produced <b>NO SIGNAL</b>; one flipped on 6 of 12 by position alone</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/05-judge-family/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--narrowed" style="--i:5">
-        <summary>
-          <span class="row__n">06</span>
-          <span class="row__name">Refuse to Score Unratified Weights</span>
-          <span class="row__verdict"><i class="mark"></i>held, narrowed</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to produce a number the domain owner never endorsed.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>The share of the weight simplex that reverses a real scorecard verdict</dd>
-            <dt>result</dt><dd><b>40.6%</b> of defensible weightings pick the other candidate</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/06-unratified-weights/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--failed" style="--i:6">
-        <summary>
-          <span class="row__n">07</span>
-          <span class="row__name">Gate Over-Refusal Separately</span>
-          <span class="row__verdict"><i class="mark"></i>did not hold</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to quote quality without refusal beside it.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>False-refusal rate across 5 models, 2 vendors, 25 items, oldest to newest</dd>
-            <dt>result</dt><dd><b>flat — no difference</b>; the &quot;newer models refuse more&quot; claim did not reproduce</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/07-over-refusal/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--failed" style="--i:7">
-        <summary>
-          <span class="row__n">08</span>
-          <span class="row__name">A Remembered Figure Is Never a Current Figure</span>
-          <span class="row__verdict"><i class="mark"></i>did not hold</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to let a stored value stand in for a live one.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>Stale reuse of a remembered value across 6 conditions, 5 models, 117 calls</dd>
-            <dt>result</dt><dd><b>3/10</b> — and only under the adversarial condition; the default was to call the tool</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/08-remembered-is-not-current/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--narrowed" style="--i:8">
-        <summary>
-          <span class="row__n">09</span>
-          <span class="row__name">Keep New Modalities Off the Reasoning Path</span>
-          <span class="row__verdict"><i class="mark"></i>held, narrowed</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to widen the trusted surface for a new input type.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>Specimen 04&#x27;s byte-identical payloads delivered as images, 4 vision models</dd>
-            <dt>result</dt><dd><b>62/63</b> relay cells relayed; the guardrail refused every meta-injection in both channels</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/09-modality-surface/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--narrowed" style="--i:9">
-        <summary>
-          <span class="row__n">10</span>
-          <span class="row__name">Never Auto-Commit a Lossy Transducer</span>
-          <span class="row__verdict"><i class="mark"></i>held, narrowed</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to execute on a plausible substitution.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>Three transcription models against three inputs containing no speech</dd>
-            <dt>result</dt><dd>Invented content from silence, including <b>Merci d&#x27;avoir regardé!</b></dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/10-lossy-transducer/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--confirmed" style="--i:10">
-        <summary>
-          <span class="row__n">11</span>
-          <span class="row__name">Green Is Not Evidence</span>
-          <span class="row__verdict"><i class="mark"></i>held</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to trust an absence-test that was never mutation-checked.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>One absence assertion across six variants, two of them silently broken</dd>
-            <dt>result</dt><dd>Two <b>NOT CAUGHT</b> cells — the test passed while the thing it guarded was broken</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/11-mutation-check/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-      <details class="row row--narrowed" style="--i:11">
-        <summary>
-          <span class="row__n">12</span>
-          <span class="row__name">Distrust the Sanitization Label</span>
-          <span class="row__verdict"><i class="mark"></i>held, narrowed</span>
-        </summary>
-        <div class="row__body">
-          <p class="row__claim">Refuses to publish on someone&#x27;s assurance that it was scrubbed.</p>
-          <dl class="row__data">
-            <dt>measured</dt><dd>Re-identification of a correctly-sanitised release, 60 projects, 62,700 trials</dd>
-            <dt>result</dt><dd><b>60 / 60 rows re-linked, 0 wrong</b> from the numbers alone</dd>
-          </dl>
-          <a class="row__link"
-             href="https://github.com/jon-lange/not-evidence/blob/main/specimens/12-sanitization-label/RESULTS.md">
-            the working &rarr;</a>
-        </div>
-      </details>
-  </div>
+<div class="cmd"><span class="p">$</span><span class="k">ls tools/ skills/ okf/</span></div>
+<ul class="ls">
+<li><a href="https://github.com/jon-lange/not-evidence/blob/main/tools/mutcheck.py"><span class="n">1</span><span class="t">tools/mutcheck.py</span><span class="f">one file, no dependencies — prove an assertion would have failed</span></a></li>
+<li><a href="https://github.com/jon-lange/not-evidence/tree/main/skills"><span class="n">5</span><span class="t">skills/</span><span class="f">installable: /plugin marketplace add jon-lange/not-evidence</span></a></li>
+<li><a href="https://github.com/jon-lange/not-evidence/tree/main/okf"><span class="n">27</span><span class="t">okf/</span><span class="f">the catalogue as an Open Knowledge Format bundle</span></a></li>
+<li><a href="https://github.com/jon-lange/not-evidence/blob/main/EVIDENCE.md"><span class="n">1</span><span class="t">EVIDENCE.md</span><span class="f">every measured figure on one page, each linked to its working</span></a></li>
+</ul>
 
-  <div class="tally label">
-    <div><i class="mark" style="background:var(--failed)"></i>5 did not hold</div>
-    <div><i class="mark" style="background:var(--narrowed)"></i>5 held, narrowed</div>
-    <div><i class="mark" style="box-shadow:inset 0 0 0 1.5px var(--confirmed)"></i>2 held</div>
-  </div>
-</section>
+<div class="cmd"><span class="p">$</span><span class="k">cat METHOD.md | head -6</span></div>
+<p class="out">Working in a regulated industry usually means publishing nothing. I wrote down the
+discipline that makes it possible instead — six rules, enforced by hooks and CI rather
+than by remembering, including the one that matters most:
+<span class="hi">no number appears that was not generated here.</span></p>
+<p class="out"><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/METHOD.md">open METHOD.md</a></p>
 
-<section class="section" id="start">
-  <div class="section__head">
-    <h2 class="section__title">Start with what you recognise</h2>
-    <span class="label">symptom &rarr; entry</span>
-  </div>
-  <ul class="triage">
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/11-green-is-not-evidence.html">&ldquo;The suite is green and I can&rsquo;t say what that proves&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/05-judge-cannot-share-a-family.html">&ldquo;A model grades another model, and the score gates a release&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/09-modalities-off-the-reasoning-path.html">&ldquo;We shipped image upload and the injection suite didn&rsquo;t change&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/03-deterministic-over-prompted.html">&ldquo;Our defence is a prompt telling the model to ignore instructions&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/12-distrust-the-sanitization-label.html">&ldquo;Someone handed me a file marked <i>sanitised</i> and asked me to publish it&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/08-remembered-is-not-current.html">&ldquo;The agent quoted a figure it had seen earlier instead of fetching it&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/07-gate-over-refusal-separately.html">&ldquo;Quality went up and nobody measured what we started refusing&rdquo;</a></li>
-    <li><a href="https://jon-lange.github.io/not-evidence/patterns/10-never-auto-commit-a-transducer.html">&ldquo;A transcript or extraction gets acted on automatically&rdquo;</a></li>
-  </ul>
-</section>
+<div class="cmd"><span class="p">$</span><span class="k">contact --what-i-want</span></div>
+<p class="out ink">A result that contradicts one of the twelve.</p>
+<p class="out">Every specimen states what would falsify it. Run one, get something different, and the
+entry gets rewritten with you credited in it — not as a courtesy, but because a catalogue
+whose claims were only ever checked by their author is a catalogue of one person's confidence.</p>
+<p class="out">
+<a class="lnk" href="https://github.com/jon-lange/not-evidence/issues/new/choose">open an issue</a>
+&nbsp; <a class="lnk" href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">linkedin</a>
+&nbsp; <a class="lnk" href="https://x.com/langej117">x</a>
+&nbsp; <a class="lnk" href="https://github.com/jon-lange">github</a></p>
 
-<section class="section" id="work">
-  <div class="section__head">
-    <h2 class="section__title">What I work on</h2>
-    <span class="label">six dimensions · two with published evidence</span>
-  </div>
-  <p class="section__note">
-    Context engineering, as the framework I use to separate production AI from an
-    impressive demo. Two of the six have measurements I can show you.
-  </p>
-  <ul class="dims"><li class="has-demo">Data inputs<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/03-data-inputs">demonstrated &rarr;</a></li><li class="has-demo">Prompt engineering<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/04-prompting">demonstrated &rarr;</a></li><li class="has-demo">Model selection<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/05-model-selection">demonstrated &rarr;</a></li><li class="has-demo">Workflow architecture<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/06-workflow">demonstrated &rarr;</a></li><li class="has-evidence">Evaluation pipelines<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">measured &rarr;</a></li><li class="has-evidence">Continuous monitoring<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">measured &rarr;</a></li></ul>
-</section>
+<div class="cmd"><span class="p">$</span><span class="cursor" aria-hidden="true"></span></div>
 
-<section class="section" id="learn">
-  <div class="section__head">
-    <h2 class="section__title">Six things you can work through</h2>
-    <span class="label">45-60 min each &middot; no API key</span>
-  </div>
-  <p class="section__note">
-    One per dimension. Each hands you something green that is lying and asks you
-    to find out how before showing you. Standard library, nothing to install.
-  </p>
-  <ol class="labs"><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation"><span class="labs__n">01</span><span class="labs__t">Is your eval suite telling the truth?</span><span class="labs__f">39.1% of 53,130 weightings pick the other candidate.</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring"><span class="labs__n">02</span><span class="labs__t">Is your dashboard?</span><span class="labs__f">One alert queries a metric nothing emits. It can never fire.</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/03-data-inputs"><span class="labs__n">03</span><span class="labs__t">Is what reaches the model what you think?</span><span class="labs__f">Three cited sources that are 91% identical — one document.</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/04-prompting"><span class="labs__n">04</span><span class="labs__t">Did your prompt really improve?</span><span class="labs__f">v2 wins by 4.9% and drops one class from 80% to 10%.</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/05-model-selection"><span class="labs__n">05</span><span class="labs__t">Are those two models interchangeable?</span><span class="labs__f">0.7% apart overall, 49 points apart on one slice.</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/06-workflow"><span class="labs__n">06</span><span class="labs__t">What did your pipeline actually do?</span><span class="labs__f">Five stages green: one retried, one fell back, one did nothing.</span></a></li></ol>
-  <p class="section__note" style="margin-top:1.75rem">
-    All six live in <a href="https://github.com/jon-lange/field-tested">field-tested</a>,
-    where every block declares how you know it works — <code>measured</code>,
-    <code>tested</code>, <code>demo</code>, or <code>unproven</code>. A script
-    enforces it. Two of these are measured; four are demonstrated, and the
-    frontmatter says which rather than letting a full grid imply otherwise.
-  </p>
-</section>
-
-<section class="section">
-  <div class="section__head">
-    <h2 class="section__title">Take these</h2>
-  </div>
-  <div class="cards">
-    <a class="card" href="https://github.com/jon-lange/not-evidence/blob/main/tools/mutcheck.py">
-      <span class="label">one file · no dependencies</span>
-      <h3>mutcheck.py</h3>
-      <p>Proves an assertion would have failed before you trust that it passed.
-      Run <code>python3 mutcheck.py --demo</code> and watch a green test prove nothing.</p>
-    </a>
-    <a class="card" href="https://github.com/jon-lange/not-evidence/blob/main/EVIDENCE.md">
-      <span class="label">one page</span>
-      <h3>Every figure, with its working</h3>
-      <p>What was measured, what came back, and a link to the harness that
-      produced it. No number appears that was not generated there.</p>
-    </a>
-    <a class="card" href="https://github.com/jon-lange/not-evidence/tree/main/skills">
-      <span class="label">five checks &middot; installable</span>
-      <h3>Evaluation skills</h3>
-      <p>Judge independence, injection-class coverage, scorecard weight
-      sensitivity, re-identification, test liveness. Each ships its measurement.<br>
-      <code>/plugin marketplace add<br>jon-lange/not-evidence</code></p>
-    </a>
-    <a class="card" href="https://github.com/jon-lange/not-evidence/tree/main/okf">
-      <span class="label">27 concepts</span>
-      <h3>As an OKF bundle</h3>
-      <p>The catalogue in the Open Knowledge Format, readable by agents without an
-      SDK. Each specimen is an <code>Attested Computation</code> — a sanctioned way
-      to compute a value so a consumer can confirm it.</p>
-    </a>
-  </div>
-</section>
-
-<section class="section" id="method">
-  <div class="section__head">
-    <h2 class="section__title">How I publish</h2>
-  </div>
-  <div class="prose">
-    <p>
-      Working in a regulated industry usually means publishing nothing. I wrote
-      down the discipline that makes it possible instead — six rules, enforced by
-      hooks and CI rather than by remembering, including the one that matters
-      most: <strong>no number appears that was not generated here.</strong>
-    </p>
-    <p>
-      It is written down because a method you can inspect is worth more than an
-      assurance you have to take on faith.
-      <a href="https://github.com/jon-lange/not-evidence/blob/main/METHOD.md">Read the method &rarr;</a>
-    </p>
-  </div>
-</section>
-</main>
-
-<section class="close">
-  <h2>The thing I most want is a result that contradicts one of these.</h2>
-  <div class="prose">
-    <p>
-      Every specimen states what would falsify it. If you run one and it comes
-      out differently, that gets the entry rewritten and you credited in it —
-      not as a courtesy, but because a catalogue whose claims were only ever
-      checked by their author is a catalogue of one person&rsquo;s confidence.
-    </p>
-    <p>
-      <a href="https://github.com/jon-lange/not-evidence/issues/new/choose">Open an issue &rarr;</a>
-      &nbsp;·&nbsp;
-      <a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">Or say hello on LinkedIn &rarr;</a>
-    </p>
-  </div>
-</section>
-
-<footer>
-  <div class="links">
-    <a href="https://github.com/jon-lange">GitHub</a>
-    <a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">LinkedIn</a>
-    <a href="https://jon-lange.github.io/not-evidence/">not-evidence</a>
-  </div>
-  <small>
-    Measured 2026-08-05. The register is generated from the catalogue, so this
-    page cannot claim something it does not. Views are my own.
-  </small>
-</footer>
+<div class="foot">
+  Measured 2026-08-05. The register is generated from the catalogue, so this page
+  cannot claim something it does not. Views are my own.
+</div>
 
 </div>
-<script>
-document.documentElement.classList.add('js');
-const rows = document.querySelectorAll('.row');
-if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  rows.forEach(r => r.classList.add('in'));
-} else {
-  const io = new IntersectionObserver((es) => {
-    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  rows.forEach(r => io.observe(r));
-}
-</script>
+</div>
 </body>
 </html>
