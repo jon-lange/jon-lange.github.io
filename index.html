@@ -67,7 +67,10 @@ a { color:inherit; }
 }
 
 /* the transcript grammar */
-.cmd { margin:2.4rem 0 .9rem; display:flex; gap:.6rem; flex-wrap:wrap; }
+/* baseline, not stretch: the cursor is a flex item, so vertical-align on it
+   is ignored and it would otherwise hang from the top of the line box. */
+.cmd { margin:2.4rem 0 .9rem; display:flex; gap:.6rem; flex-wrap:wrap;
+        align-items:baseline; }
 .cmd:first-child { margin-top:0; }
 .cmd .p { color:var(--failed); user-select:none; font-weight:600; }
 .cmd .k { font-weight:600; }
@@ -152,7 +155,9 @@ pre .ok { color:var(--confirmed); } pre .no { color:var(--failed); }
 .foot { margin-top:2.6rem; padding-top:1.2rem; border-top:1px solid var(--rule); color:var(--muted); font-size:.8125rem; }
 .foot a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule); }
 .foot a:hover { border-color:currentColor; }
-.cursor { display:inline-block; width:.55em; height:1.05em; background:var(--failed); vertical-align:-.18em; }
+/* A flex item's baseline is its bottom margin edge, so this sits the block
+   on the text baseline and grows upward, the way a terminal cursor does. */
+.cursor { width:.55em; height:1.05em; background:var(--failed); }
 @media (prefers-reduced-motion: no-preference) {
   .cursor { animation:blink 1.15s steps(1) infinite; }
   @keyframes blink { 50% { opacity:0; } }
