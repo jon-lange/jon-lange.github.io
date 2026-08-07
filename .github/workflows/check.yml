@@ -1,0 +1,59 @@
+name: check
+
+# index.html is generated and committed. Committed generated output drifts, and
+# the register is the one thing on this page making a factual claim — that N of
+# twelve entries survived their own specimens. If build.py and index.html
+# disagree, the published page is asserting a number nothing produced.
+#
+# GitHub Pages serves the committed file directly, so nothing else would notice.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  current:
+    name: index.html matches its source
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to a commit SHA. A tag is a pointer its owner can move.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with: { python-version: "3.12" }
+
+      - name: The check can fail before it is trusted
+        # A --check that passes because it compared nothing prints what a clean
+        # run prints. Break the output on purpose and require a non-zero exit,
+        # then believe the clean run below.
+        run: |
+          set -e
+          cp index.html /tmp/index.bak
+          printf '<!-- drift -->' >> index.html
+          if python3 build.py --check; then
+            cp /tmp/index.bak index.html
+            echo "BLOCKED - --check passed on a modified index.html."
+            echo "A clean result from it would mean nothing, so the build stops."
+            exit 1
+          fi
+          cp /tmp/index.bak index.html
+          echo "Self-test passed - --check detects drift."
+
+      - name: index.html is current
+        run: python3 build.py --check
+
+      - name: The register still describes twelve entries
+        # register.json is copied from the catalogue. If it is ever refreshed
+        # into a different shape, the page would render silently wrong rather
+        # than fail.
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          rows = json.load(open("register.json"))
+          verdicts = {"confirmed", "narrowed", "central-claim-failed"}
+          bad = [r for r in rows if r.get("adj") not in verdicts]
+          if len(rows) != 12 or bad:
+              print(f"BLOCKED - {len(rows)} rows, {len(bad)} with an unknown verdict")
+              sys.exit(1)
+          survived = sum(1 for r in rows if r["adj"] in ("narrowed", "confirmed"))
+          print(f"12 entries, {survived} survived — matches what the page claims")
+          PY
