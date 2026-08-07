@@ -71,24 +71,56 @@ def register_rows(rows: list[dict]) -> str:
 
 FT = "https://github.com/jon-lange/field-tested/tree/main/training"
 
+# All six carry a module now. Two are measured — a specimen produced the figure
+# and ships the harness. Four are demonstrated: the failure is real and runnable,
+# and nothing here measured how often it happens. The tag says which, because a
+# full grid otherwise implies a uniformity that is not there.
 DIMENSIONS = [
-    ("Data inputs", None), ("Prompt engineering", None),
-    ("Model selection", None), ("Workflow architecture", None),
-    ("Evaluation pipelines", f"{FT}/01-evaluation"),
-    ("Continuous monitoring", f"{FT}/02-monitoring"),
+    ("Data inputs", "03-data-inputs", "demo"),
+    ("Prompt engineering", "04-prompting", "demo"),
+    ("Model selection", "05-model-selection", "demo"),
+    ("Workflow architecture", "06-workflow", "demo"),
+    ("Evaluation pipelines", "01-evaluation", "measured"),
+    ("Continuous monitoring", "02-monitoring", "measured"),
 ]
 
 
 def dimension_items() -> str:
     out = []
-    for name, href in DIMENSIONS:
-        if href:
-            out.append(
-                f'<li class="has-evidence">{html.escape(name)}'
-                f'<a class="tag" href="{href}">measured &middot; module &rarr;</a></li>')
-        else:
-            out.append(f"<li>{html.escape(name)}</li>")
+    for name, slug, proof in DIMENSIONS:
+        cls = "has-evidence" if proof == "measured" else "has-demo"
+        label = "measured &rarr;" if proof == "measured" else "demonstrated &rarr;"
+        out.append(f'<li class="{cls}">{html.escape(name)}'
+                   f'<a class="tag" href="{FT}/{slug}">{label}</a></li>')
     return "".join(out)
+
+
+LABS = [
+    ("01", "01-evaluation", "Is your eval suite telling the truth?",
+     "39.1% of 53,130 weightings pick the other candidate."),
+    ("02", "02-monitoring", "Is your dashboard?",
+     "One alert queries a metric nothing emits. It can never fire."),
+    ("03", "03-data-inputs", "Is what reaches the model what you think?",
+     "Three cited sources that are 91% identical — one document."),
+    ("04", "04-prompting", "Did your prompt really improve?",
+     "v2 wins by 4.9% and drops one class from 80% to 10%."),
+    ("05", "05-model-selection", "Are those two models interchangeable?",
+     "0.7% apart overall, 49 points apart on one slice."),
+    ("06", "06-workflow", "What did your pipeline actually do?",
+     "Five stages green: one retried, one fell back, one did nothing."),
+]
+
+FT_REPO = "https://github.com/jon-lange/field-tested/tree/main/training"
+
+
+def lab_items() -> str:
+    return "".join(
+        f'<li><a href="{FT_REPO}/{slug}">'
+        f'<span class="labs__n">{n}</span>'
+        f'<span class="labs__t">{html.escape(title)}</span>'
+        f'<span class="labs__f">{html.escape(fig)}</span></a></li>'
+        for n, slug, title, fig in LABS
+    )
 
 
 def build() -> str:
@@ -97,6 +129,7 @@ def build() -> str:
               for k, (v, _) in VERDICT.items()}
     revised = counts["failed"] + counts["narrowed"]
     return TEMPLATE.format(
+        labs=lab_items(),
         rows=register_rows(rows),
         total=len(rows),
         revised=revised,
@@ -313,6 +346,28 @@ a.tag:hover {{ border-bottom-color:currentColor; }}
 }}
 .stats dd span {{ font:400 .875rem/1 "IBM Plex Mono",monospace; color:var(--muted); }}
 
+/* ---------- the six labs ---------- */
+.labs {{ list-style:none; margin:0; padding:0; counter-reset:none; }}
+.labs li {{ border-bottom:1px solid var(--rule); }}
+.labs li:first-child {{ border-top:1px solid var(--rule); }}
+.labs a {{
+  display:grid; grid-template-columns:2.5rem minmax(0,1fr) minmax(0,1.15fr);
+  gap:1rem; align-items:baseline; padding:.95rem .25rem; text-decoration:none;
+  transition:background .18s ease;
+}}
+.labs a:hover {{ background:color-mix(in srgb, var(--ink) 4%, transparent); }}
+.labs__n {{ font:500 .8125rem/1.6 "IBM Plex Mono",monospace; color:var(--muted); }}
+.labs__t {{ font:500 1.0125rem/1.35 Archivo,sans-serif; letter-spacing:-.01em; }}
+.labs__f {{ font:400 .875rem/1.45 Newsreader,Georgia,serif; color:var(--muted); }}
+@media (max-width:44rem) {{
+  .labs a {{ grid-template-columns:2rem minmax(0,1fr); row-gap:.3rem; }}
+  .labs__f {{ grid-column:2; }}
+}}
+
+/* the four demonstrated dimensions read quieter than the two measured */
+.dims .has-demo {{ color:var(--ink); }}
+.dims .has-demo .tag {{ color:var(--muted); }}
+
 /* ---------- symptom router ---------- */
 .triage {{ list-style:none; margin:0; padding:0; columns:2; column-gap:2.5rem; }}
 .triage li {{ break-inside:avoid; margin:0 0 .1rem; }}
@@ -486,34 +541,20 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
 
 <section class="section" id="learn">
   <div class="section__head">
-    <h2 class="section__title">Two things you can work through</h2>
-    <span class="label">about an hour each &middot; no API key</span>
+    <h2 class="section__title">Six things you can work through</h2>
+    <span class="label">45-60 min each &middot; no API key</span>
   </div>
   <p class="section__note">
-    Each hands you something green that is lying, and asks you to find out how
-    before showing you. Standard library, nothing to install.
+    One per dimension. Each hands you something green that is lying and asks you
+    to find out how before showing you. Standard library, nothing to install.
   </p>
-  <div class="cards">
-    <a class="card" href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">
-      <span class="label">01 &middot; evaluation pipelines</span>
-      <h3>Is your eval suite telling the truth?</h3>
-      <p>A release gate with three green checks: a test that passes with the code
-      broken, a judge that scores everything the same, and a scorecard where
-      <b>39.1% of 53,130 weightings</b> pick the other candidate.</p>
-    </a>
-    <a class="card" href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">
-      <span class="label">02 &middot; continuous monitoring</span>
-      <h3>Is your dashboard?</h3>
-      <p>Three panels, three alerts, nothing firing. One alert queries a metric
-      nothing emits. A segment worth 3% of traffic fails 29% of the time. Refusals
-      went up 9&times; on no panel.</p>
-    </a>
-  </div>
-  <p class="section__note" style="margin-top:1.5rem">
-    Both live in <a href="https://github.com/jon-lange/field-tested">field-tested</a>,
+  <ol class="labs">{labs}</ol>
+  <p class="section__note" style="margin-top:1.75rem">
+    All six live in <a href="https://github.com/jon-lange/field-tested">field-tested</a>,
     where every block declares how you know it works — <code>measured</code>,
     <code>tested</code>, <code>demo</code>, or <code>unproven</code>. A script
-    enforces it, and <code>unproven</code> is the one that makes the rest honest.
+    enforces it. Two of these are measured; four are demonstrated, and the
+    frontmatter says which rather than letting a full grid imply otherwise.
   </p>
 </section>
 
