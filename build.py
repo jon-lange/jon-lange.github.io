@@ -169,7 +169,11 @@ a {{ color:inherit; }}
   font:600 1.0625rem/1 Archivo, system-ui, sans-serif;
   letter-spacing:-.01em; text-decoration:none;
 }}
-.masthead nav {{ display:flex; gap:1.5rem; }}
+/* Wraps. Adding two nav items pushed this 43px past a 390px viewport and gave
+   the whole page a horizontal scrollbar — the one layout failure that is never
+   acceptable. */
+.masthead nav {{ display:flex; gap:1.5rem; flex-wrap:wrap; row-gap:.5rem; }}
+@media (max-width:30rem) {{ .masthead nav {{ gap:1rem; row-gap:.5rem; }} }}
 .masthead nav a {{ text-decoration:none; }}
 .masthead nav a:hover {{ color:var(--ink); }}
 
@@ -278,6 +282,38 @@ a.tag:hover {{ border-bottom-color:currentColor; }}
 .card p {{ margin:0; font-size:.9375rem; color:var(--muted); }}
 .card code {{ font:400 .8125rem/1 "IBM Plex Mono", monospace; }}
 
+/* ---------- honest volume ---------- */
+.stats {{ border-top:1px solid var(--rule); padding-block:2.25rem; }}
+.stats dl {{
+  margin:0; display:grid; gap:1.75rem 2.5rem;
+  grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));
+}}
+.stats dt {{
+  font:500 .625rem/1.4 "IBM Plex Mono",monospace; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted);
+}}
+.stats dd {{
+  margin:.3rem 0 0; font:600 2rem/1 Archivo,sans-serif; letter-spacing:-.03em;
+}}
+.stats dd span {{ font:400 .875rem/1 "IBM Plex Mono",monospace; color:var(--muted); }}
+
+/* ---------- symptom router ---------- */
+.triage {{ list-style:none; margin:0; padding:0; columns:2; column-gap:2.5rem; }}
+.triage li {{ break-inside:avoid; margin:0 0 .1rem; }}
+.triage a {{
+  display:block; padding:.6rem 0; border-bottom:1px solid var(--rule);
+  text-decoration:none; font-size:1.0125rem;
+}}
+.triage a:hover {{ color:var(--failed); }}
+@media (max-width:44rem) {{ .triage {{ columns:1; }} }}
+
+/* ---------- close ---------- */
+.close {{ border-top:1px solid var(--rule); padding-block:clamp(3rem,7vw,5rem); }}
+.close h2 {{
+  font:600 clamp(1.5rem,3.4vw,2.25rem)/1.15 Archivo,sans-serif;
+  letter-spacing:-.025em; margin:0 0 1.25rem; max-width:22ch;
+}}
+
 /* ---------- prose + footer ---------- */
 .prose {{ max-width:var(--measure); }}
 .prose p {{ margin:0 0 1.15rem; }}
@@ -312,6 +348,7 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
   <a class="masthead__name" href="/">Jon Lange</a>
   <nav class="label">
     <a href="#register">register</a>
+    <a href="#start">start here</a>
     <a href="#work">work</a>
     <a href="#learn">learn</a>
     <a href="#method">method</a>
@@ -332,6 +369,17 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
     <span>AI architect</span>
     <span>Enterprise platforms · LLMOps · Evaluation</span>
   </div>
+</section>
+
+<section class="stats">
+  <dl>
+    <div><dt>patterns</dt><dd>12</dd></div>
+    <div><dt>specimens</dt><dd>12</dd></div>
+    <div><dt>models measured</dt><dd>11</dd></div>
+    <div><dt>vendors</dt><dd>2</dd></div>
+    <div><dt>citations verified</dt><dd>24</dd></div>
+    <div><dt>claims that survived</dt><dd>7 <span>of 12</span></dd></div>
+  </dl>
 </section>
 
 <section class="section" id="register">
@@ -355,6 +403,23 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
     <div><i class="mark" style="background:var(--narrowed)"></i>{narrowed} held, narrowed</div>
     <div><i class="mark" style="box-shadow:inset 0 0 0 1.5px var(--confirmed)"></i>{confirmed} held</div>
   </div>
+</section>
+
+<section class="section" id="start">
+  <div class="section__head">
+    <h2 class="section__title">Start with what you recognise</h2>
+    <span class="label">symptom &rarr; entry</span>
+  </div>
+  <ul class="triage">
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/11-green-is-not-evidence.html">&ldquo;The suite is green and I can&rsquo;t say what that proves&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/05-judge-cannot-share-a-family.html">&ldquo;A model grades another model, and the score gates a release&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/09-modalities-off-the-reasoning-path.html">&ldquo;We shipped image upload and the injection suite didn&rsquo;t change&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/03-deterministic-over-prompted.html">&ldquo;Our defence is a prompt telling the model to ignore instructions&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/12-distrust-the-sanitization-label.html">&ldquo;Someone handed me a file marked <i>sanitised</i> and asked me to publish it&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/08-remembered-is-not-current.html">&ldquo;The agent quoted a figure it had seen earlier instead of fetching it&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/07-gate-over-refusal-separately.html">&ldquo;Quality went up and nobody measured what we started refusing&rdquo;</a></li>
+    <li><a href="https://jon-lange.github.io/not-evidence/patterns/10-never-auto-commit-a-transducer.html">&ldquo;A transcript or extraction gets acted on automatically&rdquo;</a></li>
+  </ul>
 </section>
 
 <section class="section" id="work">
@@ -456,6 +521,23 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
 </section>
 </main>
 
+<section class="close">
+  <h2>The thing I most want is a result that contradicts one of these.</h2>
+  <div class="prose">
+    <p>
+      Every specimen states what would falsify it. If you run one and it comes
+      out differently, that gets the entry rewritten and you credited in it —
+      not as a courtesy, but because a catalogue whose claims were only ever
+      checked by their author is a catalogue of one person&rsquo;s confidence.
+    </p>
+    <p>
+      <a href="https://github.com/jon-lange/not-evidence/issues/new/choose">Open an issue &rarr;</a>
+      &nbsp;·&nbsp;
+      <a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">Or say hello on LinkedIn &rarr;</a>
+    </p>
+  </div>
+</section>
+
 <footer>
   <div class="links">
     <a href="https://github.com/jon-lange">GitHub</a>
@@ -463,8 +545,8 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
     <a href="https://jon-lange.github.io/not-evidence/">not-evidence</a>
   </div>
   <small>
-    The register is generated from the catalogue, so this page cannot claim
-    something it does not. Views are my own.
+    Measured 2026-08-05. The register is generated from the catalogue, so this
+    page cannot claim something it does not. Views are my own.
   </small>
 </footer>
 
