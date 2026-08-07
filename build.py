@@ -146,7 +146,7 @@ TEMPLATE = """<!doctype html>
 <meta property="og:image" content="https://jon-lange.github.io/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="I publish claims, then try to prove them wrong. Twelve dots showing each entry's verdict: five failed, five narrowed, two confirmed.">
+<meta property="og:image:alt" content="A terminal running python3 tools/mutcheck.py --demo. Three implementations of one redaction guard: CAUGHT, NOT CAUGHT, NOT CAUGHT. The assertion passed in all three.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
