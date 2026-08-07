@@ -1,0 +1,134 @@
+[
+ {
+  "n": "01",
+  "name": "Grounded or Refuse",
+  "refuses": "to answer without evidence",
+  "status": "revised-by-specimen",
+  "adj": "central-claim-failed",
+  "slug": "01-grounded-or-refuse",
+  "spec": "01-grounded-or-refuse",
+  "measured": "Confabulation under the naive *\"say you don't know\"* fix, 4 models, 148 completions",
+  "result": "`0 out of 36` \u2014 the predicted failure never occurred"
+ },
+ {
+  "n": "02",
+  "name": "Refuse the Class, Not the Case",
+  "refuses": "a whole dangerous input class, with one identical error",
+  "status": "field-tested",
+  "adj": "narrowed",
+  "slug": "02-refuse-the-class",
+  "spec": "02-refuse-the-class",
+  "measured": "Three boundaries over a reference space of `48,000` items, accepted sets compared",
+  "result": "Class refusal: 2 predicates, 0 table entries, 0 unintended accepts"
+ },
+ {
+  "n": "03",
+  "name": "Deterministic Over Prompted",
+  "refuses": "to rely on instructing a model to disbelieve its source",
+  "status": "revised-by-specimen",
+  "adj": "central-claim-failed",
+  "slug": "03-deterministic-over-prompted",
+  "spec": "03-deterministic-over-prompted",
+  "measured": "A six-rung prompt-defence ladder against one poison document, 5 models, 140 calls",
+  "result": "Converged to `0/20` at rung 4 \u2014 the ladder *did* close"
+ },
+ {
+  "n": "04",
+  "name": "Meta-Injection Is Not Content-Relay",
+  "refuses": "to treat a refused meta-attack as a defended surface",
+  "status": "field-tested",
+  "adj": "confirmed",
+  "slug": "04-meta-injection-is-not-relay",
+  "spec": "04-injection-classes",
+  "measured": "One good guardrail against two poison classes, 3 models",
+  "result": "Meta-injection REFUSED; content-relay `RELAYED` by every model"
+ },
+ {
+  "n": "05",
+  "name": "The Judge Cannot Share a Family",
+  "refuses": "to let a same-lineage judge gate a promotion",
+  "status": "revised-by-specimen",
+  "adj": "central-claim-failed",
+  "slug": "05-judge-cannot-share-a-family",
+  "spec": "05-judge-family",
+  "measured": "3 judges, 12 items, absolute then pairwise in both orders",
+  "result": "Two judges produced `NO SIGNAL`; one flipped on 6 of 12 by position alone"
+ },
+ {
+  "n": "06",
+  "name": "Refuse to Score Unratified Weights",
+  "refuses": "to produce a number the domain owner never endorsed",
+  "status": "field-tested",
+  "adj": "narrowed",
+  "slug": "06-refuse-unratified-weights",
+  "spec": "06-unratified-weights",
+  "measured": "The share of the weight simplex that reverses a real scorecard verdict",
+  "result": "`40.6%` of defensible weightings pick the other candidate"
+ },
+ {
+  "n": "07",
+  "name": "Gate Over-Refusal Separately",
+  "refuses": "to quote quality without refusal beside it",
+  "status": "revised-by-specimen",
+  "adj": "central-claim-failed",
+  "slug": "07-gate-over-refusal-separately",
+  "spec": "07-over-refusal",
+  "measured": "False-refusal rate across 5 models, 2 vendors, 25 items, oldest to newest",
+  "result": "`flat \u2014 no difference`; the \"newer models refuse more\" claim did not reproduce"
+ },
+ {
+  "n": "08",
+  "name": "A Remembered Figure Is Never a Current Figure",
+  "refuses": "to let a stored value stand in for a live one",
+  "status": "revised-by-specimen",
+  "adj": "central-claim-failed",
+  "slug": "08-remembered-is-not-current",
+  "spec": "08-remembered-is-not-current",
+  "measured": "Stale reuse of a remembered value across 6 conditions, 5 models, 117 calls",
+  "result": "`3/10` \u2014 and only under the adversarial condition; the default was to call the tool"
+ },
+ {
+  "n": "09",
+  "name": "Keep New Modalities Off the Reasoning Path",
+  "refuses": "to widen the trusted surface for a new input type",
+  "status": "field-tested",
+  "adj": "narrowed",
+  "slug": "09-modalities-off-the-reasoning-path",
+  "spec": "09-modality-surface",
+  "measured": "Specimen 04's byte-identical payloads delivered as images, 4 vision models",
+  "result": "`62/63` relay cells relayed; the guardrail refused every meta-injection in both channels"
+ },
+ {
+  "n": "10",
+  "name": "Never Auto-Commit a Lossy Transducer",
+  "refuses": "to execute on a plausible substitution",
+  "status": "field-tested",
+  "adj": "narrowed",
+  "slug": "10-never-auto-commit-a-transducer",
+  "spec": "10-lossy-transducer",
+  "measured": "Three transcription models against three inputs containing no speech",
+  "result": "Invented content from silence, including `Merci d'avoir regard\u00e9!`"
+ },
+ {
+  "n": "11",
+  "name": "Green Is Not Evidence",
+  "refuses": "to trust an absence-test that was never mutation-checked",
+  "status": "field-tested",
+  "adj": "confirmed",
+  "slug": "11-green-is-not-evidence",
+  "spec": "11-mutation-check",
+  "measured": "One absence assertion across six variants, two of them silently broken",
+  "result": "Two `NOT CAUGHT` cells \u2014 the test passed while the thing it guarded was broken"
+ },
+ {
+  "n": "12",
+  "name": "Distrust the Sanitization Label",
+  "refuses": "to publish on someone's assurance that it was scrubbed",
+  "status": "field-tested",
+  "adj": "narrowed",
+  "slug": "12-distrust-the-sanitization-label",
+  "spec": "12-sanitization-label",
+  "measured": "Re-identification of a correctly-sanitised release, 60 projects, 62,700 trials",
+  "result": "`60 / 60 rows re-linked, 0 wrong` from the numbers alone"
+ }
+]
