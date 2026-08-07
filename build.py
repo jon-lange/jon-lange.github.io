@@ -303,7 +303,7 @@ pre .ok {{ color:var(--confirmed); }} pre .no {{ color:var(--failed); }}
 
 <div class="bar">
   <i style="background:#E0685F"></i><i style="background:#E4B14C"></i><i style="background:#5FA98F"></i>
-  <span class="t">jon-lange@github — ~/not-evidence — 80×24</span>
+  <span class="t">jon-lange@github — ~/not-evidence</span>
 </div>
 
 <div class="pane">
