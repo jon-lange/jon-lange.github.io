@@ -69,20 +69,26 @@ def register_rows(rows: list[dict]) -> str:
     return "".join(out)
 
 
+FT = "https://github.com/jon-lange/field-tested/tree/main/training"
+
 DIMENSIONS = [
-    ("Data inputs", False), ("Prompt engineering", False),
-    ("Model selection", False), ("Workflow architecture", False),
-    ("Evaluation pipelines", True), ("Continuous monitoring", True),
+    ("Data inputs", None), ("Prompt engineering", None),
+    ("Model selection", None), ("Workflow architecture", None),
+    ("Evaluation pipelines", f"{FT}/01-evaluation"),
+    ("Continuous monitoring", f"{FT}/02-monitoring"),
 ]
 
 
 def dimension_items() -> str:
-    return "".join(
-        f'<li{" class=\"has-evidence\"" if ev else ""}>{html.escape(name)}'
-        + ('<span class="tag">published evidence</span>' if ev else "")
-        + "</li>"
-        for name, ev in DIMENSIONS
-    )
+    out = []
+    for name, href in DIMENSIONS:
+        if href:
+            out.append(
+                f'<li class="has-evidence">{html.escape(name)}'
+                f'<a class="tag" href="{href}">measured &middot; module &rarr;</a></li>')
+        else:
+            out.append(f"<li>{html.escape(name)}</li>")
+    return "".join(out)
 
 
 def build() -> str:
@@ -251,6 +257,15 @@ a {{ color:inherit; }}
 .tag {{
   font:500 .625rem/1 "IBM Plex Mono", monospace; letter-spacing:.11em;
   text-transform:uppercase; color:var(--confirmed); white-space:nowrap;
+  text-decoration:none; border-bottom:1px solid transparent;
+}}
+a.tag:hover {{ border-bottom-color:currentColor; }}
+.card code {{
+  display:block; margin-top:.55rem; color:var(--ink);
+  font-size:.6875rem; line-height:1.5;
+  /* Break between path segments, never inside "jon-lange". */
+  /* The break is placed by hand above; never split a name. */
+  overflow-wrap:normal; word-break:keep-all;
 }}
 
 /* ---------- cards ---------- */
@@ -298,6 +313,7 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
   <nav class="label">
     <a href="#register">register</a>
     <a href="#work">work</a>
+    <a href="#learn">learn</a>
     <a href="#method">method</a>
     <a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">linkedin</a>
   </nav>
@@ -353,6 +369,39 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
   <ul class="dims">{dimensions}</ul>
 </section>
 
+<section class="section" id="learn">
+  <div class="section__head">
+    <h2 class="section__title">Two things you can work through</h2>
+    <span class="label">about an hour each &middot; no API key</span>
+  </div>
+  <p class="section__note">
+    Each hands you something green that is lying, and asks you to find out how
+    before showing you. Standard library, nothing to install.
+  </p>
+  <div class="cards">
+    <a class="card" href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">
+      <span class="label">01 &middot; evaluation pipelines</span>
+      <h3>Is your eval suite telling the truth?</h3>
+      <p>A release gate with three green checks: a test that passes with the code
+      broken, a judge that scores everything the same, and a scorecard where
+      <b>39.1% of 53,130 weightings</b> pick the other candidate.</p>
+    </a>
+    <a class="card" href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">
+      <span class="label">02 &middot; continuous monitoring</span>
+      <h3>Is your dashboard?</h3>
+      <p>Three panels, three alerts, nothing firing. One alert queries a metric
+      nothing emits. A segment worth 3% of traffic fails 29% of the time. Refusals
+      went up 9&times; on no panel.</p>
+    </a>
+  </div>
+  <p class="section__note" style="margin-top:1.5rem">
+    Both live in <a href="https://github.com/jon-lange/field-tested">field-tested</a>,
+    where every block declares how you know it works — <code>measured</code>,
+    <code>tested</code>, <code>demo</code>, or <code>unproven</code>. A script
+    enforces it, and <code>unproven</code> is the one that makes the rest honest.
+  </p>
+</section>
+
 <section class="section">
   <div class="section__head">
     <h2 class="section__title">Take these</h2>
@@ -371,10 +420,18 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
       produced it. No number appears that was not generated there.</p>
     </a>
     <a class="card" href="https://github.com/jon-lange/not-evidence/tree/main/skills">
-      <span class="label">five checks</span>
+      <span class="label">five checks &middot; installable</span>
       <h3>Evaluation skills</h3>
       <p>Judge independence, injection-class coverage, scorecard weight
-      sensitivity, re-identification, test liveness. Each ships its measurement.</p>
+      sensitivity, re-identification, test liveness. Each ships its measurement.<br>
+      <code>/plugin marketplace add<br>jon-lange/not-evidence</code></p>
+    </a>
+    <a class="card" href="https://github.com/jon-lange/not-evidence/tree/main/okf">
+      <span class="label">27 concepts</span>
+      <h3>As an OKF bundle</h3>
+      <p>The catalogue in the Open Knowledge Format, readable by agents without an
+      SDK. Each specimen is an <code>Attested Computation</code> — a sanctioned way
+      to compute a value so a consumer can confirm it.</p>
     </a>
   </div>
 </section>

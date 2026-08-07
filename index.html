@@ -147,6 +147,15 @@ a { color:inherit; }
 .tag {
   font:500 .625rem/1 "IBM Plex Mono", monospace; letter-spacing:.11em;
   text-transform:uppercase; color:var(--confirmed); white-space:nowrap;
+  text-decoration:none; border-bottom:1px solid transparent;
+}
+a.tag:hover { border-bottom-color:currentColor; }
+.card code {
+  display:block; margin-top:.55rem; color:var(--ink);
+  font-size:.6875rem; line-height:1.5;
+  /* Break between path segments, never inside "jon-lange". */
+  /* The break is placed by hand above; never split a name. */
+  overflow-wrap:normal; word-break:keep-all;
 }
 
 /* ---------- cards ---------- */
@@ -194,6 +203,7 @@ footer small { color:var(--muted); font-size:.8125rem; }
   <nav class="label">
     <a href="#register">register</a>
     <a href="#work">work</a>
+    <a href="#learn">learn</a>
     <a href="#method">method</a>
     <a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">linkedin</a>
   </nav>
@@ -450,7 +460,40 @@ footer small { color:var(--muted); font-size:.8125rem; }
     Context engineering, as the framework I use to separate production AI from an
     impressive demo. Two of the six have measurements I can show you.
   </p>
-  <ul class="dims"><li>Data inputs</li><li>Prompt engineering</li><li>Model selection</li><li>Workflow architecture</li><li class="has-evidence">Evaluation pipelines<span class="tag">published evidence</span></li><li class="has-evidence">Continuous monitoring<span class="tag">published evidence</span></li></ul>
+  <ul class="dims"><li>Data inputs</li><li>Prompt engineering</li><li>Model selection</li><li>Workflow architecture</li><li class="has-evidence">Evaluation pipelines<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">measured &middot; module &rarr;</a></li><li class="has-evidence">Continuous monitoring<a class="tag" href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">measured &middot; module &rarr;</a></li></ul>
+</section>
+
+<section class="section" id="learn">
+  <div class="section__head">
+    <h2 class="section__title">Two things you can work through</h2>
+    <span class="label">about an hour each &middot; no API key</span>
+  </div>
+  <p class="section__note">
+    Each hands you something green that is lying, and asks you to find out how
+    before showing you. Standard library, nothing to install.
+  </p>
+  <div class="cards">
+    <a class="card" href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">
+      <span class="label">01 &middot; evaluation pipelines</span>
+      <h3>Is your eval suite telling the truth?</h3>
+      <p>A release gate with three green checks: a test that passes with the code
+      broken, a judge that scores everything the same, and a scorecard where
+      <b>39.1% of 53,130 weightings</b> pick the other candidate.</p>
+    </a>
+    <a class="card" href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">
+      <span class="label">02 &middot; continuous monitoring</span>
+      <h3>Is your dashboard?</h3>
+      <p>Three panels, three alerts, nothing firing. One alert queries a metric
+      nothing emits. A segment worth 3% of traffic fails 29% of the time. Refusals
+      went up 9&times; on no panel.</p>
+    </a>
+  </div>
+  <p class="section__note" style="margin-top:1.5rem">
+    Both live in <a href="https://github.com/jon-lange/field-tested">field-tested</a>,
+    where every block declares how you know it works — <code>measured</code>,
+    <code>tested</code>, <code>demo</code>, or <code>unproven</code>. A script
+    enforces it, and <code>unproven</code> is the one that makes the rest honest.
+  </p>
 </section>
 
 <section class="section">
@@ -471,10 +514,18 @@ footer small { color:var(--muted); font-size:.8125rem; }
       produced it. No number appears that was not generated there.</p>
     </a>
     <a class="card" href="https://github.com/jon-lange/not-evidence/tree/main/skills">
-      <span class="label">five checks</span>
+      <span class="label">five checks &middot; installable</span>
       <h3>Evaluation skills</h3>
       <p>Judge independence, injection-class coverage, scorecard weight
-      sensitivity, re-identification, test liveness. Each ships its measurement.</p>
+      sensitivity, re-identification, test liveness. Each ships its measurement.<br>
+      <code>/plugin marketplace add<br>jon-lange/not-evidence</code></p>
+    </a>
+    <a class="card" href="https://github.com/jon-lange/not-evidence/tree/main/okf">
+      <span class="label">27 concepts</span>
+      <h3>As an OKF bundle</h3>
+      <p>The catalogue in the Open Knowledge Format, readable by agents without an
+      SDK. Each specimen is an <code>Attested Computation</code> — a sanctioned way
+      to compute a value so a consumer can confirm it.</p>
     </a>
   </div>
 </section>
