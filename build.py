@@ -282,6 +282,22 @@ a.tag:hover {{ border-bottom-color:currentColor; }}
 .card p {{ margin:0; font-size:.9375rem; color:var(--muted); }}
 .card code {{ font:400 .8125rem/1 "IBM Plex Mono", monospace; }}
 
+/* ---------- terminal ----------
+   Not a metaphor. Every command below exists in the repositories and the
+   output is what it actually prints, captured rather than written. A fake
+   terminal on a page about evidence would be the joke. */
+.term {{
+  border:1px solid var(--rule); background:color-mix(in srgb, var(--ink) 3%, transparent);
+  padding:1.1rem 1.25rem; overflow-x:auto; margin:0 0 1.25rem;
+  font:400 .8125rem/1.75 "IBM Plex Mono", ui-monospace, monospace;
+}}
+.term pre {{ margin:0; white-space:pre; }}
+.term .p {{ color:var(--failed); user-select:none; }}
+.term .c {{ color:var(--ink); font-weight:500; }}
+.term .o {{ color:var(--muted); }}
+.term .ok {{ color:var(--confirmed); }}
+.term .no {{ color:var(--failed); }}
+
 /* ---------- honest volume ---------- */
 .stats {{ border-top:1px solid var(--rule); padding-block:2.25rem; }}
 .stats dl {{
@@ -365,10 +381,44 @@ footer small {{ color:var(--muted); font-size:.8125rem; }}
     with the measurement that tested it, including the measurements that went
     against me.
   </p>
+  <div class="term" role="img" aria-label="Terminal showing mutcheck --demo: one assertion caught the mutation, two did not.">
+<pre><span class="p">$</span> <span class="c">python3 tools/mutcheck.py --demo</span>
+<span class="o">
+  implementation                            mutation caught?
+  ---------------------------------------   ----------------
+  redaction works                           </span><span class="ok">CAUGHT</span><span class="o">
+  rollout flag off — nothing is logged      </span><span class="no">NOT CAUGHT</span><span class="o">
+  schema change — field no longer carried   </span><span class="no">NOT CAUGHT</span><span class="o">
+
+  The assertion passed in all three.</span></pre>
+  </div>
   <div class="hero__meta label">
     <span>AI architect</span>
     <span>Enterprise platforms · LLMOps · Evaluation</span>
   </div>
+</section>
+
+<section class="section" id="checks" style="border-top:1px solid var(--rule)">
+  <div class="term" role="img" aria-label="Terminal showing make check output: twelve guarded surfaces, zero failures.">
+<pre><span class="p">$</span> <span class="c">make consistency</span>
+<span class="o">  metadata consistent — checked: 12 patterns, 12 README rows, 5 skills,
+  12 triage routes, 12 evidence rows, 12 specimen index rows, 5 plugin skills,
+  12 adjudications, 16 derived count claims, 12 falsification conditions,
+  208 relative links, 21 make references</span>
+  <span class="ok">0 failure(s)</span>
+
+<span class="p">$</span> <span class="c">make okf-check</span>
+<span class="o">  OKF bundle current — 27 concepts</span>
+
+<span class="p">$</span> <span class="c">make test</span>
+<span class="o">  all suites green, nothing skipped</span></pre>
+  </div>
+  <p class="section__note">
+    Sixteen of those are published counts checked against the twelve specimens
+    that produced them. Rephrase a sentence and the check fails rather than
+    quietly stopping — a rule that silently stops checking is the failure this
+    whole catalogue is about.
+  </p>
 </section>
 
 <section class="stats">
