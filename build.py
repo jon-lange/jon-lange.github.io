@@ -116,6 +116,10 @@ TEMPLATE = """<!doctype html>
 <meta property="og:description" content="I publish claims about AI systems and then try to prove them wrong. Twelve claims, all twelve measured, seven survived — and the five that did not are why the seven are worth anything.">
 <meta property="og:url" content="https://jon-lange.github.io/">
 <meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://jon-lange.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="I publish claims, then try to prove them wrong. Twelve dots showing each entry's verdict: five failed, five narrowed, two confirmed.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap" rel="stylesheet">
