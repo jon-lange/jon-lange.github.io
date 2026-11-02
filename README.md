@@ -3,6 +3,11 @@
 Personal site. One page, no framework, no build step beyond a Python script and
 no dependencies at runtime.
 
+Brand framing (2026-11): hero matches the public X bio — building, all in on AI,
+mostly in fintech. Front page also links Settleview (`jon-lange/settleview`) as a
+personal side project with the repo's no-edge-after-fees disclaimer. The register
+remains generated from not-evidence.
+
 ```bash
 python3 build.py            # write index.html
 python3 build.py --check    # fail if index.html is not current

@@ -134,13 +134,13 @@ TEMPLATE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jon Lange — AI architecture, and the evidence for it</title>
-<meta name="description" content="I publish claims about AI systems and then try to prove them wrong. Twelve claims, all twelve measured, seven survived — and the five that did not are why the seven are worth anything.">
+<title>Jon Lange — All in on AI, mostly in fintech</title>
+<meta name="description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. Personal projects: claims about AI systems I try to prove wrong, and Settleview — a research tool for BTC Up/Down markets with no edge after fees.">
 <link rel="canonical" href="https://jon-lange.github.io/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2314171A'/><rect x='11.5' y='7' width='9' height='17' fill='%23E4795F'/></svg>">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Jon Lange — AI architecture, and the evidence for it">
-<meta property="og:description" content="I publish claims about AI systems and then try to prove them wrong. Twelve claims, all twelve measured, seven survived — and the five that did not are why the seven are worth anything.">
+<meta property="og:title" content="Jon Lange — All in on AI, mostly in fintech">
+<meta property="og:description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. Personal projects: claims about AI systems I try to prove wrong, and Settleview — a research tool for BTC Up/Down markets with no edge after fees.">
 <meta property="og:url" content="https://jon-lange.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://jon-lange.github.io/og.png">
@@ -308,17 +308,26 @@ pre .ok {{ color:var(--confirmed); }} pre .no {{ color:var(--failed); }}
 
 <div class="bar">
   <i style="background:#E0685F"></i><i style="background:#E4B14C"></i><i style="background:#5FA98F"></i>
-  <span class="t">jon-lange@github — ~/not-evidence</span>
+  <span class="t">jon-lange@github — ~/building</span>
 </div>
 
 <div class="pane">
 
 <div class="motd">
-  <b>Jon Lange <span class="dim">·</span> AI architect</b>
+  <b>Jon Lange <span class="dim">·</span> AI, mostly in fintech</b>
 </div>
-<p class="out ink">I publish claims about AI systems, then try to <span class="no">prove them wrong</span>.<br>
-Evaluation, guardrails, and the half of the problem that is knowing when a system should decline.</p>
+<p class="out ink">While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech.</p>
+<p class="out">I also publish claims about AI systems, then try to <span class="no">prove them wrong</span>. Knowing when a system should decline is half the job.</p>
 <p class="out">Everything below is a real command. The output is what it prints.</p>
+
+<div class="cmd"><span class="p">$</span><span class="k">whoami --short</span></div>
+<p class="out">Building in public. Day job in fintech AI. Side projects below are personal — not my employer's.</p>
+
+<div class="cmd"><span class="p">$</span><span class="k">cat ~/projects/settleview</span></div>
+<p class="out ink"><a class="lnk" href="https://github.com/jon-lange/settleview">Settleview</a> <span class="dim">·</span> personal side project</p>
+<p class="out">A local research tool and trading front end for short-window BTC Up/Down prediction markets (Kalshi and Polymarket US). You make every call; the app does not claim an edge.</p>
+<p class="out">Our own research found no rule that beats the market price after fees. Settleview is a decision aid, not an edge. Not financial advice. Not affiliated with my employer.</p>
+<p class="out"><a class="lnk" href="https://github.com/jon-lange/settleview">open github.com/jon-lange/settleview</a></p>
 
 <div class="cmd"><span class="p">$</span><span class="k">python3 tools/mutcheck.py --demo</span></div>
 <pre>  implementation                            mutation caught?
@@ -376,14 +385,14 @@ the failure is real, and nothing here measured how often it happens.</p>
 </ul>
 
 <div class="cmd"><span class="p">$</span><span class="k">cat METHOD.md | head -6</span></div>
-<p class="out">Working in a regulated industry usually means publishing nothing. I wrote down the
-discipline that makes it possible instead — six rules, enforced by hooks and CI rather
+<p class="out">Working in regulated fintech usually means publishing nothing. I wrote down the
+discipline that makes personal research publishable instead — six rules, enforced by hooks and CI rather
 than by remembering, including the one that matters most:
 <span class="hi">no number appears that was not generated here.</span></p>
 <p class="out"><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/METHOD.md">open METHOD.md</a></p>
 
 <div class="cmd"><span class="p">$</span><span class="k">contact --what-i-want</span></div>
-<p class="out ink">A result that contradicts one of the twelve.</p>
+<p class="out ink">A result that contradicts one of the twelve. Or a sharp take on where AI in fintech is actually going.</p>
 <p class="out">Every specimen states what would falsify it. Run one, get something different, and the
 entry gets rewritten with you credited in it — not as a courtesy, but because a catalogue
 whose claims were only ever checked by their author is a catalogue of one person's confidence.</p>
@@ -396,8 +405,8 @@ whose claims were only ever checked by their author is a catalogue of one person
 <div class="cmd"><span class="p">$</span><span class="cursor" aria-hidden="true"></span></div>
 
 <div class="foot">
-  Measured 2026-08-05. The register is generated from the catalogue, so this page
-  cannot claim something it does not. Views are my own.
+  Register measured 2026-08-05; generated from the catalogue, so this page cannot claim something it does not.
+  Settleview and not-evidence are personal projects. Views are my own.
 </div>
 
 </div>
