@@ -135,12 +135,12 @@ TEMPLATE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jon Lange — All in on AI, mostly in fintech</title>
-<meta name="description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. Personal projects: claims about AI systems I try to prove wrong, and Settleview — a research tool for BTC Up/Down markets with no edge after fees.">
+<meta name="description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. I test AI advice that sounds right. A lot of it doesn't hold up.">
 <link rel="canonical" href="https://jon-lange.github.io/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2314171A'/><rect x='11.5' y='7' width='9' height='17' fill='%23E4795F'/></svg>">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jon Lange — All in on AI, mostly in fintech">
-<meta property="og:description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. Personal projects: claims about AI systems I try to prove wrong, and Settleview — a research tool for BTC Up/Down markets with no edge after fees.">
+<meta property="og:description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. I test AI advice that sounds right. A lot of it doesn't hold up.">
 <meta property="og:url" content="https://jon-lange.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://jon-lange.github.io/og.png">
@@ -524,27 +524,22 @@ pre .no {{ color:var(--failed); background:color-mix(in srgb, var(--failed) 14%,
 <header class="hero">
 <h1 class="motd"><span class="nm"><span class="nt">Jon Lange</span></span> <span class="tg"><span class="dim">·</span> AI, mostly in fintech</span></h1>
 <p class="out ink lead">While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech.</p>
-<p class="out">I also publish claims about AI systems, then try to <span class="no">prove them wrong</span>. Knowing when a system should decline is half the job.</p>
-<p class="out">Everything below is a real command. The output is what it prints.</p>
+<p class="out">Day job: fintech AI. The side projects here are mine.</p>
+<p class="out">I use AI where it earns its place. When something can't be undone, a person still makes the call. <span class="hi">Ignoring these tools is the real risk.</span></p>
 </header>
 
 <section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">whoami --short</span></h2>
-<p class="out">Building in public. Day job in fintech AI. Side projects below are personal — not my employer's.</p>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/projects/settleview</span></h2>
-<div class="card">
-<p class="out ink proj"><a class="lnk" href="https://github.com/jon-lange/settleview">Settleview</a> <span class="dim">·</span> personal side project</p>
-<p class="out">A local research tool and trading front end for short-window BTC Up/Down prediction markets (Kalshi and Polymarket US). You make every call; the app does not claim an edge.</p>
-<p class="out">Our own research found no rule that beats the market price after fees. Settleview is a decision aid, not an edge. Not financial advice. Not affiliated with my employer.</p>
-<p class="out links"><a class="lnk btn" href="https://github.com/jon-lange/settleview">open github.com/jon-lange/settleview</a></p>
-</div>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">python3 tools/mutcheck.py --demo</span></h2>
+<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/story/not-evidence</span></h2>
+<p class="out ink">I kept hearing AI advice that sounded right, so I tested it. A lot of it didn't hold up.</p>
+<p class="out">One example: I fed three transcription models recordings with no speech in them. They made things up anyway, including <span class="hi">"Merci d'avoir regardé!"</span></p>
+<p class="out">Another: a safety test stayed green while the thing it was supposed to catch was <span class="no">already broken</span>.</p>
+<p class="out">I rewrote the advice that failed and published what held up. That's <a class="lnk" href="https://github.com/jon-lange/not-evidence">not-evidence</a>.</p>
+<details class="row"><summary><span class="c-n">&gt;</span> <span class="c-name">See the full test log</span><span class="c-v"><i class="mark"></i>{total} rows</span></summary>
+<p class="cmd"><span class="p">$</span><span class="hi">cat register.tsv</span></p>
+{rows}
+<p class="out legend">
+<span class="no">●</span> {failed} did not hold &nbsp;&nbsp;<span class="wa">●</span> {narrowed} held, narrowed &nbsp;&nbsp;<span class="ok">○</span> {confirmed} held</p>
+<p class="cmd"><span class="p">$</span><span class="hi">python3 tools/mutcheck.py --demo</span></p>
 <pre>  implementation                            mutation caught?
   ---------------------------------------   ----------------
   redaction works                           <span class="ok">CAUGHT</span>
@@ -552,32 +547,16 @@ pre .no {{ color:var(--failed); background:color-mix(in srgb, var(--failed) 14%,
   schema change — field no longer carried   <span class="no">NOT CAUGHT</span>
 
   The assertion passed in all three. Two were never watching.</pre>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">make check</span></h2>
+<p class="cmd"><span class="p">$</span><span class="hi">make check</span></p>
 <pre>  12 patterns
   12 adjudications
   <span class="hi">16 derived count claims</span>
   12 falsification conditions
   208 relative links
   <span class="ok">0 failure(s)</span></pre>
-<p class="out">Every published count is derived from the twelve specimens. Rephrase a sentence
-and the check fails rather than quietly stopping.</p>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat register.tsv</span> <span class="dim"># {total} claims · all measured · {survived} survived</span></h2>
-<p class="out">Each was written as a claim, put in front of real models or a real adversary,
-then rewritten to whatever came back. <span class="hi">{survived} survived that; {failed} did not</span>, and the {failed}
-are why the {survived} are worth anything. Open a row for what was predicted and what happened.</p>
-{rows}
-<p class="out legend">
-<span class="no">●</span> {failed} did not hold &nbsp;&nbsp;<span class="wa">●</span> {narrowed} held, narrowed &nbsp;&nbsp;<span class="ok">○</span> {confirmed} held</p>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">grep -rl "$SYMPTOM" patterns/</span></h2>
+</details>
+<details class="row"><summary><span class="c-n">&gt;</span> <span class="c-name">If a situation sounds familiar</span><span class="c-v"><i class="mark"></i>8 links</span></summary>
+<p class="cmd"><span class="p">$</span><span class="hi">grep -rl "$SYMPTOM" patterns/</span></p>
 <ul class="grep">
 <li><a href="https://jon-lange.github.io/not-evidence/patterns/11-green-is-not-evidence.html"><b>&gt;</b> "The suite is green and I can't say what that proves"</a></li>
 <li><a href="https://jon-lange.github.io/not-evidence/patterns/05-judge-cannot-share-a-family.html"><b>&gt;</b> "A model grades another model, and the score gates a release"</a></li>
@@ -588,45 +567,41 @@ are why the {survived} are worth anything. Open a row for what was predicted and
 <li><a href="https://jon-lange.github.io/not-evidence/patterns/07-gate-over-refusal-separately.html"><b>&gt;</b> "Quality went up and nobody measured what we started refusing"</a></li>
 <li><a href="https://jon-lange.github.io/not-evidence/patterns/10-never-auto-commit-a-transducer.html"><b>&gt;</b> "A transcript or extraction gets acted on automatically"</a></li>
 </ul>
+</details>
 </section>
 
 <section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/context-engineering/dimensions</span></h2>
-<ul class="dims">{dimensions}</ul>
-<p class="out">Two came from specimens that ship their harness. Four are runnable demonstrations —
-the failure is real, and nothing here measured how often it happens.</p>
+<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/projects/settleview</span></h2>
+<div class="card">
+<p class="out ink proj"><a class="lnk" href="https://github.com/jon-lange/settleview">Settleview</a> <span class="dim">·</span> personal side project</p>
+<p class="out">A local tool for short BTC Up/Down markets on Kalshi and Polymarket US. You make every call.</p>
+<p class="out">I found no rule that beats the market price after fees. It's not an edge, it's not financial advice, and it's not affiliated with my employer.</p>
+<p class="out links"><a class="lnk btn" href="https://github.com/jon-lange/settleview">open github.com/jon-lange/settleview</a></p>
+</div>
 </section>
 
 <section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">ls training/</span> <span class="dim"># 45–60 min each, no API key</span></h2>
+<h2 class="cmd"><span class="p">$</span><span class="k">ls training/ tools/</span></h2>
+<p class="out">Six short hands-on labs you can run offline, with no API key. The tools live in <a class="lnk" href="https://github.com/jon-lange/not-evidence">not-evidence</a>.</p>
+<details class="row"><summary><span class="c-n">&gt;</span> <span class="c-name">Labs and dimensions</span><span class="c-v"><i class="mark"></i>6 labs · 6 dimensions</span></summary>
+<p class="cmd"><span class="p">$</span><span class="hi">ls training/</span> <span class="dim"># 45–60 min each, no API key</span></p>
 <ol class="ls">{labs}</ol>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">ls tools/ skills/ okf/</span></h2>
+<p class="cmd"><span class="p">$</span><span class="hi">cat ~/context-engineering/dimensions</span></p>
+<ul class="dims">{dimensions}</ul>
+<p class="cmd"><span class="p">$</span><span class="hi">ls tools/ skills/ okf/</span></p>
 <ul class="ls">
 <li><a href="https://github.com/jon-lange/not-evidence/blob/main/tools/mutcheck.py"><span class="n">1</span><span class="t">tools/mutcheck.py</span><span class="f">one file, no dependencies — prove an assertion would have failed</span></a></li>
 <li><a href="https://github.com/jon-lange/not-evidence/tree/main/skills"><span class="n">5</span><span class="t">skills/</span><span class="f">installable: /plugin marketplace add jon-lange/not-evidence</span></a></li>
 <li><a href="https://github.com/jon-lange/not-evidence/tree/main/okf"><span class="n">27</span><span class="t">okf/</span><span class="f">the catalogue as an Open Knowledge Format bundle</span></a></li>
 <li><a href="https://github.com/jon-lange/not-evidence/blob/main/EVIDENCE.md"><span class="n">1</span><span class="t">EVIDENCE.md</span><span class="f">every measured figure on one page, each linked to its working</span></a></li>
+<li><a href="https://github.com/jon-lange/not-evidence/blob/main/METHOD.md"><span class="n">1</span><span class="t">METHOD.md</span><span class="f">six rules, enforced by hooks and CI rather than by remembering</span></a></li>
 </ul>
+</details>
 </section>
 
 <section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat METHOD.md | head -6</span></h2>
-<p class="out">Working in regulated fintech usually means publishing nothing. I wrote down the
-discipline that makes personal research publishable instead — six rules, enforced by hooks and CI rather
-than by remembering, including the one that matters most:
-<span class="hi">no number appears that was not generated here.</span></p>
-<p class="out links"><a class="lnk btn" href="https://github.com/jon-lange/not-evidence/blob/main/METHOD.md">open METHOD.md</a></p>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">contact --what-i-want</span></h2>
-<p class="out ink">A result that contradicts one of the twelve. Or a sharp take on where AI in fintech is actually going.</p>
-<p class="out">Every specimen states what would falsify it. Run one, get something different, and the
-entry gets rewritten with you credited in it — not as a courtesy, but because a catalogue
-whose claims were only ever checked by their author is a catalogue of one person's confidence.</p>
+<h2 class="cmd"><span class="p">$</span><span class="k">contact</span></h2>
+<p class="out ink">If you ran one of these tests and got a different result, I want to hear it. Or just say hi if you're building with AI in fintech.</p>
 <p class="out links">
 <a class="lnk btn" href="https://github.com/jon-lange/not-evidence/issues/new/choose">open an issue</a>
 &nbsp; <a class="lnk btn" href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">linkedin</a>
@@ -639,8 +614,7 @@ whose claims were only ever checked by their author is a catalogue of one person
 </main>
 
 <footer class="foot">
-  Register measured 2026-08-05; generated from the catalogue, so this page cannot claim something it does not.
-  Settleview and not-evidence are personal projects. Views are my own.
+  Test results from not-evidence, measured Aug 5, 2026. Settleview and not-evidence are personal projects. Views are my own.
 </footer>
 
 </div>
