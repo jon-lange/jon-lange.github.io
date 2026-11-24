@@ -4,66 +4,71 @@
       "file": "assets/botbench-workbench.png",
       "source_repository": "botbenchhq/botbench",
       "source_path": "docs/images/hero-workbench.png",
-      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/hero-workbench.png",
-      "source_git_blob_sha": "e096311ae01f786920a6b0a488db05eb5d23a939",
-      "sha256": "82481a13b5b0bf767e9c4b2df9860e071f3643adf455ce24669ff99f3ff5187f",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/32d41cdd4d99972e9119e6a55d8478c38c3c09ae/docs/images/hero-workbench.png",
+      "source_git_blob_sha": "25311b6eb640cad85a41fe2a158e3b6912ac018a",
+      "sha256": "d2e9534dd807d4b09c2f46412a97b314bb424eeb452d6623d4189aaaa8343196",
       "dimensions": [
-        1600,
-        1080
+        3200,
+        1720
       ],
-      "copied_without_modification": true
+      "copied_without_modification": true,
+      "source_commit": "32d41cdd4d99972e9119e6a55d8478c38c3c09ae"
     },
     {
       "file": "assets/botbench-review.png",
       "source_repository": "botbenchhq/botbench",
       "source_path": "docs/images/ready-for-review-proof.png",
-      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/ready-for-review-proof.png",
-      "source_git_blob_sha": "eefa0de5a67b504309e80a1a939216c3a10a6654",
-      "sha256": "21744c04080877a5b3b45851fe2ffbdb6fb594c4045cf054dce19dc1eec25682",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/32d41cdd4d99972e9119e6a55d8478c38c3c09ae/docs/images/ready-for-review-proof.png",
+      "source_git_blob_sha": "6c6b81d7236372fb26bc0c7d55fe185ec23226a9",
+      "sha256": "cb67af2f4adf1e65f614d8d816fa5b4437c70caee5a43a71db4ff0b57421a3a6",
       "dimensions": [
-        1320,
-        870
+        2880,
+        1800
       ],
-      "copied_without_modification": true
+      "copied_without_modification": true,
+      "source_commit": "32d41cdd4d99972e9119e6a55d8478c38c3c09ae"
     },
     {
       "file": "assets/botbench-peers.png",
       "source_repository": "botbenchhq/botbench",
       "source_path": "docs/images/paired-question.png",
-      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/paired-question.png",
-      "source_git_blob_sha": "28b29af1f5f20b5d6bd8ddbdc123f7ca9496cea8",
-      "sha256": "a7b38e11665983e443856ceddc2175d0d670a2648095737bf7131b794d671de5",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/32d41cdd4d99972e9119e6a55d8478c38c3c09ae/docs/images/paired-question.png",
+      "source_git_blob_sha": "5ba96318534dcfa8ea8a95d2214b9a0d51980966",
+      "sha256": "46d164a91c6f4cc88c661d97166ab042977bd122a11b640b711f43dda9200c05",
       "dimensions": [
-        1320,
-        870
+        2880,
+        1800
       ],
-      "copied_without_modification": true
+      "copied_without_modification": true,
+      "source_commit": "32d41cdd4d99972e9119e6a55d8478c38c3c09ae"
     },
     {
       "file": "assets/design-system-timeline.png",
       "source_repository": "botbenchhq/design-system",
       "source_path": "test/visual/screenshots/run-timeline-1280-dark-botbench.png",
-      "source_url": "https://github.com/botbenchhq/design-system/blob/main/test/visual/screenshots/run-timeline-1280-dark-botbench.png",
-      "source_git_blob_sha": "4a5fabff4e0bef303938cd94294a5927a3c5b5c0",
-      "sha256": "14767c627237a4fc9ed2c4b8c26d43db01a11ec5684c2c9d43d864c22e801c4b",
+      "source_url": "https://github.com/botbenchhq/design-system/blob/9457a46630f10c55a33682d80ee872e001a9a2a8/test/visual/screenshots/run-timeline-1280-dark-botbench.png",
+      "source_git_blob_sha": "e9a6a9accc5d660c8ce1f0dafc0139814f853dc3",
+      "sha256": "a06134a3d5b62465cac00b19986a77fb30f20b36ec700000251b38cd119d12f0",
       "dimensions": [
         1280,
-        2312
+        2387
       ],
-      "copied_without_modification": true
+      "copied_without_modification": true,
+      "source_commit": "9457a46630f10c55a33682d80ee872e001a9a2a8"
     },
     {
       "file": "assets/permissions-check.png",
       "source_repository": "botbenchhq/botbench",
       "source_path": "docs/images/permissions-check.png",
-      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/permissions-check.png",
-      "source_git_blob_sha": "38e69fd17ee41c2d33c8393e47307c8788d531ac",
-      "sha256": "212db054fd87dc173d6e0573a96c7b0ee46431b7fb471ab8609bb5aaa77167c3",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/32d41cdd4d99972e9119e6a55d8478c38c3c09ae/docs/images/permissions-check.png",
+      "source_git_blob_sha": "376cc015a8bb6a4ae3d288f553fdd017521d7aba",
+      "sha256": "101aded237fbdf1d546e41bcd19f6a7bc3326104ece7c6e8f63c8fe8582a0b0b",
       "dimensions": [
-        1320,
-        870
+        2880,
+        1800
       ],
-      "copied_without_modification": true
+      "copied_without_modification": true,
+      "source_commit": "32d41cdd4d99972e9119e6a55d8478c38c3c09ae"
     }
   ]
 }
