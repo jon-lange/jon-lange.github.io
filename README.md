@@ -86,6 +86,19 @@ Git blob identities and file SHA-256 hashes are recorded in
 | `assets/permissions-check.png` | `botbenchhq/botbench:docs/images/permissions-check.png` |
 | `assets/design-system-timeline.png` | `botbenchhq/design-system:test/visual/screenshots/run-timeline-1280-dark-botbench.png` |
 
+The four product screenshots use Botbench’s 0.3.0 interface and are pinned to
+`botbenchhq/botbench` commit `32d41cdd4d99972e9119e6a55d8478c38c3c09ae`.
+They show the billing-api example on studio-mac, with a paired office-mac
+installation on the same Mac. The screens are captured from the product;
+Claude Code’s build and Codex’s review are replayed from recorded tool sessions,
+and the repository’s Python check really runs. Tour captions and hotspots refer
+to those exact screens. The hero is 3200 × 1720; the three detail screens are
+2880 × 1800.
+
+The 1280 × 2387 design-system image is separate component-gallery evidence,
+pinned to `botbenchhq/design-system` commit
+`9457a46630f10c55a33682d80ee872e001a9a2a8`. It is not a product screenshot.
+
 Image fitting is controlled by CSS; the underlying image bytes are unchanged.
 Product screenshots are contained in full, and the tour offers an enlarged
 view. Screenshots contain example activity and are not customer testimonials

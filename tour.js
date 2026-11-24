@@ -2,55 +2,55 @@
   'use strict';
   const steps = [
     {
-      id: 'task', kicker: 'The task', title: 'Give the work a place.', label: 'Botbench / demo shop',
-      image: 'assets/botbench-workbench.png', width: 1600, height: 1080,
-      alt: 'A recorded Botbench workbench showing a cart API task, its transcript, and a phone-sized work list.',
-      caption: 'Recorded product screens. The cart API change and the SAVE10 discount are two separate demo-shop tasks.',
+      id: 'task', kicker: 'The task', title: 'Give the work a place.', label: 'Botbench / billing-api',
+      image: 'assets/botbench-workbench.png', width: 3200, height: 1720,
+      alt: 'Botbench Home groups work needing attention, waiting work, and completed work beside a phone-sized billing task ready for review.',
+      caption: 'Recorded product screens from the billing-api example: Home on a Mac and a task review on a phone-sized screen.',
       next: 'Choose the boundaries',
       details: [
-        { title: 'A clear brief', text: 'The cart API task asks for a dollar-valued total, with the related code and tests updated. The brief stays attached to the work.', x: 12.1, y: 28.3 },
-        { title: 'Ready for your attention', text: 'The same cart API run appears in the phone-sized work list as ready for review. Its transcript and changes are waiting for the owner to inspect.', x: 82.2, y: 65.3 }
+        { title: 'Know what needs you', text: 'Home separates work that needs your decision from waiting and completed work. The top item is a failed task that can be resumed; results below are ready to review.', x: 19.3, y: 32.6 },
+        { title: 'Review on your phone', text: 'The phone shows a task to fix addition in calc.py, its branch, and a passing project check. The owner can inspect the result and choose Accept or Reject.', x: 79.8, y: 56.8 }
       ]
     },
     {
       id: 'boundaries', kicker: 'The boundaries', title: 'See the boundaries before the action.', label: 'Botbench / permissions',
-      image: 'assets/permissions-check.png', width: 1320, height: 870,
-      alt: 'Botbench permissions screen showing a command check for git push origin main and the results in three autonomy modes.',
+      image: 'assets/permissions-check.png', width: 2880, height: 1800,
+      alt: 'Botbench Settings, Permissions and autonomy: a command check for git push origin main in billing-api shows the result in three modes, with Activity below.',
       caption: 'This recorded command check runs nothing and changes nothing. It explains how the command would be treated.',
       next: 'Inspect the evidence',
       details: [
-        { title: 'Ask about a command', text: 'In this example, the owner checks how “git push origin main” would be handled for the acme-shop repository.', x: 72.8, y: 38.8 },
-        { title: 'Make the difference visible', text: 'The recorded result asks the owner in Manual and Semi-autonomous modes. Fully autonomous refuses this command because it would need approval.', x: 75.4, y: 52.5 }
+        { title: 'Ask about a command', text: 'In Permissions and autonomy, the owner checks how “git push origin main” would be handled for the billing-api repository.', x: 66.9, y: 29.8 },
+        { title: 'Make the difference visible', text: 'The recorded result asks the owner in Manual and Semi-autonomous modes. Fully autonomous refuses this command because it would need approval.', x: 72.5, y: 51.2 }
       ]
     },
     {
       id: 'review', kicker: 'The evidence', title: 'Get close to what changed.', label: 'Botbench / ready for review',
-      image: 'assets/botbench-review.png', width: 1320, height: 870,
-      alt: 'Botbench showing the recorded npm test result, followed by a separate Codex review and what the reviewer checked.',
+      image: 'assets/botbench-review.png', width: 2880, height: 1800,
+      alt: 'A billing task ready for review: one Python check passed, Codex’s model review, the calc.py diff, and the owner’s Accept or Reject decision.',
       caption: 'The recorded run shows one project check passing and a separate model review. Each has its own evidence.',
       next: 'See team coordination', branch: true,
       details: [
-        { title: 'The project’s own check', text: 'This run records “npm test” and its result: one check passed. The command and its output belong to the task, where the owner can inspect them.', x: 65.6, y: 33.7 },
-        { title: 'A second opinion', text: 'Codex’s review is explicitly labeled as a model’s opinion. It records what the reviewer inspected, separately from the project’s checks.', x: 65.7, y: 59.2 }
+        { title: 'The project’s own check', text: 'Botbench ran “python3 -B -m unittest -q” on the task’s recorded commit. The screen shows one check passed and makes its output available.', x: 31.2, y: 49.8 },
+        { title: 'A second opinion', text: 'The next section is Codex’s review, labeled as a model’s opinion. It records what Codex checked separately from the passing repository check.', x: 23.5, y: 63.0 }
       ]
     },
     {
       id: 'coordination', kicker: 'The conversation', title: 'Bring another workbench into it.', label: 'Botbench / a paired question',
-      image: 'assets/botbench-peers.png', width: 1320, height: 870,
-      alt: 'An incoming question from theo’s paired workbench, with choices to answer personally, give it to Claude Code, or dismiss it.',
-      caption: 'Recorded with two Botbench installations on one Mac, working on a small demo shop.',
+      image: 'assets/botbench-peers.png', width: 2880, height: 1800,
+      alt: 'Botbench Home shows a question from office-mac about billing-api, labeled outside text, with choices to answer yourself, give it to Claude Code, or dismiss it.',
+      caption: 'Two Botbench installations on one Mac: office-mac asks studio-mac a question about billing-api.',
       next: 'Find your workbench',
       extra: 'The receiving owner stays in control. An incoming question does not run anything by itself.',
       details: [
-        { title: 'A question with context', text: 'Theo’s workbench asks whether the cart API still sends totalCents. The receiving owner sees the question and the identity of the workbench that sent it.', x: 64.4, y: 48.5 },
-        { title: 'The owner chooses', text: 'Answer it yourself, give it to Claude Code, or dismiss it. The decision is made on the receiving workbench.', x: 60.9, y: 59.6 }
+        { title: 'A question with context', text: 'Office-mac asks whether the billing API still sends amounts in cents so its invoice change can match. The message is labeled outside text and identifies the sending workbench.', x: 22.0, y: 52.5 },
+        { title: 'The owner chooses', text: 'Answer it yourself, give it to Claude Code, or dismiss it. The decision is made on the receiving workbench.', x: 55.7, y: 64.3 }
       ]
     },
     {
       id: 'build', kicker: 'Your workbench', title: 'Make room for your next idea.', finish: true,
-      image: 'assets/botbench-workbench.png', width: 1600, height: 1080,
-      alt: 'A recorded Botbench workbench and its phone-sized work list.',
-      caption: 'Recorded Botbench screens from a small demo shop.', next: 'Explore again', details: []
+      image: 'assets/botbench-workbench.png', width: 3200, height: 1720,
+      alt: 'Botbench Home on a Mac beside a billing task ready for review on a phone-sized screen.',
+      caption: 'Recorded Botbench screens from the billing-api example.', next: 'Explore again', details: []
     }
   ];
 
