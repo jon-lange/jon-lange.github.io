@@ -51,6 +51,19 @@
         2312
       ],
       "copied_without_modification": true
+    },
+    {
+      "file": "assets/permissions-check.png",
+      "source_repository": "botbenchhq/botbench",
+      "source_path": "docs/images/permissions-check.png",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/permissions-check.png",
+      "source_git_blob_sha": "38e69fd17ee41c2d33c8393e47307c8788d531ac",
+      "sha256": "212db054fd87dc173d6e0573a96c7b0ee46431b7fb471ab8609bb5aaa77167c3",
+      "dimensions": [
+        1320,
+        870
+      ],
+      "copied_without_modification": true
     }
   ]
 }

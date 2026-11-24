@@ -1,11 +1,10 @@
 name: check
 
-# index.html is generated and committed. Committed generated output drifts, and
-# the register is the one thing on this page making a factual claim — that N of
-# twelve entries survived their own specimens. If build.py and index.html
-# disagree, the published page is asserting a number nothing produced.
+# index.html and archive.html are generated and committed. The terminal's
+# initial content must match its About template, and the archive must preserve
+# the twelve historical entries and their source verdicts.
 #
-# GitHub Pages serves the committed file directly, so nothing else would notice.
+# GitHub Pages serves committed files directly, so drift must fail here.
 on:
   push:
   pull_request:
@@ -13,7 +12,7 @@ on:
 
 jobs:
   current:
-    name: index.html matches its source
+    name: generated pages match their sources
     runs-on: ubuntu-latest
     steps:
       # Pinned to a commit SHA. A tag is a pointer its owner can move.
@@ -27,18 +26,23 @@ jobs:
         # then believe the clean run below.
         run: |
           set -e
-          cp index.html /tmp/index.bak
-          printf '<!-- drift -->' >> index.html
-          if python3 build.py --check; then
-            cp /tmp/index.bak index.html
-            echo "BLOCKED - --check passed on a modified index.html."
-            echo "A clean result from it would mean nothing, so the build stops."
-            exit 1
-          fi
-          cp /tmp/index.bak index.html
-          echo "Self-test passed - --check detects drift."
+          backup_dir=$(mktemp -d)
+          cp index.html "$backup_dir/index.html"
+          cp archive.html "$backup_dir/archive.html"
+          trap 'cp "$backup_dir/index.html" index.html; cp "$backup_dir/archive.html" archive.html; rm -rf "$backup_dir"' EXIT
+          python3 build.py --check
+          for page in index.html archive.html; do
+            printf '<!-- drift -->' >> "$page"
+            if python3 build.py --check; then
+              echo "BLOCKED - --check passed on a modified $page."
+              echo "A clean result from it would mean nothing, so the build stops."
+              exit 1
+            fi
+            cp "$backup_dir/$page" "$page"
+          done
+          echo "Self-test passed - --check detects drift in each generated page."
 
-      - name: index.html is current
+      - name: Both generated pages are current
         run: python3 build.py --check
 
       - name: The register still describes twelve entries
@@ -54,6 +58,10 @@ jobs:
           if len(rows) != 12 or bad:
               print(f"BLOCKED - {len(rows)} rows, {len(bad)} with an unknown verdict")
               sys.exit(1)
+          if sorted(r.get("n", "") for r in rows) != [f"{n:02d}" for n in range(1, 13)]:
+              print("BLOCKED - historical record identifiers must be 01–12 without duplicates")
+              sys.exit(1)
           survived = sum(1 for r in rows if r["adj"] in ("narrowed", "confirmed"))
-          print(f"12 entries, {survived} survived — matches what the page claims")
+          print(f"12 entries, known verdicts; {survived} held or held with a narrowed claim")
           PY
+
