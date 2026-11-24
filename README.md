@@ -94,7 +94,15 @@ separate from a model’s review and explicitly labels the coordination setup.
 
 `assets/social-card.svg` is the editable code-native social-card source;
 `assets/social-card.png` is the 1200 × 630 export used by Open Graph and Twitter.
-`assets/favicon.svg` is the personal mark. Images, scripts, and stylesheets are
+`assets/favicon.svg` is the personal mark, retained for the homepage and archive.
+The product tour uses `assets/botbench-favicon.svg`, copied unchanged from
+[`botbenchhq/botbench:web/src/brand/favicon.svg`](https://github.com/botbenchhq/botbench/blob/ff02c33ad152ddfe113236e87ee10449b793ea6f/web/src/brand/favicon.svg)
+(Git blob `8fc7019e6aa69342139eb1ed1ceda24cc851034d`). The About action and
+tour use the same Shared Seam path geometry: the first bracket follows the
+current text color and the second is brand cyan (`#03748F` on light surfaces,
+`#06B6D4` on dark surfaces). Recorded screenshots remain unchanged.
+
+Images, scripts, and stylesheets are
 served locally. The terminal and tour request their web fonts from Google Fonts
 and retain system-font fallbacks. The archive uses system fonts only. The old
 `og.png` is no longer referenced.
