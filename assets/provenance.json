@@ -1,0 +1,56 @@
+{
+  "screenshots": [
+    {
+      "file": "assets/botbench-workbench.png",
+      "source_repository": "botbenchhq/botbench",
+      "source_path": "docs/images/hero-workbench.png",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/hero-workbench.png",
+      "source_git_blob_sha": "e096311ae01f786920a6b0a488db05eb5d23a939",
+      "sha256": "82481a13b5b0bf767e9c4b2df9860e071f3643adf455ce24669ff99f3ff5187f",
+      "dimensions": [
+        1600,
+        1080
+      ],
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-review.png",
+      "source_repository": "botbenchhq/botbench",
+      "source_path": "docs/images/ready-for-review-proof.png",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/ready-for-review-proof.png",
+      "source_git_blob_sha": "eefa0de5a67b504309e80a1a939216c3a10a6654",
+      "sha256": "21744c04080877a5b3b45851fe2ffbdb6fb594c4045cf054dce19dc1eec25682",
+      "dimensions": [
+        1320,
+        870
+      ],
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-peers.png",
+      "source_repository": "botbenchhq/botbench",
+      "source_path": "docs/images/paired-question.png",
+      "source_url": "https://github.com/botbenchhq/botbench/blob/main/docs/images/paired-question.png",
+      "source_git_blob_sha": "28b29af1f5f20b5d6bd8ddbdc123f7ca9496cea8",
+      "sha256": "a7b38e11665983e443856ceddc2175d0d670a2648095737bf7131b794d671de5",
+      "dimensions": [
+        1320,
+        870
+      ],
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/design-system-timeline.png",
+      "source_repository": "botbenchhq/design-system",
+      "source_path": "test/visual/screenshots/run-timeline-1280-dark-botbench.png",
+      "source_url": "https://github.com/botbenchhq/design-system/blob/main/test/visual/screenshots/run-timeline-1280-dark-botbench.png",
+      "source_git_blob_sha": "4a5fabff4e0bef303938cd94294a5927a3c5b5c0",
+      "sha256": "14767c627237a4fc9ed2c4b8c26d43db01a11ec5684c2c9d43d864c22e801c4b",
+      "dimensions": [
+        1280,
+        2312
+      ],
+      "copied_without_modification": true
+    }
+  ]
+}
