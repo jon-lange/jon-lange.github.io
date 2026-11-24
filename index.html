@@ -1,542 +1,469 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jon Lange — All in on AI, mostly in fintech</title>
-<meta name="description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. I test AI advice that sounds right. A lot of it doesn't hold up.">
-<link rel="canonical" href="https://jon-lange.github.io/">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2314171A'/><rect x='11.5' y='7' width='9' height='17' fill='%23E4795F'/></svg>">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Jon Lange — All in on AI, mostly in fintech">
-<meta property="og:description" content="While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech. I test AI advice that sounds right. A lot of it doesn't hold up.">
-<meta property="og:url" content="https://jon-lange.github.io/">
-<meta name="twitter:card" content="summary_large_image">
-<meta property="og:image" content="https://jon-lange.github.io/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A terminal running python3 tools/mutcheck.py --demo. Three implementations of one redaction guard: CAUGHT, NOT CAUGHT, NOT CAUGHT. The assertion passed in all three.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script>
-/* Motion is opt-in twice over: the reader has not asked for less of it, and
-   the browser can tell us when a block scrolls into view. Without both, the
-   class is never set and every rule that hides content never matches. */
-if ('IntersectionObserver' in window && matchMedia('(prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('anim');
-</script>
-<style>
-/* A session transcript, not a shell impression.
-   Monospace throughout, so hierarchy comes from weight, colour, size and space
-   rather than from changing family. The three accents are the three verdicts a
-   claim can earn — colour is data here, the same as everywhere else. The name
-   gradient runs through all three, because the page is the record of them.
-   Dark is the default because the terminal is; light follows the OS. */
-:root {
-  color-scheme:dark;
-  --bg:#07090B; --pane:#0D1013; --bar:#15191D; --ink:#E8EBE5; --muted:#9BA49D;
-  --rule:#1F262A; --rule2:#2D363B;
-  --failed:#FF7D62; --narrowed:#F4BE57; --confirmed:#62D3A8;
-  --focus:#F4BE57; --glow:rgba(255,125,98,.28); --scan:rgba(255,255,255,.022);
-  --vig:rgba(0,0,0,.28);
-  --shadow:0 50px 110px -40px rgba(0,0,0,.9), 0 20px 44px -24px rgba(0,0,0,.7);
-}
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme:light;
-    --bg:#E2E4DD; --pane:#FBFBF8; --bar:#EEEFEA; --ink:#14171A; --muted:#545C57;
-    --rule:#E1E4DC; --rule2:#CFD3CA;
-    --failed:#A0321B; --narrowed:#7A4E0D; --confirmed:#1A644F;
-    --focus:#A0321B; --glow:rgba(174,56,32,.16); --scan:rgba(0,0,0,.016);
-    --vig:rgba(0,0,0,.035);
-    --shadow:0 46px 90px -40px rgba(30,36,30,.5), 0 14px 30px -18px rgba(30,36,30,.3);
-  }
-}
-*,*::before,*::after { box-sizing:border-box; }
-html { -webkit-text-size-adjust:100%; }
-body {
-  margin:0; min-height:100vh; color:var(--ink); background-color:var(--bg);
-  background-image:
-    radial-gradient(55rem 38rem at 6% -10%, color-mix(in srgb, var(--failed) 17%, transparent), transparent 62%),
-    radial-gradient(48rem 36rem at 104% 4%, color-mix(in srgb, var(--confirmed) 12%, transparent), transparent 60%),
-    radial-gradient(64rem 32rem at 50% 110%, color-mix(in srgb, var(--narrowed) 9%, transparent), transparent 66%);
-  background-attachment:fixed;
-  font:400 14px/1.75 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-variant-ligatures:none;
-}
-/* a faint dot grid behind the window — the desk the terminal sits on */
-body::before {
-  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
-  background-image:radial-gradient(color-mix(in srgb, var(--ink) 10%, transparent) 1px, transparent 1.3px);
-  background-size:22px 22px;
-  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%, #000 15%, transparent 75%);
-          mask-image:radial-gradient(ellipse 80% 70% at 50% 30%, #000 15%, transparent 75%);
-}
-@media (min-width:48rem) { body { font-size:14.5px; } }
-a { color:inherit; }
-::selection { background:color-mix(in srgb, var(--failed) 35%, transparent); }
-:focus-visible { outline:2px solid var(--focus); outline-offset:3px; border-radius:6px; }
-
-/* the window */
-.win {
-  position:relative; width:min(64rem, 100% - 2rem);
-  margin:clamp(1rem,5vw,4rem) auto clamp(1.5rem,6vw,4.5rem);
-  background:var(--pane); border-radius:14px;
-  box-shadow:var(--shadow), 0 0 0 1px var(--rule2), 0 0 160px -50px var(--glow);
-}
-.bar {
-  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.75rem;
-  padding:.72rem 1rem; border-bottom:1px solid var(--rule); border-radius:14px 14px 0 0;
-  background:linear-gradient(to bottom, color-mix(in srgb, var(--bar), #fff 3%), var(--bar));
-}
-.dots { display:flex; gap:.5rem; }
-.dots i { width:.75rem; height:.75rem; border-radius:50%; flex:none; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.3); }
-.dots i:nth-child(1) { background:#FF5F57; }
-.dots i:nth-child(2) { background:#FEBC2E; }
-.dots i:nth-child(3) { background:#28C840; }
-.bar .t {
-  color:var(--muted); font-size:.75rem; letter-spacing:.04em; text-align:center;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;
-}
-.pane {
-  position:relative; border-radius:0 0 14px 14px;
-  padding:clamp(1.5rem,4.5vw,3.25rem) clamp(1rem,4.8vw,3.5rem) clamp(2rem,5vw,3.25rem);
-}
-/* CRT: scanlines and a vignette, both too faint to cost any contrast */
-.pane::after {
-  content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
-  background:
-    repeating-linear-gradient(to bottom, var(--scan) 0 1px, transparent 1px 3px),
-    radial-gradient(130% 90% at 50% 0%, transparent 55%, var(--vig));
-}
-
-/* the banner */
-.hero { padding-bottom:clamp(1.8rem,4vw,2.6rem); border-bottom:1px solid var(--rule); }
-.motd { margin:0 0 1.6rem; font-weight:700; line-height:1; }
-.nm {
-  position:relative; display:block; width:max-content; max-width:100%;
-  font-size:clamp(2.7rem, 11vw, 6rem); letter-spacing:-.05em; padding:.04em 0 .1em;
-  filter:drop-shadow(0 0 28px var(--glow));
-}
-.nt { color:var(--ink); }
-@supports ((-webkit-background-clip:text) or (background-clip:text)) {
-  .nt {
-    background:linear-gradient(100deg, var(--failed) 8%, var(--narrowed) 50%, var(--confirmed) 92%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-}
-@media (forced-colors: active) { .nt { background:none; color:CanvasText; } }
-.tg { line-height:1.35;
-  display:block; margin-top:.85rem; font-size:clamp(1rem,2.6vw,1.4rem);
-  font-weight:500; letter-spacing:-.01em; color:var(--ink);
-}
-.lead { font-size:clamp(1rem,1.9vw,1.14rem); line-height:1.65; }
-
-/* the transcript grammar */
-.blk { margin-top:clamp(2.4rem,5vw,3.4rem); }
-/* baseline, not stretch: the cursor is a flex item, so vertical-align on it
-   is ignored and it would otherwise hang from the top of the line box. */
-.cmd {
-  margin:0 0 1rem; display:flex; gap:.65rem; flex-wrap:wrap; align-items:baseline;
-  font-size:1.0625em; font-weight:400; line-height:1.75;
-}
-.cmd .p { color:var(--failed); user-select:none; font-weight:700; text-shadow:0 0 16px var(--glow); }
-.cmd .k { position:relative; font-weight:600; color:var(--ink); }
-.cmd .dim { font-size:.88em; }
-.out { color:var(--muted); margin:0 0 .9rem; max-width:72ch; }
-.out strong { color:var(--ink); font-weight:600; }
-.out.ink { color:var(--ink); }
-.hi { color:var(--ink); font-weight:600; }
-.ok { color:var(--confirmed); } .no { color:var(--failed); } .wa { color:var(--narrowed); }
-.dim { color:var(--muted); }
-
-.lnk {
-  color:var(--ink); text-decoration:none; padding-bottom:1px;
-  background:
-    linear-gradient(var(--failed), var(--failed)) 0 100% / 0 1px no-repeat,
-    linear-gradient(var(--rule2), var(--rule2)) 0 100% / 100% 1px no-repeat;
-  transition:background-size .35s ease, color .2s;
-}
-.lnk:hover { background-size:100% 1px, 100% 1px; }
-.btn {
-  display:inline-block; padding:.3rem .95rem; border-radius:999px; line-height:1.5;
-  background:color-mix(in srgb, var(--ink) 4%, transparent);
-  box-shadow:inset 0 0 0 1px var(--rule2);
-  transition:box-shadow .25s, background .25s, color .25s, transform .25s;
-}
-.btn:hover {
-  color:var(--failed); background:color-mix(in srgb, var(--failed) 9%, transparent);
-  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--failed) 60%, transparent), 0 0 24px -6px var(--glow);
-}
-.links { line-height:2.7; }
-.ladder { list-style:none; margin:0 0 .9rem; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.6rem; max-width:72ch; }
-.ladder li { border:1px solid var(--rule2); border-top:2px solid var(--v); border-radius:8px; padding:.6rem .7rem; display:grid; grid-template-columns:auto minmax(0,1fr); gap:.2rem .5rem; align-items:center; }
-.ladder__k { color:var(--ink); font-weight:600; }
-.ladder__d { grid-column:1 / -1; color:var(--muted); font-size:.92em; }
-@media (max-width:40rem) { .ladder { grid-template-columns:1fr; } }
-
-/* the one project card */
-.card {
-  position:relative; margin:0 0 .9rem; padding:1.3rem clamp(1rem,3vw,1.6rem) .5rem;
-  border-radius:12px; max-width:76ch;
-  background:linear-gradient(160deg, color-mix(in srgb, var(--failed) 7%, transparent), transparent 55%);
-  box-shadow:inset 0 0 0 1px var(--rule2);
-}
-.card::before {
-  content:""; position:absolute; left:1.2rem; right:1.2rem; top:-1px; height:1px;
-  background:linear-gradient(90deg, transparent, var(--failed), transparent);
-}
-.proj { font-size:1.0625rem; }
-.proj .lnk { font-weight:700; font-size:1.3em; letter-spacing:-.02em; }
-
-/* The output blocks carry fixed-width tables whose right-hand column is the
-   whole point — CAUGHT vs NOT CAUGHT, the failure counts. Left at body size
-   they run off a phone and the verdict is the part that disappears. Scaled to
-   the viewport so the longest line fits, with horizontal scroll as a floor
-   rather than the primary way to read it. */
-pre {
-  margin:0 0 1rem; padding:1rem 1.2rem; overflow-x:auto; color:var(--muted);
-  font-size:clamp(8.5px, 2.2vw, 14.5px); line-height:1.8;
-  background:color-mix(in srgb, var(--ink) 3%, transparent);
-  border-radius:10px; box-shadow:inset 0 0 0 1px var(--rule);
-}
-@media (min-width:44rem) { pre { font-size:inherit; } }
-/* the verdicts in a table become badges; the negative margin keeps the
-   column they start in where the header says it is */
-pre .ok, pre .no { font-weight:600; padding:.08em .45em; margin-left:-.45em; border-radius:4px; }
-pre .ok { color:var(--confirmed); background:color-mix(in srgb, var(--confirmed) 13%, transparent); }
-pre .no { color:var(--failed); background:color-mix(in srgb, var(--failed) 14%, transparent); }
-
-/* the register */
-.row { --v:var(--muted); border-bottom:1px solid var(--rule); }
-.row--failed { --v:var(--failed); }
-.row--narrowed { --v:var(--narrowed); }
-.row--confirmed { --v:var(--confirmed); }
-.row:first-of-type { border-top:1px solid var(--rule); }
-.row > summary {
-  position:relative; display:grid; grid-template-columns:2.5rem minmax(0,1fr) auto .9rem;
-  gap:.85rem; align-items:center; padding:.62rem .6rem; margin:2px 0;
-  cursor:pointer; list-style:none; border-radius:8px; transition:background .2s;
-}
-.row > summary::-webkit-details-marker { display:none; }
-.row > summary::before {
-  content:""; position:absolute; left:0; top:.55rem; bottom:.55rem; width:2px; border-radius:2px;
-  background:var(--v); opacity:0; transition:opacity .2s;
-}
-.row > summary::after {
-  content:""; justify-self:center; width:.42rem; height:.42rem; margin-top:-.2rem;
-  border-right:1.5px solid var(--muted); border-bottom:1.5px solid var(--muted);
-  transform:rotate(45deg); transition:transform .25s, border-color .2s;
-}
-.row[open] > summary::after { transform:rotate(-135deg); margin-top:.2rem; }
-.row > summary:hover { background:color-mix(in srgb, var(--v) 7%, transparent); }
-.row > summary:hover::before, .row[open] > summary::before { opacity:1; }
-.row > summary:hover::after { border-color:var(--ink); }
-.c-n { color:var(--muted); font-variant-numeric:tabular-nums; }
-.c-name { font-weight:500; }
-.row--failed .c-name { font-weight:600; }
-.c-v {
-  display:inline-flex; align-items:center; gap:.45rem; white-space:nowrap;
-  padding:.15rem .65rem .15rem .55rem; border-radius:999px; line-height:1.5;
-  font-size:.75rem; font-weight:500; letter-spacing:.02em; color:var(--v);
-  background:color-mix(in srgb, var(--v) 9%, transparent);
-  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--v) 28%, transparent);
-}
-.row--failed .c-v {
-  font-weight:600; background:color-mix(in srgb, var(--v) 14%, transparent);
-  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--v) 45%, transparent);
-}
-.mark { width:.45rem; height:.45rem; border-radius:50%; flex:none; background:var(--v); }
-.row--failed .mark { box-shadow:0 0 8px var(--v); }
-.row--confirmed .mark { background:transparent; box-shadow:inset 0 0 0 1.5px var(--v); }
-.row__body { padding:.35rem .6rem 1.35rem 3.95rem; max-width:80ch; }
-.kv { display:grid; grid-template-columns:5.5rem minmax(0,1fr); gap:.6rem; margin-bottom:.35rem; }
-.kv span:first-child { color:var(--muted); }
-.kv b {
-  font-weight:600; color:var(--ink); padding:0 .25em; border-radius:3px;
-  background:color-mix(in srgb, var(--v) 12%, transparent);
-}
-.row__body .lnk { display:inline-block; margin-top:.6rem; }
-.legend { margin-top:1.1rem; }
-
-/* listings */
-.ls { list-style:none; margin:0 0 .9rem; padding:0; }
-.ls li { border-bottom:1px solid var(--rule); }
-.ls li:first-child { border-top:1px solid var(--rule); }
-.ls a {
-  display:grid; grid-template-columns:2.75rem minmax(0,1fr) minmax(0,1.15fr);
-  gap:.85rem; padding:.7rem .6rem; margin:2px 0; text-decoration:none; align-items:baseline;
-  border-radius:8px; transition:background .2s;
-}
-.ls a:hover { background:color-mix(in srgb, var(--ink) 5%, transparent); }
-.ls .n { color:var(--muted); font-variant-numeric:tabular-nums; transition:color .2s; }
-.ls a:hover .n { color:var(--failed); }
-.ls .t { font-weight:500; }
-.ls .f { color:var(--muted); font-size:.8125rem; }
-
-.grep { list-style:none; margin:0 0 .9rem; padding:0; }
-.grep a {
-  display:flex; gap:.75rem; padding:.42rem .6rem; border-radius:8px;
-  text-decoration:none; color:var(--muted); transition:color .2s, background .2s;
-}
-.grep a:hover { color:var(--ink); background:color-mix(in srgb, var(--ink) 4%, transparent); }
-.grep b { color:var(--failed); font-weight:700; transition:transform .2s; }
-.grep a:hover b { transform:translateX(3px); }
-
-.dims { list-style:none; margin:0 0 .9rem; padding:0; }
-.dims li {
-  display:grid; grid-template-columns:1.75rem minmax(0,1fr) auto; gap:.75rem; align-items:center;
-  padding:.4rem .6rem; color:var(--muted); border-bottom:1px dashed var(--rule);
-}
-.dims li:last-child { border-bottom:0; }
-.dims .m { color:var(--ink); }
-.dims .m span:nth-child(2) { font-weight:500; }
-.dims a {
-  text-decoration:none; font-size:.75rem; line-height:1.5; padding:.12rem .65rem; border-radius:999px;
-  box-shadow:inset 0 0 0 1px var(--rule2); transition:box-shadow .2s, background .2s;
-}
-.dims a:hover { box-shadow:inset 0 0 0 1px currentColor; }
-.dims .m a {
-  color:var(--confirmed); background:color-mix(in srgb, var(--confirmed) 10%, transparent);
-  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--confirmed) 35%, transparent);
-}
-.dims .m a:hover { box-shadow:inset 0 0 0 1px currentColor; }
-
-.foot {
-  margin-top:2.6rem; padding-top:1.2rem; border-top:1px solid var(--rule);
-  color:var(--muted); font-size:.8125rem; max-width:80ch;
-}
-/* A flex item's baseline is its bottom margin edge, so this sits the block
-   on the text baseline and grows upward, the way a terminal cursor does. */
-.cursor { width:.6em; height:1.1em; background:var(--failed); box-shadow:0 0 14px var(--glow); }
-
-@media (max-width:40rem) {
-  .win { width:calc(100% - 1rem); margin:.5rem auto 1.5rem; border-radius:12px; }
-  .bar { grid-template-columns:auto minmax(0,1fr); border-radius:12px 12px 0 0; }
-  .bar .t { text-align:left; }
-  .pane { border-radius:0 0 12px 12px; }
-  pre { padding:.7rem .75rem; }
-  .row > summary { grid-template-columns:2rem minmax(0,1fr) .8rem; gap:.3rem .6rem; }
-  .c-v { grid-column:2; grid-row:2; justify-self:start; }
-  .row > summary::after { grid-column:3; grid-row:1 / span 2; }
-  .row__body { padding-left:3.2rem; }
-  .ls a { grid-template-columns:2rem minmax(0,1fr); row-gap:.15rem; }
-  .ls .f { grid-column:2; }
-  .kv { grid-template-columns:1fr; gap:0; }
-}
-
-/* Motion. Everything below is gated on the reader not asking for less, and
-   everything that starts hidden is further gated on .anim, which only the
-   script in <head> sets — with JS off, the page is simply all there. */
-@media (prefers-reduced-motion: no-preference) {
-  .cursor { animation:blink 1.15s steps(1) infinite; }
-  @keyframes blink { 50% { opacity:0; } }
-  .row[open] .row__body { animation:rise .35s ease both; }
-  @keyframes rise { from { opacity:0; transform:translateY(8px); } }
-  @keyframes type {
-    from { clip-path:inset(-.3em 100% -.3em -.2em); }
-    to   { clip-path:inset(-.3em -.2em -.3em -.2em); }
-  }
-  @keyframes caret { to { left:100%; } }
-  @keyframes gone { to { opacity:0; visibility:hidden; } }
-  @keyframes winin { from { opacity:0; transform:translateY(22px) scale(.985); } }
-  @keyframes risein { from { opacity:0; transform:translateY(12px); filter:blur(3px); } }
-
-  .anim .win { animation:winin .9s cubic-bezier(.2,.7,.2,1) both; }
-  .anim .nt { animation:type .72s steps(9,end) .45s both; }
-  .anim .nm::after {
-    content:""; position:absolute; left:0; bottom:.16em; width:.42em; height:.8em; margin-left:.08em;
-    background:var(--confirmed); box-shadow:0 0 18px var(--confirmed);
-    animation:caret .72s steps(9,end) .45s both, blink 1.15s steps(1) 1.3s infinite;
-  }
-  .anim .tg { animation:risein .7s cubic-bezier(.2,.7,.2,1) 1.2s both; }
-  .anim .hero > p { animation:risein .7s cubic-bezier(.2,.7,.2,1) both; }
-  .anim .hero > p:nth-of-type(1) { animation-delay:1.4s; }
-  .anim .hero > p:nth-of-type(2) { animation-delay:1.55s; }
-  .anim .hero > p:nth-of-type(3) { animation-delay:1.7s; }
-
-  /* each block: fade up, type the command, then print its output line by line */
-  .anim .blk { --d:calc(260ms + var(--n, 0) * 38ms); transition:opacity .55s ease, transform .75s cubic-bezier(.2,.7,.2,1); }
-  .anim .blk:not(.in) { opacity:0; transform:translateY(18px); }
-  .anim .blk > :not(.cmd), .anim .blk .cmd .dim { opacity:0; transform:translateY(6px); }
-  .anim .blk.in > :not(.cmd) {
-    opacity:1; transform:none;
-    transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1);
-    transition-delay:calc(var(--d) + 120ms + var(--i, 0) * 55ms);
-  }
-  .anim .blk.in .cmd .dim { opacity:1; transform:none; transition:opacity .4s ease var(--d), transform .4s ease var(--d); }
-  .anim .blk.in .kt { animation:type calc(var(--n) * 38ms) steps(var(--n), end) 260ms both; }
-  .anim .blk.in .k::after {
-    content:""; position:absolute; left:0; top:50%; width:.6em; height:1.1em; margin:-.58em 0 0 .1em;
-    background:var(--failed);
-    animation:caret calc(var(--n) * 38ms) steps(var(--n), end) 260ms both, gone 1ms linear calc(var(--d) + 380ms) forwards;
-  }
-}
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    body::after {
-      content:""; position:fixed; left:0; right:0; top:0; height:2px; z-index:10; pointer-events:none;
-      background:linear-gradient(90deg, var(--failed), var(--narrowed), var(--confirmed));
-      transform-origin:0 50%; animation:progress linear both; animation-timeline:scroll(root);
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Jon Lange — AI products. Teams that ship.</title>
+  <meta name="description" content="I build AI products and the systems that help teams ship them. Explore Botbench, my local-first workbench for coding agents, and the work behind it.">
+  <link rel="canonical" href="https://jon-lange.github.io/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Jon Lange — AI products. Teams that ship.">
+  <meta property="og:description" content="Building Botbench: put your agents to work, together. Independent products, practical tools, and notes from the work.">
+  <meta property="og:url" content="https://jon-lange.github.io/">
+  <meta property="og:image" content="https://jon-lange.github.io/assets/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Jon Lange. AI products. Teams that ship. Building Botbench: put your agents to work, together.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@langej117">
+  <style>
+    :root { color-scheme: dark; --bg:#101114; --surface:#191b20; --surface-2:#22252c; --ink:#f1f2f5; --muted:#acb1bd; --line:#383d47; --cyan:#8adce7; --blue:#9dbfff; --amber:#edc788; --green:#9cdbbd; --red:#f0b3ac; --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+    *,*::before,*::after { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    html { -webkit-text-size-adjust:100%; scroll-padding-top:2rem; }
+    body { margin:0; color:var(--ink); background:var(--bg); font:400 1rem/1.65 var(--font); }
+    h1,h2,h3,p,figure { margin:0; }
+    h1,h2,h3 { line-height:1.06; letter-spacing:-.045em; font-weight:650; text-wrap:balance; }
+    p { text-wrap:pretty; }
+    a { color:inherit; text-decoration-thickness:1px; text-underline-offset:.25em; }
+    a:hover { color:var(--cyan); }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    button,a { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:3px solid var(--blue); outline-offset:5px; }
+    ::selection { color:var(--bg); background:var(--cyan); }
+    img { display:block; max-width:100%; height:auto; }
+    .wrap { width:min(1240px,calc(100% - 96px)); margin-inline:auto; }
+    .skip { position:absolute; left:1rem; top:-5rem; z-index:20; padding:12px 18px; background:var(--cyan); color:var(--bg); }
+    .skip:focus { top:1rem; }
+    .site-header { display:flex; align-items:center; justify-content:space-between; gap:32px; min-height:80px; border-bottom:1px solid var(--line); }
+    .wordmark { font-size:1.05rem; font-weight:650; letter-spacing:-.025em; text-decoration:none; }
+    .nav { display:flex; align-items:center; gap:32px; }
+    .nav a { display:inline-flex; min-height:44px; align-items:center; text-decoration:none; color:var(--muted); font-size:.875rem; }
+    .nav a:hover { color:var(--ink); }
+    .eyebrow { font-size:.8125rem; letter-spacing:.08em; text-transform:uppercase; font-weight:550; color:var(--muted); }
+    .intro { padding:30px 0 38px; }
+    .intro-top { display:flex; justify-content:space-between; align-items:baseline; gap:24px; }
+    .intro h1 { margin:14px 0 20px; font-size:clamp(5rem,10.5vw,7rem); line-height:.92; font-weight:600; letter-spacing:-.075em; }
+    .intro h1 span { color:var(--cyan); }
+    .intro-bottom { display:grid; grid-template-columns:minmax(0,1.8fr) minmax(240px,1fr); gap:80px; align-items:end; }
+    .promise { font-size:clamp(1.55rem,2.6vw,1.75rem); line-height:1.35; letter-spacing:-.025em; max-width:720px; }
+    .principles { margin-top:14px; color:var(--muted); font-size:.9375rem; }
+    .role { font-size:.9375rem; line-height:1.55; }
+    .role span { display:block; color:var(--muted); font-size:.8125rem; margin-top:10px; }
+    .section-mark { display:flex; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid var(--line); padding:18px 0; }
+    .section-mark p { font-size:.8125rem; color:var(--muted); }
+    .section-mark .category { color:var(--cyan); font-weight:550; }
+    .flagship-heading { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:72px; padding-bottom:24px; }
+    .product-name { font-size:clamp(3.6rem,6.9vw,5rem); letter-spacing:-.065em; }
+    .tagline { margin-top:14px; font-size:clamp(1.9rem,3vw,2.3rem); line-height:1.15; letter-spacing:-.035em; }
+    .tagline em { color:var(--cyan); font-family:Georgia,"Times New Roman",serif; font-weight:400; font-size:1.12em; }
+    .product-copy { align-self:end; }
+    .product-copy .support { font-size:1.4rem; line-height:1.4; letter-spacing:-.02em; }
+    .product-copy .description { color:var(--muted); margin-top:12px; }
+    .actions { display:flex; align-items:center; flex-wrap:wrap; gap:24px; margin-top:18px; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:11px 21px; color:var(--bg); background:var(--cyan); border:1px solid var(--cyan); border-radius:4px; font-size:.9375rem; font-weight:600; text-decoration:none; }
+    .button:hover { color:var(--bg); background:#b2e9ef; border-color:#b2e9ef; }
+    .text-link { display:inline-flex; align-items:center; min-height:44px; font-size:.9375rem; font-weight:550; }
+    .gallery { border-top:1px solid var(--line); }
+    .gallery-toolbar { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .gallery-tabs { display:flex; align-items:center; gap:32px; min-width:0; }
+    .gallery-tabs button { min-height:54px; padding:12px 0; border:0; border-bottom:2px solid transparent; background:none; color:var(--muted); font-size:.9375rem; text-align:left; }
+    .gallery-tabs button[aria-selected="true"] { color:var(--ink); border-bottom-color:var(--cyan); }
+    .gallery-hint { color:var(--muted); font-size:.8125rem; }
+    .gallery-panel { padding-top:8px; }
+    .product-stage { background:#f4f4f6; border:1px solid #565d67; border-radius:5px; overflow:hidden; }
+    .product-stage > a { display:block; }
+    .product-stage img { width:100%; aspect-ratio:40 / 27; object-fit:contain; }
+    .stage-caption { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:40px; padding:23px 0 0; }
+    .stage-caption h3 { font-size:1.3rem; letter-spacing:-.02em; }
+    .stage-caption p { max-width:750px; color:var(--muted); margin-top:9px; font-size:1rem; }
+    .stage-caption a { font-size:.875rem; min-height:44px; display:inline-flex; align-items:center; }
+    .gallery-panel + .gallery-panel { margin-top:40px; }
+    .product-note { display:flex; justify-content:space-between; gap:40px; margin-top:30px; padding-top:22px; border-top:1px solid var(--line); }
+    .product-note p { color:var(--muted); font-size:.875rem; max-width:800px; }
+    .product-note a { flex:none; font-size:.875rem; min-height:44px; }
+    .feature { padding-top:110px; }
+    .feature-heading { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:80px; align-items:end; margin-bottom:34px; }
+    .feature-heading h2 { font-size:clamp(2.25rem,4vw,3.4rem); margin-top:15px; }
+    .feature-heading .summary { color:var(--muted); max-width:540px; }
+    .system-feature { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:54px; align-items:center; }
+    .system-image { min-width:0; }
+    .system-image > a { display:block; border:1px solid var(--line); overflow:hidden; border-radius:4px; background:#151515; }
+    .system-image img { width:100%; aspect-ratio:1.4; object-fit:cover; object-position:top; }
+    .image-note { margin-top:12px; color:var(--muted); font-size:.8125rem; }
+    .system-copy h3 { font-size:1.85rem; line-height:1.18; }
+    .system-copy p { color:var(--muted); margin-top:20px; }
+    .system-copy .scope-label { margin-top:22px; font-size:.875rem; }
+    .system-copy .text-link { margin-top:22px; }
+    .experiment-feature { margin-top:110px; padding:40px; background:var(--surface); border:1px solid var(--line); border-radius:6px; }
+    .experiment-heading { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.9fr); gap:80px; }
+    .experiment-heading h2 { font-size:clamp(2rem,3.5vw,3rem); margin-top:15px; }
+    .experiment-heading p:not(.eyebrow) { color:var(--muted); }
+    .experiment-heading .scope-text { margin-top:16px; font-size:.875rem; }
+    .experiment-control { display:flex; justify-content:space-between; align-items:end; gap:30px; padding:32px 0 24px; }
+    .variants { border:0; margin:0; padding:0; min-width:0; }
+    .variants legend { margin-bottom:13px; font-size:.875rem; }
+    .variant-options { display:flex; flex-wrap:wrap; gap:8px; }
+    .variant-options label { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 12px; border:1px solid #5b6574; border-radius:4px; font-size:.875rem; cursor:pointer; }
+    .variant-options label:has(input:checked) { border-color:var(--cyan); background:#202e33; color:var(--cyan); }
+    .variant-options input { margin:0; accent-color:var(--cyan); width:15px; height:15px; }
+    .mutation-button { min-height:46px; padding:10px 18px; color:var(--ink); background:none; border:1px solid #8893a5; border-radius:4px; font-size:.9375rem; white-space:nowrap; }
+    .mutation-button[aria-pressed="true"] { color:var(--amber); border-color:var(--amber); }
+    .experiment-visual { display:grid; grid-template-columns:minmax(0,1fr) 230px; gap:32px; align-items:center; padding:32px; background:var(--bg); border:1px solid var(--line); border-radius:4px; }
+    .flow { display:grid; grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr) 30px minmax(0,1fr); align-items:center; }
+    .flow-node { min-width:0; }
+    .flow-node .node-label { display:block; color:var(--muted); font-size:.8125rem; margin-bottom:10px; }
+    .flow-node .node-value { display:flex; align-items:center; justify-content:center; min-height:68px; padding:13px 12px; border:1px solid #566274; border-radius:4px; color:var(--ink); font-size:.9375rem; text-align:center; overflow-wrap:anywhere; }
+    .flow-line { margin-top:30px; height:1px; background:#687486; }
+    .experiment[data-mode="flag-off"] .flow-line { background:none; border-top:1px dashed #687486; }
+    .experiment[data-broken="true"] .redaction-value { color:var(--amber); border-color:var(--amber); }
+    .assertion { border-left:1px solid var(--line); padding-left:32px; }
+    .assertion .label { font-size:.8125rem; color:var(--muted); }
+    .assertion strong { display:block; font-size:3rem; font-weight:550; letter-spacing:-.06em; color:var(--green); line-height:1.2; margin:5px 0; }
+    .assertion strong[data-result="fail"] { color:var(--red); }
+    .assertion .detail { color:var(--muted); font-size:.8125rem; }
+    .experiment-result { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:30px; align-items:start; padding-top:22px; }
+    .experiment-result p { max-width:800px; color:var(--muted); font-size:1rem; }
+    .experiment-result strong { color:var(--ink); font-weight:550; }
+    .experiment-result a { font-size:.875rem; min-height:44px; }
+    .experiment-static { color:var(--muted); margin-top:24px; }
+    .writing { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:90px; align-items:start; padding:100px 0 75px; }
+    .writing h2 { margin-top:15px; font-family:Georgia,"Times New Roman",serif; font-weight:400; font-size:clamp(2.7rem,4.7vw,4.3rem); line-height:1.08; letter-spacing:-.045em; }
+    .writing .article-text { padding-top:33px; }
+    .writing .lead { font-size:1.5rem; line-height:1.4; letter-spacing:-.025em; }
+    .writing .detail { color:var(--muted); margin-top:17px; }
+    .writing .text-link { margin-top:17px; }
+    .archive { border-top:1px solid var(--line); padding-top:35px; }
+    .archive-head { display:flex; justify-content:space-between; align-items:baseline; gap:30px; margin-bottom:25px; }
+    .archive-head h2 { font-size:1.5rem; letter-spacing:-.02em; }
+    .archive-head p { color:var(--muted); font-size:.875rem; }
+    .archive-list { list-style:none; margin:0; padding:0; }
+    .archive-list li { display:grid; grid-template-columns:190px minmax(0,1fr) 120px; gap:30px; align-items:baseline; padding:16px 0; border-top:1px solid var(--line); }
+    .archive-list a { font-weight:550; font-size:1rem; }
+    .archive-list p { color:var(--muted); font-size:1rem; }
+    .archive-list .type { color:var(--muted); font-size:.8125rem; text-align:right; }
+    .research { border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .research > summary { display:flex; justify-content:space-between; align-items:center; gap:24px; padding:22px 0; cursor:pointer; list-style:none; }
+    .research > summary::-webkit-details-marker,.study > summary::-webkit-details-marker { display:none; }
+    .research-title { display:block; font-size:1rem; font-weight:550; }
+    .research-meta { display:block; color:var(--muted); font-size:.8125rem; margin-top:3px; }
+    .disclosure { color:var(--cyan); font-size:1.8rem; font-weight:300; }
+    .research[open] .disclosure { transform:rotate(45deg); }
+    .research-description { color:var(--muted); font-size:.9375rem; max-width:900px; padding:6px 0 25px; }
+    .study { border-top:1px solid var(--line); }
+    .study > summary { display:grid; grid-template-columns:32px minmax(0,1fr) 160px; gap:18px; align-items:baseline; padding:18px 0; cursor:pointer; list-style:none; }
+    .study-number,.verdict { font-size:.8125rem; color:var(--muted); }
+    .study-name { font-size:1rem; }
+    .verdict { text-align:right; }
+    .study-body { padding:0 0 25px 50px; font-size:1rem; color:var(--muted); }
+    .study-body dl { margin:0 0 14px; }
+    .study-body dl > div { display:grid; grid-template-columns:150px minmax(0,1fr); gap:20px; padding:6px 0; }
+    .study-body dt { font-size:.8125rem; }
+    .study-body dd { margin:0; }
+    .study-body strong,.study-body a { color:var(--ink); }
+    .study-body a { min-height:44px; display:inline-flex; align-items:center; font-size:.875rem; }
+    .footer { padding:80px 0 32px; }
+    .footer h2 { font-size:clamp(2.5rem,6vw,5rem); letter-spacing:-.055em; }
+    .footer-bottom { display:flex; justify-content:space-between; align-items:center; gap:40px; padding-top:30px; }
+    .footer-links { display:flex; gap:30px; flex-wrap:wrap; }
+    .footer-links a { min-height:44px; display:inline-flex; align-items:center; font-size:.9375rem; }
+    .footer p { color:var(--muted); font-size:.8125rem; }
+    .image-dialog { width:min(1500px,calc(100% - 40px)); max-height:calc(100dvh - 40px); padding:0; border:1px solid #687486; border-radius:5px; color:var(--ink); background:var(--surface); }
+    .image-dialog::backdrop { background:rgba(0,0,0,.86); }
+    .dialog-toolbar { display:flex; justify-content:space-between; gap:24px; align-items:center; padding:14px 20px; border-bottom:1px solid var(--line); }
+    .dialog-toolbar p { font-size:.9375rem; }
+    .dialog-toolbar button { background:none; color:var(--ink); border:1px solid #798391; border-radius:4px; min-height:44px; padding:7px 16px; }
+    .dialog-image-wrap { max-height:calc(100dvh - 130px); overflow:auto; background:#151515; }
+    .dialog-image-wrap img { width:100%; }
+    @media(min-width:1600px) { .intro { padding-top:42px; } }
+    @media(max-width:1050px) {
+      .wrap { width:calc(100% - 56px); }
+      .intro-bottom,.flagship-heading { gap:45px; }
+      .flagship-heading { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+      .feature-heading,.system-feature,.experiment-heading,.writing { gap:40px; }
+      .experiment-feature { padding:30px; }
+      .experiment-visual { grid-template-columns:minmax(0,1fr) 180px; padding:24px; gap:24px; }
+      .assertion { padding-left:24px; }
+      .flow { grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr); }
+      .archive-list li { grid-template-columns:150px minmax(0,1fr) 100px; gap:24px; }
     }
-    @keyframes progress { from { transform:scaleX(0); } to { transform:scaleX(1); } }
-  }
-}
-</style>
+    @media(max-width:760px) {
+      .wrap { width:calc(100% - 40px); }
+      .site-header { min-height:80px; }
+      .nav { gap:20px; }
+      .nav a { font-size:.875rem; }
+      .intro { padding:38px 0 52px; }
+      .intro h1 { font-size:clamp(4.8rem,17vw,8rem); margin:24px 0; }
+      .intro-bottom { display:block; }
+      .intro-top .location { display:none; }
+      .promise { font-size:1.6rem; max-width:620px; }
+      .principles { font-size:.875rem; }
+      .role { margin-top:25px; padding-left:15px; border-left:2px solid var(--line); font-size:.875rem; }
+      .role span { margin-top:6px; }
+      .section-mark { padding:20px 0 25px; }
+      .flagship-heading { display:block; padding-bottom:30px; }
+      .product-name { font-size:4.2rem; }
+      .tagline { font-size:2rem; margin-top:17px; }
+      .product-copy { margin-top:26px; }
+      .product-copy .support { font-size:1.2rem; max-width:470px; }
+      .product-copy .description { margin-top:13px; max-width:620px; }
+      .gallery-tabs { gap:24px; }
+      .gallery-tabs button { min-height:58px; font-size:.875rem; }
+      .gallery-hint { display:none; }
+      .stage-caption { grid-template-columns:minmax(0,1fr); gap:5px; padding-top:18px; }
+      .stage-caption p { font-size:1rem; }
+      .product-note { display:block; margin-top:20px; }
+      .product-note a { display:inline-flex; align-items:center; margin-top:7px; }
+      .feature { padding-top:70px; }
+      .feature-heading { display:block; margin-bottom:26px; }
+      .feature-heading .summary { margin-top:20px; }
+      .system-feature { display:flex; flex-direction:column; gap:28px; align-items:stretch; }
+      .system-image img { aspect-ratio:1.4; }
+      .system-copy h3 { font-size:1.65rem; }
+      .system-copy p { margin-top:15px; }
+      .experiment-feature { margin-top:65px; padding:25px 22px; }
+      .experiment-heading { display:block; }
+      .experiment-heading > div + div { margin-top:20px; }
+      .experiment-control { display:block; padding:25px 0 20px; }
+      .mutation-button { margin-top:18px; }
+      .experiment-visual { display:block; padding:22px 16px; }
+      .flow { grid-template-columns:minmax(0,1fr) 15px minmax(0,1fr) 15px minmax(0,1fr); }
+      .flow-node .node-label { font-size:.75rem; }
+      .flow-node .node-value { min-height:70px; padding:12px 6px; font-size:.875rem; }
+      .assertion { display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; padding:20px 0 0; margin-top:22px; border-left:0; border-top:1px solid var(--line); }
+      .assertion .label { flex:1; }
+      .assertion strong { font-size:2.2rem; margin:0; }
+      .assertion .detail { flex-basis:100%; }
+      .experiment-result { display:block; }
+      .experiment-result a { display:inline-flex; align-items:center; margin-top:10px; }
+      .writing { display:block; padding:65px 0 55px; }
+      .writing .article-text { padding-top:25px; }
+      .writing .lead { font-size:1.3rem; }
+      .archive-head { display:block; }
+      .archive-head p { margin-top:10px; }
+      .archive-list li { grid-template-columns:minmax(0,1fr) auto; gap:8px 20px; }
+      .archive-list p { grid-column:1 / -1; grid-row:2; }
+      .archive-list .type { grid-column:2; grid-row:1; }
+      .study > summary { grid-template-columns:28px minmax(0,1fr); gap:6px 12px; }
+      .verdict { grid-column:2; text-align:left; }
+      .study-body { padding-left:40px; }
+      .study-body dl > div { display:block; margin-bottom:10px; }
+      .study-body dt { margin-bottom:3px; }
+      .footer { padding-top:55px; }
+      .footer-bottom { display:block; padding-top:20px; }
+      .footer p { margin-top:20px; }
+    }
+    @media(max-width:400px) {
+      .wrap { width:calc(100% - 32px); }
+      .nav { gap:15px; }
+      .nav .contact-nav { display:none; }
+      .intro h1 { font-size:4.8rem; }
+      .product-name { font-size:3.8rem; }
+      .experiment-feature { padding:24px 16px; }
+      .variant-options label { width:100%; }
+      .experiment-visual { padding:20px 12px; }
+      .flow { grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr) 12px minmax(0,1fr); }
+      .flow-node .node-value { font-size:.875rem; }
+    }
+    @media(prefers-reduced-motion:no-preference) {
+      a,button { transition:color 150ms ease,background-color 150ms ease,border-color 150ms ease; }
+      .gallery-panel:not([hidden]) .product-stage { animation:appear 180ms ease-out; }
+      @keyframes appear { from { opacity:.7; } to { opacity:1; } }
+    }
+    @media print {
+      :root { --bg:#fff; --surface:#fff; --ink:#111; --muted:#444; --line:#bbb; --cyan:#15566b; }
+      .wrap { width:100%; }
+      .site-header,.skip,.gallery-toolbar,.experiment-control,.research,.image-dialog { display:none; }
+      .intro { padding-top:0; }
+      .gallery-panel { display:block !important; }
+      .gallery-panel,.system-feature,.experiment-feature { break-inside:avoid; }
+    }
+  </style>
 </head>
 <body>
-<div class="win">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="wordmark" href="#main">Jon Lange</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#work">Work</a>
+      <a href="#notes">Notes</a>
+      <a class="contact-nav" href="#contact">Contact</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap">
+    <section class="intro" aria-labelledby="name">
+      <div class="intro-top"><p class="eyebrow">AI product &amp; engineering</p><p class="eyebrow location">Chicago</p></div>
+      <h1 id="name">Jon <span>Lange</span></h1>
+      <div class="intro-bottom">
+        <div><p class="promise">I build AI products and the systems that help teams ship them.</p><p class="principles">Clear problems. Faster decisions. Better feedback.</p></div>
+        <p class="role">Senior Director, AI at Ripple Treasury.<span>Independent projects. Built in the open.</span></p>
+      </div>
+    </section>
 
-<div class="bar">
-  <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-  <span class="t">jon-lange@github — ~/building</span>
-</div>
+    <section id="work" aria-labelledby="botbench-title">
+      <div class="section-mark"><p class="category">Flagship product</p><p>Early · macOS</p></div>
+      <div class="flagship-heading">
+        <div><h2 class="product-name" id="botbench-title">Botbench</h2><p class="tagline">Put your agents to work.<br><em>Together.</em></p></div>
+        <div class="product-copy"><p class="support">One workbench for your agents.<br>One coordination layer for your team.</p><p class="description">A local-first workbench for your Claude Code and Codex. Delegate a branch; return to changes, checks, and review.</p><div class="actions"><a class="button" href="https://botbenchhq.github.io/">Explore Botbench</a><a class="text-link" href="https://botbenchhq.github.io/get-started.html">Get started</a></div></div>
+      </div>
+      <div class="gallery" data-gallery>
+        <div class="gallery-toolbar" hidden><div class="gallery-tabs" role="tablist" aria-label="Explore Botbench"><button id="tab-workbench" type="button" role="tab" aria-controls="panel-workbench" aria-selected="true" tabindex="0">Workbench</button><button id="tab-review" type="button" role="tab" aria-controls="panel-review" aria-selected="false" tabindex="-1">Review</button><button id="tab-peers" type="button" role="tab" aria-controls="panel-peers" aria-selected="false" tabindex="-1">Peer questions</button></div><p class="gallery-hint">Actual product screens</p></div>
+        <section class="gallery-panel" id="panel-workbench" aria-labelledby="screen-workbench">
+          <figure class="product-stage"><a href="assets/botbench-workbench.png" data-enlarge="The Botbench workbench"><img src="assets/botbench-workbench.png" width="1600" height="1080" alt="Botbench on desktop and mobile, showing delegated coding work and tasks ready for review." fetchpriority="high" decoding="async"></a></figure>
+          <div class="stage-caption"><div><h3 id="screen-workbench">Walk away. Come back to the branch.</h3><p>Keep your coding work, agent activity, and review in one place. The product image shows the desktop workbench and the mobile view.</p></div><a href="assets/botbench-workbench.png" data-enlarge="The Botbench workbench">Enlarge screenshot</a></div>
+        </section>
+        <section class="gallery-panel" id="panel-review" aria-labelledby="screen-review">
+          <figure class="product-stage"><a href="assets/botbench-review.png" data-enlarge="Checks and review in Botbench"><img src="assets/botbench-review.png" width="1320" height="870" alt="Botbench showing repository checks separately from a Codex review of a small change." loading="lazy" decoding="async"></a></figure>
+          <div class="stage-caption"><div><h3 id="screen-review">See what ran. Read what changed.</h3><p>Repository checks and an agent’s review are presented separately. You can inspect the output and decide what to do with the branch.</p></div><a href="assets/botbench-review.png" data-enlarge="Checks and review in Botbench">Enlarge screenshot</a></div>
+        </section>
+        <section class="gallery-panel" id="panel-peers" aria-labelledby="screen-peers">
+          <figure class="product-stage"><a href="assets/botbench-peers.png" data-enlarge="A question from a paired workbench"><img src="assets/botbench-peers.png" width="1320" height="870" alt="Botbench displaying a question from a paired workbench, with options to answer, delegate, or dismiss it." loading="lazy" decoding="async"></a></figure>
+          <div class="stage-caption"><div><h3 id="screen-peers">Shared context. Explicit permission.</h3><p>A paired workbench can ask a question. The receiving owner chooses whether to answer, delegate it to an agent, or dismiss it.</p></div><a href="assets/botbench-peers.png" data-enlarge="A question from a paired workbench">Enlarge screenshot</a></div>
+        </section>
+      </div>
+      <div class="product-note"><p>Local-first engineering is the starting point. More autonomous coordination across developers and their agents is the direction, still being developed and validated.</p><a href="https://github.com/botbenchhq/botbench">Source and current scope</a></div>
+    </section>
 
-<div class="pane">
-<main>
+    <section class="feature" aria-labelledby="system-title">
+      <div class="feature-heading"><div><p class="eyebrow">Behind the product</p><h2 id="system-title">A system for the interface.</h2></div><p class="summary">Botbench’s design system gives coding agents a shared vocabulary for building screens, plus checks that help keep them consistent.</p></div>
+      <div class="system-feature">
+        <figure class="system-image"><a href="assets/design-system-timeline.png" data-enlarge="Botbench design-system gallery"><img src="assets/design-system-timeline.png" width="1280" height="2312" alt="The design-system run-timeline gallery, showing running, waiting, failed, and completed examples." loading="lazy" decoding="async"></a><figcaption class="image-note">Run-timeline gallery. Crop from a repository screenshot; select to see the full page.</figcaption></figure>
+        <div class="system-copy"><h3>The details are part of the product.</h3><p>Component examples, design tokens, keyboard behavior, and interface checks live alongside the code.</p><p class="scope-label">Draft components. Botbench is the current consumer.</p><a class="text-link" href="https://botbenchhq.github.io/design-system-showcase/">Explore the design system</a></div>
+      </div>
+    </section>
 
-<header class="hero">
-<h1 class="motd"><span class="nm"><span class="nt">Jon Lange</span></span> <span class="tg"><span class="dim">·</span> AI, mostly in fintech</span></h1>
-<p class="out ink lead">While everyone argues doom vs. hype, I'm building. All in on AI, mostly in fintech.</p>
-<p class="out">Day job: fintech AI. The side projects here are mine.</p>
-<p class="out">I use AI where it earns its place. When something can't be undone, a person still makes the call. <span class="hi">Ignoring these tools is the real risk.</span></p>
-</header>
+    <section class="experiment-feature experiment" id="experiment" data-mode="correct" data-broken="false" aria-labelledby="experiment-title">
+      <div class="experiment-heading"><div><p class="eyebrow">A small experiment</p><h2 id="experiment-title">Would this test notice?</h2></div><div><p>One check asks whether a secret is absent from a log. Change what reaches the log, then break the redaction function.</p><p class="scope-text">An interactive illustration of a published, constructed example. It shows one failure mode; it does not measure how often that failure happens.</p></div></div>
+      <div class="experiment-interactive" hidden>
+        <div class="experiment-control"><fieldset class="variants"><legend>Choose the path</legend><div class="variant-options"><label><input type="radio" name="variant" value="correct" checked>Normal path</label><label><input type="radio" name="variant" value="flag-off">Logging off</label><label><input type="radio" name="variant" value="field-gone">Field removed</label></div></fieldset><button class="mutation-button" type="button" aria-pressed="false">Break redaction</button></div>
+        <div class="experiment-visual"><div class="flow" role="group" aria-label="Illustrative logging path"><div class="flow-node"><span class="node-label">Input</span><span class="node-value input-value">Secret present</span></div><span class="flow-line" aria-hidden="true"></span><div class="flow-node"><span class="node-label">Redaction</span><span class="node-value redaction-value">Working</span></div><span class="flow-line" aria-hidden="true"></span><div class="flow-node"><span class="node-label">Log</span><span class="node-value log-value">Redacted</span></div></div><div class="assertion"><span class="label">Secret absent?</span><strong class="test-result" data-result="pass">PASS</strong><span class="detail">The same assertion in every case.</span></div></div>
+        <div class="experiment-result"><p class="result-explanation" aria-live="polite"><strong>The test passes.</strong> Redaction removes the secret. Break it to see whether the assertion notices.</p><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/11-mutation-check/RESULTS.md">Methods and limits</a></div>
+      </div>
+      <p class="experiment-static">In the original example, the same assertion passes with working redaction, with logging disabled, and with the relevant field removed. The hand-chosen mutation distinguishes the normal path from the other two. <a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/11-mutation-check/RESULTS.md">Read the methods, results, and limits.</a></p>
+    </section>
 
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/story/not-evidence</span></h2>
-<p class="out ink">I kept hearing AI advice that sounded right, so I tested it. A lot of it didn't hold up.</p>
-<p class="out">One example: I fed three transcription models recordings with no speech in them. They made things up anyway, including <span class="hi">"Merci d'avoir regardé!"</span></p>
-<p class="out">Another: a safety test stayed green while the thing it was supposed to catch was <span class="no">already broken</span>.</p>
-<p class="out">I rewrote the advice that failed and published what held up. That's <a class="lnk" href="https://github.com/jon-lange/not-evidence">not-evidence</a>.</p>
-<details class="row"><summary><span class="c-n">&gt;</span> <span class="c-name">See the full test log</span><span class="c-v"><i class="mark"></i>12 rows</span></summary>
-<p class="cmd"><span class="p">$</span><span class="hi">cat register.tsv</span></p>
-<details class="row row--failed"><summary><span class="c-n">01</span> <span class="c-name">Grounded or Refuse</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to answer without evidence</span></div><div class="kv"><span>measured</span><span>Confabulation under the naive &quot;say you don&#x27;t know&quot; fix, 4 models, 148 completions</span></div><div class="kv"><span>result</span><span><b>0 out of 36</b> — the predicted failure never occurred</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/01-grounded-or-refuse/RESULTS.md">open specimens/01-grounded-or-refuse/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">02</span> <span class="c-name">Refuse the Class, Not the Case</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>a whole dangerous input class, with one identical error</span></div><div class="kv"><span>measured</span><span>Three boundaries over a reference space of <b>48,000</b> items, accepted sets compared</span></div><div class="kv"><span>result</span><span>Class refusal: 2 predicates, 0 table entries, 0 unintended accepts</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/02-refuse-the-class/RESULTS.md">open specimens/02-refuse-the-class/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">03</span> <span class="c-name">Deterministic Over Prompted</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to rely on instructing a model to disbelieve its source</span></div><div class="kv"><span>measured</span><span>A six-rung prompt-defence ladder against one poison document, 5 models, 140 calls</span></div><div class="kv"><span>result</span><span>Converged to <b>0/20</b> at rung 4 — the ladder did close</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/03-deterministic-over-prompted/RESULTS.md">open specimens/03-deterministic-over-prompted/RESULTS.md</a></div></details><details class="row row--confirmed"><summary><span class="c-n">04</span> <span class="c-name">Meta-Injection Is Not Content-Relay</span><span class="c-v"><i class="mark"></i>held</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to treat a refused meta-attack as a defended surface</span></div><div class="kv"><span>measured</span><span>One good guardrail against two poison classes, 3 models</span></div><div class="kv"><span>result</span><span>Meta-injection REFUSED; content-relay <b>RELAYED</b> by every model</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/04-injection-classes/RESULTS.md">open specimens/04-injection-classes/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">05</span> <span class="c-name">The Judge Cannot Share a Family</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to let a same-lineage judge gate a promotion</span></div><div class="kv"><span>measured</span><span>3 judges, 12 items, absolute then pairwise in both orders</span></div><div class="kv"><span>result</span><span>Two judges produced <b>NO SIGNAL</b>; one flipped on 6 of 12 by position alone</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/05-judge-family/RESULTS.md">open specimens/05-judge-family/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">06</span> <span class="c-name">Refuse to Score Unratified Weights</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to produce a number the domain owner never endorsed</span></div><div class="kv"><span>measured</span><span>The share of the weight simplex that reverses a real scorecard verdict</span></div><div class="kv"><span>result</span><span><b>40.6%</b> of defensible weightings pick the other candidate</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/06-unratified-weights/RESULTS.md">open specimens/06-unratified-weights/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">07</span> <span class="c-name">Gate Over-Refusal Separately</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to quote quality without refusal beside it</span></div><div class="kv"><span>measured</span><span>False-refusal rate across 5 models, 2 vendors, 25 items, oldest to newest</span></div><div class="kv"><span>result</span><span><b>flat — no difference</b>; the &quot;newer models refuse more&quot; claim did not reproduce</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/07-over-refusal/RESULTS.md">open specimens/07-over-refusal/RESULTS.md</a></div></details><details class="row row--failed"><summary><span class="c-n">08</span> <span class="c-name">A Remembered Figure Is Never a Current Figure</span><span class="c-v"><i class="mark"></i>did not hold</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to let a stored value stand in for a live one</span></div><div class="kv"><span>measured</span><span>Stale reuse of a remembered value across 6 conditions, 5 models, 117 calls</span></div><div class="kv"><span>result</span><span><b>3/10</b> — and only under the adversarial condition; the default was to call the tool</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/08-remembered-is-not-current/RESULTS.md">open specimens/08-remembered-is-not-current/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">09</span> <span class="c-name">Keep New Modalities Off the Reasoning Path</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to widen the trusted surface for a new input type</span></div><div class="kv"><span>measured</span><span>Specimen 04&#x27;s byte-identical payloads delivered as images, 4 vision models</span></div><div class="kv"><span>result</span><span><b>62/63</b> relay cells relayed; the guardrail refused every meta-injection in both channels</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/09-modality-surface/RESULTS.md">open specimens/09-modality-surface/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">10</span> <span class="c-name">Never Auto-Commit a Lossy Transducer</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to execute on a plausible substitution</span></div><div class="kv"><span>measured</span><span>Three transcription models against three inputs containing no speech</span></div><div class="kv"><span>result</span><span>Invented content from silence, including <b>Merci d&#x27;avoir regardé!</b></span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/10-lossy-transducer/RESULTS.md">open specimens/10-lossy-transducer/RESULTS.md</a></div></details><details class="row row--confirmed"><summary><span class="c-n">11</span> <span class="c-name">Green Is Not Evidence</span><span class="c-v"><i class="mark"></i>held</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to trust an absence-test that was never mutation-checked</span></div><div class="kv"><span>measured</span><span>One absence assertion across six variants, two of them silently broken</span></div><div class="kv"><span>result</span><span>Two <b>NOT CAUGHT</b> cells — the test passed while the thing it guarded was broken</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/11-mutation-check/RESULTS.md">open specimens/11-mutation-check/RESULTS.md</a></div></details><details class="row row--narrowed"><summary><span class="c-n">12</span> <span class="c-name">Distrust the Sanitization Label</span><span class="c-v"><i class="mark"></i>held, narrowed</span></summary><div class="row__body"><div class="kv"><span>refuses</span><span>to publish on someone&#x27;s assurance that it was scrubbed</span></div><div class="kv"><span>measured</span><span>Re-identification of a correctly-sanitised release, 60 projects, 62,700 trials</span></div><div class="kv"><span>result</span><span><b>60 / 60 rows re-linked, 0 wrong</b> from the numbers alone</span></div><a class="lnk" href="https://github.com/jon-lange/not-evidence/blob/main/specimens/12-sanitization-label/RESULTS.md">open specimens/12-sanitization-label/RESULTS.md</a></div></details>
-<p class="out legend">
-<span class="no">●</span> 5 did not hold &nbsp;&nbsp;<span class="wa">●</span> 5 held, narrowed &nbsp;&nbsp;<span class="ok">○</span> 2 held</p>
-<p class="cmd"><span class="p">$</span><span class="hi">python3 tools/mutcheck.py --demo</span></p>
-<pre>  implementation                            mutation caught?
-  ---------------------------------------   ----------------
-  redaction works                           <span class="ok">CAUGHT</span>
-  rollout flag off — nothing is logged      <span class="no">NOT CAUGHT</span>
-  schema change — field no longer carried   <span class="no">NOT CAUGHT</span>
+    <section class="writing" id="notes" aria-labelledby="writing-title"><div><p class="eyebrow">Notes on building · November 2026</p><h2 id="writing-title">When Building<br>Is Free</h2></div><div class="article-text"><p class="lead">Building is getting cheaper. Deciding what is worth building still takes judgment.</p><p class="detail">On shorter feedback loops, clear ownership, and the time between a question and evidence strong enough to act on.</p><a class="text-link" href="https://www.linkedin.com/pulse/when-building-free-jonathan-lange-ouk3c">Read the essay</a></div></section>
 
-  The assertion passed in all three. Two were never watching.</pre>
-<p class="cmd"><span class="p">$</span><span class="hi">make check</span></p>
-<pre>  12 patterns
-  12 adjudications
-  <span class="hi">16 derived count claims</span>
-  12 falsification conditions
-  208 relative links
-  <span class="ok">0 failure(s)</span></pre>
-</details>
-<details class="row"><summary><span class="c-n">&gt;</span> <span class="c-name">If a situation sounds familiar</span><span class="c-v"><i class="mark"></i>8 links</span></summary>
-<p class="cmd"><span class="p">$</span><span class="hi">grep -rl "$SYMPTOM" patterns/</span></p>
-<ul class="grep">
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/11-green-is-not-evidence.html"><b>&gt;</b> "The suite is green and I can't say what that proves"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/05-judge-cannot-share-a-family.html"><b>&gt;</b> "A model grades another model, and the score gates a release"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/09-modalities-off-the-reasoning-path.html"><b>&gt;</b> "We shipped image upload and the injection suite didn't change"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/03-deterministic-over-prompted.html"><b>&gt;</b> "Our defence is a prompt telling the model to ignore instructions"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/12-distrust-the-sanitization-label.html"><b>&gt;</b> "Someone handed me a file marked sanitised and asked me to publish it"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/08-remembered-is-not-current.html"><b>&gt;</b> "The agent quoted a figure it had seen earlier instead of fetching it"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/07-gate-over-refusal-separately.html"><b>&gt;</b> "Quality went up and nobody measured what we started refusing"</a></li>
-<li><a href="https://jon-lange.github.io/not-evidence/patterns/10-never-auto-commit-a-transducer.html"><b>&gt;</b> "A transcript or extraction gets acted on automatically"</a></li>
-</ul>
-</details>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/projects/settleview</span></h2>
-<div class="card">
-<p class="out ink proj"><a class="lnk" href="https://github.com/jon-lange/settleview">Settleview</a> <span class="dim">·</span> personal side project</p>
-<p class="out">A local tool for short BTC Up/Down markets on Kalshi and Polymarket US. You make every call.</p>
-<p class="out">I found no rule that beats the market price after fees. It's not an edge, it's not financial advice, and it's not affiliated with my employer.</p>
-<p class="out links"><a class="lnk btn" href="https://github.com/jon-lange/settleview">open github.com/jon-lange/settleview</a></p>
-</div>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">cat ~/projects/grok-bot-team</span></h2>
-<div class="card">
-<p class="out ink proj"><a class="lnk" href="https://github.com/jon-lange/grok-bot-team">See how I use Grok Bot</a> <span class="dim">·</span> a team of AI bots</p>
-<p class="out">Every bot drafts by default. It earns the right to act on its own one kind of task at a time, and anything risky still waits for my yes.</p>
-<ol class="ladder" aria-label="The earned-autonomy ladder">
-<li style="--v:var(--muted)"><i class="mark" aria-hidden="true"></i><span class="ladder__k">1 · drafts</span><span class="ladder__d">Every bot starts here. It drafts, I send.</span></li>
-<li style="--v:var(--confirmed)"><i class="mark" aria-hidden="true"></i><span class="ladder__k">2 · earned</span><span class="ladder__d">One kind of task, granted once I say yes.</span></li>
-<li style="--v:var(--narrowed)"><i class="mark" aria-hidden="true"></i><span class="ladder__k">3 · still asks</span><span class="ladder__d">Money, sends and anything risky wait for my yes.</span></li>
-</ol>
-<p class="out links"><a class="lnk btn" href="https://github.com/jon-lange/grok-bot-team">open github.com/jon-lange/grok-bot-team</a></p>
-</div>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">ls training/ tools/</span></h2>
-<p class="out">Six short hands-on labs you can run offline, with no API key. The tools live in <a class="lnk" href="https://github.com/jon-lange/not-evidence">not-evidence</a>.</p>
-<details class="row"><summary><span class="c-n">&gt;</span> <span class="c-name">Labs and dimensions</span><span class="c-v"><i class="mark"></i>6 labs · 6 dimensions</span></summary>
-<p class="cmd"><span class="p">$</span><span class="hi">ls training/</span> <span class="dim"># 45–60 min each, no API key</span></p>
-<ol class="ls"><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation"><span class="n">01</span><span class="t">is your eval suite telling the truth?</span><span class="f">39.1% of 53,130 weightings pick the other candidate</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring"><span class="n">02</span><span class="t">is your dashboard?</span><span class="f">one alert queries a metric nothing emits — it can never fire</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/03-data-inputs"><span class="n">03</span><span class="t">is what reaches the model what you think?</span><span class="f">three cited sources that are 91% identical — one document</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/04-prompting"><span class="n">04</span><span class="t">did your prompt really improve?</span><span class="f">v2 wins by 4.9% and drops one class from 80% to 10%</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/05-model-selection"><span class="n">05</span><span class="t">are those two models interchangeable?</span><span class="f">0.7% apart overall, 49 points apart on one slice</span></a></li><li><a href="https://github.com/jon-lange/field-tested/tree/main/training/06-workflow"><span class="n">06</span><span class="t">what did your pipeline actually do?</span><span class="f">five stages green: one retried, one fell back, one did nothing</span></a></li></ol>
-<p class="cmd"><span class="p">$</span><span class="hi">cat ~/context-engineering/dimensions</span></p>
-<ul class="dims"><li><span>1</span><span>Data inputs</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/03-data-inputs">demonstrated &rarr;</a></li><li><span>2</span><span>Prompt engineering</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/04-prompting">demonstrated &rarr;</a></li><li><span>3</span><span>Model selection</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/05-model-selection">demonstrated &rarr;</a></li><li><span>4</span><span>Workflow architecture</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/06-workflow">demonstrated &rarr;</a></li><li class="m"><span>5</span><span>Evaluation pipelines</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/01-evaluation">measured &rarr;</a></li><li class="m"><span>6</span><span>Continuous monitoring</span><a href="https://github.com/jon-lange/field-tested/tree/main/training/02-monitoring">measured &rarr;</a></li></ul>
-<p class="cmd"><span class="p">$</span><span class="hi">ls tools/ skills/ okf/</span></p>
-<ul class="ls">
-<li><a href="https://github.com/jon-lange/not-evidence/blob/main/tools/mutcheck.py"><span class="n">1</span><span class="t">tools/mutcheck.py</span><span class="f">one file, no dependencies — prove an assertion would have failed</span></a></li>
-<li><a href="https://github.com/jon-lange/not-evidence/tree/main/skills"><span class="n">5</span><span class="t">skills/</span><span class="f">installable: /plugin marketplace add jon-lange/not-evidence</span></a></li>
-<li><a href="https://github.com/jon-lange/not-evidence/tree/main/okf"><span class="n">27</span><span class="t">okf/</span><span class="f">the catalogue as an Open Knowledge Format bundle</span></a></li>
-<li><a href="https://github.com/jon-lange/not-evidence/blob/main/EVIDENCE.md"><span class="n">1</span><span class="t">EVIDENCE.md</span><span class="f">every measured figure on one page, each linked to its working</span></a></li>
-<li><a href="https://github.com/jon-lange/not-evidence/blob/main/METHOD.md"><span class="n">1</span><span class="t">METHOD.md</span><span class="f">six rules, enforced by hooks and CI rather than by remembering</span></a></li>
-</ul>
-</details>
-</section>
-
-<section class="blk">
-<h2 class="cmd"><span class="p">$</span><span class="k">contact</span></h2>
-<p class="out ink">If you ran one of these tests and got a different result, I want to hear it. Or just say hi if you're building with AI in fintech.</p>
-<p class="out links">
-<a class="lnk btn" href="https://github.com/jon-lange/not-evidence/issues/new/choose">open an issue</a>
-&nbsp; <a class="lnk btn" href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">linkedin</a>
-&nbsp; <a class="lnk btn" href="https://x.com/langej117">x</a>
-&nbsp; <a class="lnk btn" href="https://github.com/jon-lange">github</a></p>
-</section>
-
-<div class="blk"><div class="cmd"><span class="p">$</span><span class="cursor" aria-hidden="true"></span></div></div>
-
-</main>
-
-<footer class="foot">
-  Test results from not-evidence, measured Aug 5, 2026. Settleview and not-evidence are personal projects. Views are my own.
-</footer>
-
-</div>
-</div>
-<script>
-/* Only runs when <head> opted in. Counts each command's characters so CSS can
-   type it in that many steps, numbers the output lines for the stagger, and
-   reveals each block the first time it scrolls into view. */
-(function () {
-  var root = document.documentElement;
-  if (!root.classList.contains('anim')) return;
-  var blocks = document.querySelectorAll('.blk');
-  Array.prototype.forEach.call(blocks, function (b) {
-    var k = b.querySelector('.k'), n = 0;
-    if (k) {
-      n = k.textContent.length;
-      var t = document.createElement('span');
-      t.className = 'kt';
-      while (k.firstChild) t.appendChild(k.firstChild);
-      k.appendChild(t);
-    }
-    b.style.setProperty('--n', n);
-    var i = 0;
-    Array.prototype.forEach.call(b.children, function (c) {
-      if (!c.classList.contains('cmd')) c.style.setProperty('--i', Math.min(i++, 14));
-    });
-  });
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  Array.prototype.forEach.call(blocks, function (b) { io.observe(b); });
-})();
-</script>
+    <section class="archive" aria-labelledby="archive-title"><div class="archive-head"><h2 id="archive-title">More from the workbench</h2><p>Smaller projects, playbooks, and historical notes.</p></div><ul class="archive-list"><li><a href="https://github.com/jon-lange/settleview">Settleview</a><p>A personal experiment in bounded automation for short-window BTC markets.</p><span class="type">Side project</span></li><li><a href="https://github.com/jon-lange/grok-bot-team">grok-bot-team</a><p>A playbook for roles, permissions, and handoffs in a team of Grok bots.</p><span class="type">Playbook</span></li><li><a href="https://github.com/jon-lange/field-tested">field-tested</a><p>Training exercises and reusable examples in AI engineering.</p><span class="type">Learning material</span></li><li><a href="https://github.com/jon-lange/not-evidence">not-evidence</a><p>Small experiments in AI evaluation, with methods, results, and revisions.</p><span class="type">Experiments</span></li></ul></section>
+    <details class="research" id="research"><summary><span><span class="research-title">Experiment archive</span><span class="research-meta">Historical records from not-evidence</span></span><span class="disclosure" aria-hidden="true">+</span></summary><p class="research-description">These records preserve the catalogue’s August 5, 2026 experiments and original outcomes. The cases are small and bounded; some are deliberately constructed. Titles below describe what was examined. Original titles and verdicts are retained inside each record, including claims that did not reproduce. These are not universal rules, current-model benchmarks, or validation of Botbench.</p><details class="study study--failed"><summary><span class="study-number">01</span><span class="study-name">Answering without retrieved evidence</span><span class="verdict">did not hold</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Grounded or Refuse</dd></div><div><dt>Recorded verdict</dt><dd>did not hold</dd></div><div><dt>Original boundary</dt><dd>to answer without evidence</dd></div><div><dt>Measured</dt><dd>Confabulation under the naive &quot;say you don&#x27;t know&quot; fix, 4 models, 148 completions</dd></div><div><dt>Result</dt><dd><strong>0 out of 36</strong> — the predicted failure never occurred</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/01-grounded-or-refuse/RESULTS.md">Read study 01 results </a></div></details>
+<details class="study study--narrowed"><summary><span class="study-number">02</span><span class="study-name">Whole-class input refusal</span><span class="verdict">held, narrowed</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Refuse the Class, Not the Case</dd></div><div><dt>Recorded verdict</dt><dd>held, narrowed</dd></div><div><dt>Original boundary</dt><dd>a whole dangerous input class, with one identical error</dd></div><div><dt>Measured</dt><dd>Three boundaries over a reference space of <strong>48,000</strong> items, accepted sets compared</dd></div><div><dt>Result</dt><dd>Class refusal: 2 predicates, 0 table entries, 0 unintended accepts</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/02-refuse-the-class/RESULTS.md">Read study 02 results </a></div></details>
+<details class="study study--failed"><summary><span class="study-number">03</span><span class="study-name">A six-step prompt defense</span><span class="verdict">did not hold</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Deterministic Over Prompted</dd></div><div><dt>Recorded verdict</dt><dd>did not hold</dd></div><div><dt>Original boundary</dt><dd>to rely on instructing a model to disbelieve its source</dd></div><div><dt>Measured</dt><dd>A six-rung prompt-defence ladder against one poison document, 5 models, 140 calls</dd></div><div><dt>Result</dt><dd>Converged to <strong>0/20</strong> at rung 4 — the ladder did close</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/03-deterministic-over-prompted/RESULTS.md">Read study 03 results </a></div></details>
+<details class="study study--confirmed"><summary><span class="study-number">04</span><span class="study-name">Two classes of prompt injection</span><span class="verdict">held</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Meta-Injection Is Not Content-Relay</dd></div><div><dt>Recorded verdict</dt><dd>held</dd></div><div><dt>Original boundary</dt><dd>to treat a refused meta-attack as a defended surface</dd></div><div><dt>Measured</dt><dd>One good guardrail against two poison classes, 3 models</dd></div><div><dt>Result</dt><dd>Meta-injection REFUSED; content-relay <strong>RELAYED</strong> by every model</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/04-injection-classes/RESULTS.md">Read study 04 results </a></div></details>
+<details class="study study--failed"><summary><span class="study-number">05</span><span class="study-name">Judge family and answer order</span><span class="verdict">did not hold</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>The Judge Cannot Share a Family</dd></div><div><dt>Recorded verdict</dt><dd>did not hold</dd></div><div><dt>Original boundary</dt><dd>to let a same-lineage judge gate a promotion</dd></div><div><dt>Measured</dt><dd>3 judges, 12 items, absolute then pairwise in both orders</dd></div><div><dt>Result</dt><dd>Two judges produced <strong>NO SIGNAL</strong>; one flipped on 6 of 12 by position alone</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/05-judge-family/RESULTS.md">Read study 05 results </a></div></details>
+<details class="study study--narrowed"><summary><span class="study-number">06</span><span class="study-name">Changing scorecard weights</span><span class="verdict">held, narrowed</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Refuse to Score Unratified Weights</dd></div><div><dt>Recorded verdict</dt><dd>held, narrowed</dd></div><div><dt>Original boundary</dt><dd>to produce a number the domain owner never endorsed</dd></div><div><dt>Measured</dt><dd>The share of the weight simplex that reverses a real scorecard verdict</dd></div><div><dt>Result</dt><dd><strong>40.6%</strong> of defensible weightings pick the other candidate</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/06-unratified-weights/RESULTS.md">Read study 06 results </a></div></details>
+<details class="study study--failed"><summary><span class="study-number">07</span><span class="study-name">Refusals across model versions</span><span class="verdict">did not hold</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Gate Over-Refusal Separately</dd></div><div><dt>Recorded verdict</dt><dd>did not hold</dd></div><div><dt>Original boundary</dt><dd>to quote quality without refusal beside it</dd></div><div><dt>Measured</dt><dd>False-refusal rate across 5 models, 2 vendors, 25 items, oldest to newest</dd></div><div><dt>Result</dt><dd><strong>flat — no difference</strong>; the &quot;newer models refuse more&quot; claim did not reproduce</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/07-over-refusal/RESULTS.md">Read study 07 results </a></div></details>
+<details class="study study--failed"><summary><span class="study-number">08</span><span class="study-name">Reusing a remembered figure</span><span class="verdict">did not hold</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>A Remembered Figure Is Never a Current Figure</dd></div><div><dt>Recorded verdict</dt><dd>did not hold</dd></div><div><dt>Original boundary</dt><dd>to let a stored value stand in for a live one</dd></div><div><dt>Measured</dt><dd>Stale reuse of a remembered value across 6 conditions, 5 models, 117 calls</dd></div><div><dt>Result</dt><dd><strong>3/10</strong> — and only under the adversarial condition; the default was to call the tool</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/08-remembered-is-not-current/RESULTS.md">Read study 08 results </a></div></details>
+<details class="study study--narrowed"><summary><span class="study-number">09</span><span class="study-name">Prompt injection through images</span><span class="verdict">held, narrowed</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Keep New Modalities Off the Reasoning Path</dd></div><div><dt>Recorded verdict</dt><dd>held, narrowed</dd></div><div><dt>Original boundary</dt><dd>to widen the trusted surface for a new input type</dd></div><div><dt>Measured</dt><dd>Specimen 04&#x27;s byte-identical payloads delivered as images, 4 vision models</dd></div><div><dt>Result</dt><dd><strong>62/63</strong> relay cells relayed; the guardrail refused every meta-injection in both channels</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/09-modality-surface/RESULTS.md">Read study 09 results </a></div></details>
+<details class="study study--narrowed"><summary><span class="study-number">10</span><span class="study-name">Transcribing inputs with no speech</span><span class="verdict">held, narrowed</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Never Auto-Commit a Lossy Transducer</dd></div><div><dt>Recorded verdict</dt><dd>held, narrowed</dd></div><div><dt>Original boundary</dt><dd>to execute on a plausible substitution</dd></div><div><dt>Measured</dt><dd>Three transcription models against three inputs containing no speech</dd></div><div><dt>Result</dt><dd>Invented content from silence, including <strong>Merci d&#x27;avoir regardé!</strong></dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/10-lossy-transducer/RESULTS.md">Read study 10 results </a></div></details>
+<details class="study study--confirmed"><summary><span class="study-number">11</span><span class="study-name">An absence test under mutation</span><span class="verdict">held</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Green Is Not Evidence</dd></div><div><dt>Recorded verdict</dt><dd>held</dd></div><div><dt>Original boundary</dt><dd>to trust an absence-test that was never mutation-checked</dd></div><div><dt>Measured</dt><dd>One absence assertion across six variants, two of them silently broken</dd></div><div><dt>Result</dt><dd>Two <strong>NOT CAUGHT</strong> cells — the test passed while the thing it guarded was broken</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/11-mutation-check/RESULTS.md">Read study 11 results </a></div></details>
+<details class="study study--narrowed"><summary><span class="study-number">12</span><span class="study-name">Re-identifying a sanitized release</span><span class="verdict">held, narrowed</span></summary><div class="study-body"><dl><div><dt>Original title</dt><dd>Distrust the Sanitization Label</dd></div><div><dt>Recorded verdict</dt><dd>held, narrowed</dd></div><div><dt>Original boundary</dt><dd>to publish on someone&#x27;s assurance that it was scrubbed</dd></div><div><dt>Measured</dt><dd>Re-identification of a correctly-sanitised release, 60 projects, 62,700 trials</dd></div><div><dt>Result</dt><dd><strong>60 / 60 rows re-linked, 0 wrong</strong> from the numbers alone</dd></div></dl><a href="https://github.com/jon-lange/not-evidence/blob/main/specimens/12-sanitization-label/RESULTS.md">Read study 12 results </a></div></details></details>
+  </main>
+  <footer class="footer wrap" id="contact"><h2>Let’s compare notes.</h2><div class="footer-bottom"><nav class="footer-links" aria-label="Elsewhere"><a href="https://www.linkedin.com/in/jonathan-lange-ai-architect/">LinkedIn</a><a href="https://github.com/jon-lange">GitHub</a><a href="https://x.com/langej117">X</a></nav><p>Independent projects. Views are my own.</p></div></footer>
+  <dialog class="image-dialog" aria-labelledby="dialog-title"><div class="dialog-toolbar"><p id="dialog-title">Product image</p><button type="button" class="dialog-close">Close</button></div><div class="dialog-image-wrap" tabindex="0" role="region" aria-label="Enlarged screenshot"><img class="dialog-image" alt=""></div></dialog>
+  <script>
+    (function () {
+      'use strict';
+      var gallery = document.querySelector('[data-gallery]');
+      if (gallery) {
+        var tabs = Array.from(gallery.querySelectorAll('[role="tab"]'));
+        var panels = Array.from(gallery.querySelectorAll('.gallery-panel'));
+        function selectTab(index, moveFocus) {
+          tabs.forEach(function (tab, i) {
+            var selected = i === index;
+            tab.setAttribute('aria-selected', String(selected));
+            tab.tabIndex = selected ? 0 : -1;
+            panels[i].hidden = !selected;
+          });
+          if (moveFocus) tabs[index].focus();
+        }
+        tabs.forEach(function (tab, index) {
+          panels[index].setAttribute('role', 'tabpanel');
+          panels[index].setAttribute('aria-labelledby', tab.id);
+          panels[index].tabIndex = 0;
+          tab.addEventListener('click', function () { selectTab(index, false); });
+          tab.addEventListener('keydown', function (event) {
+            var target = index;
+            if (event.key === 'ArrowRight') target = (index + 1) % tabs.length;
+            else if (event.key === 'ArrowLeft') target = (index + tabs.length - 1) % tabs.length;
+            else if (event.key === 'Home') target = 0;
+            else if (event.key === 'End') target = tabs.length - 1;
+            else return;
+            event.preventDefault();
+            selectTab(target, true);
+          });
+        });
+        selectTab(0, false);
+        gallery.querySelector('.gallery-toolbar').hidden = false;
+      }
+      var dialog = document.querySelector('.image-dialog');
+      if (dialog && typeof dialog.showModal === 'function') {
+        var previousFocus;
+        document.querySelectorAll('[data-enlarge]').forEach(function (link) {
+          link.addEventListener('click', function (event) {
+            event.preventDefault();
+            previousFocus = link;
+            var image = dialog.querySelector('.dialog-image');
+            image.src = link.href;
+            image.alt = link.dataset.enlarge;
+            dialog.querySelector('#dialog-title').textContent = link.dataset.enlarge;
+            dialog.showModal();
+            dialog.querySelector('.dialog-close').focus();
+          });
+        });
+        dialog.querySelector('.dialog-close').addEventListener('click', function () { dialog.close(); });
+        dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
+        dialog.addEventListener('close', function () { if (previousFocus) previousFocus.focus(); });
+      }
+      var experiment = document.querySelector('.experiment');
+      if (experiment) {
+        var mode = 'correct';
+        var broken = false;
+        var mutationButton = experiment.querySelector('.mutation-button');
+        function evaluateExample(mode, broken) {
+          var secret = 'DEMO_SECRET';
+          var input = mode === 'field-gone' ? { event: 'login' } : { event: 'login', token: secret };
+          var redactionCalls = 0;
+          function redact(event) {
+            redactionCalls += 1;
+            var output = Object.assign({}, event);
+            if (!broken && Object.prototype.hasOwnProperty.call(output, 'token')) output.token = '[redacted]';
+            return output;
+          }
+          var log = '';
+          if (mode !== 'flag-off') log = JSON.stringify(redact(input));
+          return { passed: log.indexOf(secret) === -1, log: log, redactionCalls: redactionCalls };
+        }
+        function updateExample() {
+          var outcome = evaluateExample(mode, broken);
+          var passed = outcome.passed;
+          experiment.dataset.mode = mode;
+          experiment.dataset.broken = String(broken);
+          experiment.querySelector('.input-value').textContent = mode === 'field-gone' ? 'No token field' : 'Secret present';
+          experiment.querySelector('.redaction-value').textContent = outcome.redactionCalls === 0 ? 'Not called' : mode === 'field-gone' ? (broken ? 'No-op; no secret' : 'No secret field') : (broken ? 'Replaced' : 'Working');
+          experiment.querySelector('.log-value').textContent = mode === 'flag-off' ? 'Empty' : mode === 'field-gone' ? 'No token field' : broken ? 'Secret present' : 'Redacted';
+          var result = experiment.querySelector('.test-result');
+          result.textContent = passed ? 'PASS' : 'FAIL';
+          result.dataset.result = passed ? 'pass' : 'fail';
+          mutationButton.setAttribute('aria-pressed', String(broken));
+          mutationButton.textContent = broken ? 'Restore redaction' : 'Break redaction';
+          var message;
+          if (mode === 'correct') message = broken ? 'The test catches the change. Replacing redaction with a no-op leaves the secret in the log, so this assertion fails.' : 'The test passes. Redaction removes the secret. Break it to see whether the assertion notices.';
+          else if (mode === 'flag-off') message = broken ? 'The test still passes. Logging is disabled, so replacing redaction changes nothing the assertion sees. This is a constructed coverage gap, not a live leak.' : 'The test passes with an empty log. It has not exercised redaction. Now replace that function and see what changes.';
+          else message = broken ? 'The test still passes. Redaction is called with the token field already absent, so replacing it with a no-op leaves the same log. This example has no live leak.' : 'The test passes. Redaction is called, but the event has no secret field to remove. This assertion has not tested removal of a secret.';
+          experiment.querySelector('.result-explanation').textContent = message;
+        }
+        experiment.querySelectorAll('input[name="variant"]').forEach(function (input) {
+          input.addEventListener('change', function () { if (input.checked) { mode = input.value; updateExample(); } });
+        });
+        mutationButton.addEventListener('click', function () { broken = !broken; updateExample(); });
+        updateExample();
+        experiment.querySelector('.experiment-interactive').hidden = false;
+        experiment.querySelector('.experiment-static').hidden = true;
+      }
+    }());
+  </script>
 </body>
 </html>
