@@ -13,6 +13,7 @@
 .botbench-tour .tour-header{max-width:1500px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:30px 44px 18px;gap:24px}
 .botbench-tour .brand{display:inline-flex;align-items:center;gap:9px;font-family:Manrope,system-ui,sans-serif;font-weight:800;letter-spacing:-1px;font-size:26px;min-height:44px}
 .botbench-tour .brand svg{height:33px;width:33px;fill:currentColor}
+.botbench-tour .brand .mark-b{fill:#03748F}
 .botbench-tour .header-links{display:flex;align-items:center;gap:28px;font-size:14px;font-weight:550}
 .botbench-tour .header-links a{display:inline-flex;align-items:center;min-height:44px}
 .botbench-tour .header-links a:hover{color:var(--accent)}
@@ -46,7 +47,8 @@
 .botbench-tour .chapter-copy strong{font-size:14px;font-weight:550;line-height:1.45}
 .botbench-tour .chapter-copy small{font-size:14px;font-weight:400;line-height:1.45;opacity:.7}
 .botbench-tour .sidebar-note{margin-top:auto;padding:35px 12px 0}
-.botbench-tour .small-mark{width:35px;height:35px;display:block;fill:#6b6a7a}
+.botbench-tour .small-mark{width:35px;height:35px;display:block;fill:currentColor}
+.botbench-tour .small-mark .mark-b{fill:#06B6D4}
 .botbench-tour .sidebar-note p{font-size:13px;line-height:1.65;color:#9999a4;margin:12px 0 0}
 .botbench-tour .tour-stage{min-width:0;scroll-margin-top:20px}
 .botbench-tour .stage-heading{min-height:104px;padding:25px 28px 23px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #ebebf2}

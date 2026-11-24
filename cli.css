@@ -50,7 +50,9 @@ h1{font-size:clamp(2.1rem,4vw,3rem)}
 .identity-role{margin:17px 0 0;color:var(--dim);font-size:.875rem}
 .current-build{display:flex;align-items:center;gap:12px;width:fit-content;max-width:100%;margin-top:33px;padding:15px 19px;border:1px solid var(--line);border-radius:6px;background:transparent;font-size:1rem;text-align:left}
 .current-build:hover{border-color:var(--accent);background:var(--accent-wash)}
-.build-mark{color:var(--accent);font-size:1.3rem;line-height:1}
+.build-mark{--brand-cyan:#06B6D4;width:1.3rem;height:1.3rem;flex-shrink:0;fill:currentColor}
+:root[data-theme=light] .build-mark{--brand-cyan:#03748F}
+.build-mark .mark-b{fill:var(--brand-cyan)}
 .current-build>span:nth-child(2){color:var(--muted)}
 .current-build strong{color:var(--text);font-weight:500}
 .current-build code{margin-left:20px;color:var(--accent);font-size:.8125rem}
@@ -202,7 +204,7 @@ h1{font-size:clamp(2.1rem,4vw,3rem)}
   .identity-role{font-size:.875rem;line-height:1.6;margin-top:16px}
   .current-build{width:100%;margin-top:28px;padding:14px 12px;gap:10px;font-size:.9375rem}
   .current-build code{display:none}
-  .build-mark{font-size:1.125rem}
+  .build-mark{width:1.125rem;height:1.125rem}
   .about-details{margin-top:24px}
   .about-details summary{font-size:.875rem}
   .about-details>div{padding:20px 0 0}
