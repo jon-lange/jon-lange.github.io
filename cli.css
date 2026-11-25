@@ -8,7 +8,7 @@ body{margin:0;min-height:100svh;display:flex;align-items:center;justify-content:
 button,input{font:inherit}
 button{border:0;cursor:pointer;color:inherit}
 a{color:inherit;text-decoration:none}
-button,a,input{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .16s,background .16s,border-color .16s,box-shadow .16s}
+button,a,input{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color 150ms ease-out,background-color 150ms ease-out,border-color 150ms ease-out,box-shadow 150ms ease-out}
 button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 img,svg{display:block;max-width:100%}
 code,kbd{font-family:var(--mono)}
@@ -32,7 +32,7 @@ h1{font-size:clamp(2.1rem,4vw,3rem)}
 .skill-trigger{display:inline-flex;align-items:center;min-width:0;min-height:52px;padding:3px 7px 4px 0;background:transparent;color:var(--accent);font:400 1.75rem/1.4 var(--mono);border-radius:4px;text-align:left}
 .skill-trigger:hover{color:var(--text)}
 .prompt-mark{font-size:1.5rem;color:var(--dim);margin-right:15px;font-weight:400}
-.typing-cursor{display:inline-block;width:2px;height:1.05em;margin-left:7px;background:currentColor;animation:cursor-blink 1.5s steps(1) infinite}
+.typing-cursor{display:inline-block;width:2px;height:1.05em;margin-left:7px;background:currentColor;animation:cursor-blink 1.2s steps(1) 2}
 @keyframes cursor-blink{50%{opacity:0}}
 .skill-hint{font-size:.8125rem;color:var(--dim);white-space:nowrap}
 :root:not([data-enhanced]) .skill-hint,:root:not([data-enhanced]) .theme-toggle,:root:not([data-enhanced]) .typing-cursor{visibility:hidden}
@@ -301,16 +301,14 @@ h1{font-size:clamp(2.1rem,4vw,3rem)}
 .identity-lead{max-width:32ch;font-size:clamp(1.25rem,2.7vw,1.85rem);line-height:1.38}
 .identity-role{margin-top:20px}
 .current-build{border-radius:12px;padding:18px 20px;min-height:64px}
-.current-build .build-mark{transition:transform .32s var(--ease)}
-.current-build:hover .build-mark{transform:scale(1.12)}
-.skill-trigger{transition:color .16s}
+/* The brand mark is static; the control communicates hover through its boundary. */
+.skill-trigger{transition:color 150ms ease-out}
 .skill-trigger:focus-visible{outline-offset:6px}
 .result-scroll{transition:opacity .13s ease-out}
-.result-scroll.is-transitioning{transform:none;opacity:.32}
-:root[data-enhanced] .result-output[data-view]>:first-child{animation:output-arrival .38s var(--ease) both}
-@keyframes output-arrival{from{clip-path:inset(0 0 100% 0);opacity:.55}to{clip-path:inset(0);opacity:1}}
-.project-item>img,.product-shot img{transition:filter .25s var(--ease)}
-.project-item:hover>img{filter:brightness(1.08)}
+.result-scroll.is-transitioning{transform:none;opacity:.82}
+/* Frequent CLI output swaps do not mask or slide the incoming content. */
+
+
 .project-item,.product-shot,.essay-feature,.feedback-lab{border-radius:12px}
 h1,h2,h3{letter-spacing:-.035em;text-wrap:balance}
 @media(min-width:761px){.identity{padding-block:18px 8px}.result-scroll{min-height:390px}.skill-line{padding-bottom:30px}}
@@ -342,9 +340,9 @@ body{align-items:flex-start;padding:clamp(18px,3.5vw,54px) clamp(14px,3vw,52px);
 .identity .current-build code{margin-left:8px}
 .identity .about-details{margin-top:25px}
 .identity-preview{min-width:0;display:block;align-self:center;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#191b22;transition:border-color .18s}
-.identity-preview img{display:block;width:100%;height:auto;aspect-ratio:960/330;object-fit:cover;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.identity-preview img{display:block;width:100%;height:auto;aspect-ratio:960/330;object-fit:cover}
 .identity-preview:hover,.identity-preview:focus-visible{border-color:var(--accent)}
-.identity-preview:hover img{transform:scale(1.012)}
+
 .identity-preview-meta{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:19px 22px;background:#252730;color:#f2eefb;font-size:.8rem;line-height:1.5}
 .identity-preview-meta strong{font-size:.9rem;font-weight:600}
 .identity-preview-meta>span{color:#d5c9ff;white-space:nowrap}
@@ -448,3 +446,12 @@ body{align-items:flex-start;padding:clamp(18px,3.5vw,54px) clamp(14px,3vw,52px);
 .about-details>div{padding-left:18px}
 .outline-badge{font-size:max(.75rem,12px)}
 .timeline-bar{background:var(--panel)}
+
+/* Better-motion / better-ui: state transitions, no decorative displacement. */
+:root[data-theme-switching] *, :root[data-theme-switching] *::before, :root[data-theme-switching] *::after { transition: none !important; }
+@media (hover: none) {
+ .quick-nav button:not(.is-active):hover { background: transparent; color: var(--muted); }
+ .identity-preview:not(:focus-visible):hover { border-color: var(--line); }
+ .current-build:not(:focus-visible):hover { background: transparent; border-color: var(--line); }
+}
+@media (prefers-reduced-motion: reduce) { .result-scroll.is-transitioning { opacity: 1; } }

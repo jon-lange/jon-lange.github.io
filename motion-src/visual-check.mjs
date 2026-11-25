@@ -14,6 +14,18 @@ for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:3
  await page.goto(base+'/',{waitUntil:'networkidle'});
  await page.locator('#skill-trigger:not([disabled])').waitFor();
  await page.screenshot({path:new URL(spec.name+'-about.png',out).pathname,fullPage:true});
+ // Real navigation, rather than only direct hash routes: keyboard and pointer.
+ await page.locator('.quick-nav button[data-command="/work"]').click();
+ await page.locator('#result-output[data-view="work"]').waitFor();
+ assert.equal(await page.locator('#active-skill').textContent(),'/work');
+ await page.locator('.quick-nav button[data-command="/langspan"]').click();
+ await page.locator('.quick-nav button[data-command="/botbench"]').click();
+ await page.locator('#result-output[data-view="botbench"]').waitFor();
+ assert.equal(await page.locator('#active-skill').textContent(),'/botbench');
+ await page.goBack();
+ await page.locator('#result-output[data-view="langspan"]').waitFor();
+ await page.goto(base+'/',{waitUntil:'networkidle'});
+ await page.locator('#skill-trigger:not([disabled])').waitFor();
  if(spec.width<=500){
    await page.getByRole('button',{name:'More skills'}).click();
    await page.locator('#result-output[data-view="help"]').waitFor();
