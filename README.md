@@ -1,7 +1,7 @@
 # jon-lange.github.io
 
 Jon Lange’s personal portfolio, led by
-[LangSpan](https://langspan.github.io/) as the flagship independent product.
+[LangSpan](https://langspan.dev/) as the flagship independent product.
 One terminal is the front door: `/about` is already typed, and choosing a skill
 retypes the command before showing its output. `/langspan` introduces the
 current project. Botbench's recorded product tour and a separate historical
