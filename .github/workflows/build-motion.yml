@@ -1,13 +1,14 @@
 name: build motion and visual review
 on:
   push:
-    branches: [main, design/terminal-motion-overhaul]
+    branches: [main, design/terminal-motion-overhaul, design/motion-standard-v1]
     paths:
       - 'motion-src/**'
       - 'template.html'
       - 'tour.html'
       - 'archive.template.html'
       - 'cli.css'
+      - 'cli.js'
       - 'tour.css'
       - 'archive.css'
       - 'assets/langspan-living-canvas.svg'
