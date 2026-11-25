@@ -44,3 +44,17 @@ h1>span{color:var(--accent)}
 .archive-footer a{white-space:nowrap}
 @media(max-width:640px){.archive-wrap{width:calc(100% - 28px);padding-top:14px}.archive-header{margin-bottom:14px;gap:12px}.archive-address{font-size:.6875rem}.archive-shell{padding:28px 22px 12px;border-radius:9px}.eyebrow{font-size:.6875rem;line-height:1.7}.archive-source{font-size:.875rem}.research-description{font-size:.9375rem}.archive-instructions{font-size:.8125rem}.study summary{grid-template-columns:24px minmax(0,1fr) 14px;gap:8px 12px;padding:19px 0}.study-number{align-self:start;padding-top:3px}.study-name{font-size:.9375rem}.study summary::after{grid-column:3;grid-row:1}.verdict{grid-column:2;justify-self:start;font-size:.6875rem}.study-body{padding:0 0 22px}.study-body dl>div{grid-template-columns:1fr;gap:4px;padding:12px 0}.study-body dd{font-size:.875rem}.archive-footer{display:block;padding-inline:4px}.archive-footer a{display:inline-flex;align-items:center;min-height:44px;margin-top:6px}}
 @media(max-width:360px){.archive-address{display:none}.archive-shell{padding-inline:18px}h1{font-size:1.9rem}}
+
+
+/* Quiet reading surface, aligned with the portfolio terminal. */
+:root{--page:#111216;--surface:#191b21;--panel:#20232b;--line:#363a46;--accent:#c5b8ff}
+.archive-wrap{width:min(1040px,calc(100% - 56px));padding-top:40px}
+.archive-shell{border-radius:16px;padding:clamp(28px,5vw,60px)}
+h1{font-size:clamp(2.25rem,5vw,4rem);letter-spacing:-.035em;text-wrap:balance}
+.research-description{max-width:68ch}
+.study summary{min-height:80px;transition:color .18s,background .18s}
+.study summary::after{transition:transform .2s ease-out}
+.study[open] summary::after{transform:rotate(180deg)}
+.study-body dl>div{border-color:var(--line)}
+@media(max-width:640px){.archive-wrap{width:calc(100% - 28px);padding-top:14px}.archive-shell{padding:28px 22px 16px;border-radius:12px}}
+@media(prefers-reduced-motion:reduce){.study summary,.study summary::after{transition:none}}

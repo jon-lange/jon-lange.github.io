@@ -288,3 +288,31 @@ h1{font-size:clamp(2.1rem,4vw,3rem)}
 }
 @media(max-width:359px){body{padding-inline:10px}.skill-line{padding-inline:20px}.result-scroll{padding-inline:20px}.identity h1{font-size:2.55rem}.current-build{font-size:.875rem;padding-inline:10px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}.typing-cursor{animation:none}.result-scroll.is-transitioning{transform:none}}
+
+
+/* Experience refinement: the command is the navigation, the output is the work. */
+:root{--page:#111216;--surface:#191b21;--panel:#20232b;--line:#363a46;--accent:#c5b8ff;--ease:cubic-bezier(.16,1,.3,1)}
+:root[data-theme=light]{--page:#efedf3;--surface:#fff;--panel:#f5f3f8;--line:#d8d4e1;--accent:#6247b6}
+.terminal{width:min(1120px,100%);border-radius:16px;box-shadow:none}
+.terminal-chrome{min-height:58px;padding-inline:clamp(18px,4vw,48px)}
+.skill-line{padding-inline:clamp(24px,5vw,64px);padding-top:34px}
+.result-scroll{padding-inline:clamp(24px,5vw,64px);padding-bottom:48px}
+.identity h1{font-size:clamp(3rem,7vw,5.5rem);letter-spacing:-.04em;line-height:1.04}
+.identity-lead{max-width:32ch;font-size:clamp(1.25rem,2.7vw,1.85rem);line-height:1.38}
+.identity-role{margin-top:20px}
+.current-build{border-radius:12px;padding:18px 20px;min-height:64px}
+.current-build .build-mark{transition:transform .32s var(--ease)}
+.current-build:hover .build-mark{transform:scale(1.12)}
+.skill-trigger{transition:color .16s}
+.skill-trigger:focus-visible{outline-offset:6px}
+.result-scroll{transition:opacity .13s ease-out}
+.result-scroll.is-transitioning{transform:none;opacity:.32}
+:root[data-enhanced] .result-output[data-view]>:first-child{animation:output-arrival .38s var(--ease) both}
+@keyframes output-arrival{from{clip-path:inset(0 0 100% 0);opacity:.55}to{clip-path:inset(0);opacity:1}}
+.project-item>img,.product-shot img{transition:filter .25s var(--ease)}
+.project-item:hover>img{filter:brightness(1.08)}
+.project-item,.product-shot,.essay-feature,.feedback-lab{border-radius:12px}
+h1,h2,h3{letter-spacing:-.035em;text-wrap:balance}
+@media(min-width:761px){.identity{padding-block:18px 8px}.result-scroll{min-height:390px}.skill-line{padding-bottom:30px}}
+@media(max-width:480px){.terminal{border-radius:12px}.identity h1{font-size:clamp(2.55rem,12vw,3.6rem)}.identity-lead{font-size:1.25rem}.current-build{padding:14px 12px}.result-scroll{padding-bottom:30px}.skill-line{padding-top:24px}}
+@media(prefers-reduced-motion:reduce){:root[data-enhanced] .result-output[data-view]>:first-child{animation:none}.current-build:hover .build-mark{transform:none}}
