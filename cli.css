@@ -432,3 +432,14 @@ body{align-items:flex-start;padding:clamp(18px,3.5vw,54px) clamp(14px,3vw,52px);
 .workflow-disclosure[open] summary::before{content:'−'}
 .workflow-disclosure .product-shot{margin-top:17px!important}
 @media(max-width:850px){.langspan-afterword{margin-top:24px}.workflow-disclosure{padding:13px 15px}}
+
+/* At phone sizes keep the core destinations visible, with a labelled More route. */
+@media(min-width:501px){.quick-nav button[data-command="/help"]{display:none}}
+@media(max-width:500px){
+ .quick-nav{padding-inline:8px;gap:0}
+ .quick-nav button{padding-inline:9px}
+ .quick-nav button[data-command="/writing"],
+ .quick-nav button[data-command="/lab"],
+ .quick-nav button[data-command="/contact"]{display:none}
+ .quick-nav button[data-command="/help"]{display:block;margin-left:auto}
+}

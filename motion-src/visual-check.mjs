@@ -14,6 +14,18 @@ for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:3
  await page.goto(base+'/',{waitUntil:'networkidle'});
  await page.locator('#skill-trigger:not([disabled])').waitFor();
  await page.screenshot({path:new URL(spec.name+'-about.png',out).pathname,fullPage:true});
+ if(spec.width<=500){
+   await page.getByRole('button',{name:'More skills'}).click();
+   await page.locator('#result-output[data-view="help"]').waitFor();
+   await page.screenshot({path:new URL(spec.name+'-all-skills.png',out).pathname,fullPage:true});
+ }
+ if(spec.name!=='compact'){
+   for(const route of ['work','botbench','writing','lab','contact']){
+     await page.goto(base+'/#'+route,{waitUntil:'networkidle'});
+     await page.locator('#result-output[data-view="'+route+'"]').waitFor();
+     if(route==='work'||route==='botbench')await page.screenshot({path:new URL(spec.name+'-'+route+'.png',out).pathname,fullPage:true});
+   }
+ }
  await page.goto(base+'/#langspan',{waitUntil:'networkidle'});
  try { await page.locator('.ls-scene').waitFor({timeout:15000}); }
  catch(error) {
@@ -61,14 +73,19 @@ await reduced.goto(base+'/#langspan',{waitUntil:'networkidle'});
 await reduced.locator('.ls-scene[data-step="4"]').waitFor({timeout:15000});
 await reduced.screenshot({path:new URL('reduced-motion-poster.png',out).pathname,fullPage:true});
 await reduced.close();
-for(const [name,path] of [['botbench-tour','tour.html#review'],['research-archive','archive.html']]){
- const p=await browser.newPage({viewport:{width:390,height:844}});
- p.on('pageerror',e=>errors.push(name+': '+e.message));
- await p.goto(base+'/'+path,{waitUntil:'networkidle'});
- await p.screenshot({path:new URL(name+'-mobile.png',out).pathname,fullPage:true});
- if(name==='research-archive'){await p.locator('.study summary').first().click();assert.equal(await p.locator('.study[open]').count(),1)}
- else assert.ok(await p.locator('.chapter').count()>2);
- await p.close();
+for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844}]){
+ for(const [name,path] of [['botbench-tour','tour.html#review'],['research-archive','archive.html']]){
+   const p=await browser.newPage({viewport:{width:spec.width,height:spec.height}});
+   p.on('pageerror',e=>errors.push(name+'-'+spec.name+': '+e.message));
+   await p.goto(base+'/'+path,{waitUntil:'networkidle'});
+   await p.screenshot({path:new URL(name+'-'+spec.name+'.png',out).pathname,fullPage:true});
+   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false,name+'-'+spec.name+' horizontal overflow');
+   if(name==='research-archive'){
+     await p.locator('.study summary').first().click();
+     assert.equal(await p.locator('.study[open]').count(),1,'archive disclosure opens');
+   } else assert.ok(await p.locator('.chapter').count()>2,'tour chapters');
+   await p.close();
+ }
 }
 await browser.close();
 assert.deepEqual(errors,[],'browser errors');
