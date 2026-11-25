@@ -57,8 +57,13 @@ jobs:
       - name: Impeccable design detector
         continue-on-error: true
         run: |
-          npx --yes impeccable detect --json cli.css tour.css archive.css > /tmp/impeccable.json
+          set +e
+          npx --yes impeccable detect --json index.html tour.html archive.html > /tmp/impeccable.json
+          code=$?
+          set -e
           cat /tmp/impeccable.json
+          echo "Impeccable detector exit code: $code (0 = none, 2 = findings)"
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
       - name: Publish validated static stage bundle to this branch
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
