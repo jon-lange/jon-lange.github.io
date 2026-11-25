@@ -181,6 +181,11 @@ cd ../jon-lange.github.io && python3 build.py
 
 ## Design and accessibility
 
+Page and UI work uses [Impeccable](https://github.com/pbakaus/impeccable)
+for design critique, focused refinement and final review.
+[AGENTS.md](AGENTS.md) records that workflow alongside this portfolio's
+existing identity, build process and product evidence.
+
 The homepage is one restrained terminal, using charcoal surfaces and lilac
 accents by default, with a light theme available. The archive shares that
 palette and a simple route back to `/lab`. Skill outputs keep the flagship
