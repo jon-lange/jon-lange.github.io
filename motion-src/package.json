@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "esbuild main.tsx --bundle --minify --format=iife --target=es2020 --outdir=../assets --entry-names=langspan-stage",
+    "build": "esbuild main.tsx --bundle --jsx=automatic --minify --format=iife --target=es2020 --outdir=../assets --entry-names=langspan-stage",
     "check": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
