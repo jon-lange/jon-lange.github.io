@@ -36,7 +36,14 @@ for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:3
  await page.waitForTimeout(500);
  await page.screenshot({path:new URL(spec.name+'-langspan-start.png',out).pathname,fullPage:true});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2),false,spec.name+' overflow');
- await page.waitForTimeout(2500);
+ if(spec.name==='desktop') {
+   let elapsed=500;
+   for(const mark of [1200,2400,3500,4700,6300,8000]){
+     await page.waitForTimeout(mark-elapsed);
+     await page.locator('.ls-stage-outer').screenshot({path:new URL('desktop-motion-'+String(mark).padStart(4,'0')+'.png',out).pathname});
+     elapsed=mark;
+   }
+ } else await page.waitForTimeout(2500);
  await page.screenshot({path:new URL(spec.name+'-langspan-mid.png',out).pathname,fullPage:true});
  await page.getByRole('button',{name:'Show outcome'}).click();
  await page.locator('.ls-scene[data-step="4"]').waitFor();

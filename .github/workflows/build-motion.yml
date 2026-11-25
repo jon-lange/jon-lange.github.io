@@ -11,6 +11,7 @@ on:
       - 'tour.css'
       - 'archive.css'
       - 'assets/langspan-living-canvas.svg'
+      - 'assets/langspan-living-mobile.svg'
       - '.github/workflows/build-motion.yml'
   workflow_dispatch:
 

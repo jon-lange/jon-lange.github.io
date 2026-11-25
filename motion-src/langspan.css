@@ -63,16 +63,16 @@
 .ls-agent-head{height:40px;padding:0 13px}
 .ls-agent-title{font-size:13px}
 .ls-agent-status{font-size:10px}
-.ls-path{padding:8px 13px;font-size:10px}
+.ls-path{padding:8px 13px;font-size:11px}
 .ls-path-after{top:49px;left:13px}
-.ls-editor{padding:7px 8px 0 0;font-size:10px;line-height:1.4}
+.ls-editor{padding:7px 8px 0 0;font-size:12px;line-height:1.4}
 .ls-editor>div{grid-template-columns:26px minmax(0,1fr)}
 .ls-editor em{padding-right:7px}
-.ls-agent-foot{padding:7px 13px;font-size:9px}
+.ls-agent-foot{padding:7px 13px;font-size:10px}
 .ls-connector{top:234px;left:50%;width:30px;height:30px;margin-left:-15px;transform:rotate(90deg)}
 .ls-connector span{width:14px}
 .ls-response{margin:10px 17px 0;padding:8px 10px;min-height:44px}
-.ls-response-signal{font-size:10px}.ls-response-outcome{font-size:9px}
+.ls-response-signal{font-size:11px}.ls-response-outcome{font-size:9px}
 .ls-bottomline{font-size:8px;padding:12px 17px 0}
 }
 @media(prefers-reduced-motion:reduce){.ls-scene *{animation:none!important;transition:none!important}}

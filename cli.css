@@ -419,3 +419,16 @@ body{align-items:flex-start;padding:clamp(18px,3.5vw,54px) clamp(14px,3vw,52px);
  .identity-preview img{transition:none!important;transform:none!important}
  .quick-nav button{transition:none!important}
 }
+
+/* The story's mobile art is a separately composed page, not shrunk desktop text. */
+.identity-preview picture{display:block}
+@media(max-width:700px){.identity-preview picture img{aspect-ratio:358/520;height:auto;width:100%;object-fit:contain}}
+.langspan-afterword{margin:30px 0 22px;max-width:790px;color:var(--text)}
+.langspan-afterword p{font-size:.98rem;line-height:1.65}
+.workflow-disclosure{margin:24px 0 0;max-width:1040px;padding:17px 20px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.workflow-disclosure summary{color:var(--accent);font-size:.89rem;cursor:pointer;font-weight:600;min-height:34px;display:flex;align-items:center;list-style:none;gap:10px}
+.workflow-disclosure summary::-webkit-details-marker{display:none}
+.workflow-disclosure summary::before{content:'+';font:500 1.2rem/1 var(--mono)}
+.workflow-disclosure[open] summary::before{content:'−'}
+.workflow-disclosure .product-shot{margin-top:17px!important}
+@media(max-width:850px){.langspan-afterword{margin-top:24px}.workflow-disclosure{padding:13px 15px}}
