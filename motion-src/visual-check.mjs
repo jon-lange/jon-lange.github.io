@@ -8,12 +8,30 @@ const browser=await chromium.launch({headless:true});
 const errors=[];
 for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844},{name:'compact',width:358,height:760}]){
  const page=await browser.newPage({viewport:{width:spec.width,height:spec.height},deviceScaleFactor:1});
- page.on('pageerror',e=>errors.push(spec.name+': '+e.message));
+ page.on('pageerror',e=>{errors.push(spec.name+': '+e.message);console.log('PAGE ERROR',spec.name,e.message);});
+ page.on('console',msg=>{if(msg.type()==='error')console.log('CONSOLE ERROR',spec.name,msg.text());});
+ page.on('response',response=>{if(response.status()>=400)console.log('HTTP ERROR',spec.name,response.status(),response.url());});
  await page.goto(base+'/',{waitUntil:'networkidle'});
  await page.locator('#skill-trigger:not([disabled])').waitFor();
  await page.screenshot({path:new URL(spec.name+'-about.png',out).pathname,fullPage:true});
  await page.goto(base+'/#langspan',{waitUntil:'networkidle'});
- await page.locator('.ls-scene').waitFor({timeout:15000});
+ try { await page.locator('.ls-scene').waitFor({timeout:15000}); }
+ catch(error) {
+   const state=await page.evaluate(()=>({
+     url:location.href,
+     title:document.title,
+     view:document.querySelector('#result-output')?.dataset.view,
+     mountCount:document.querySelectorAll('[data-langspan-stage]').length,
+     stageCount:document.querySelectorAll('.ls-scene').length,
+     mountHTML:document.querySelector('[data-langspan-stage]')?.outerHTML.slice(0,2200),
+     scripts:[...document.scripts].map(s=>({src:s.src,readyState:s.readyState})),
+     rootText:document.querySelector('#result-output')?.textContent.slice(0,500)
+   }));
+   console.log('STAGE DIAG',spec.name,JSON.stringify(state,null,2));
+   console.log('ERRORS',errors);
+   await page.screenshot({path:new URL(spec.name+'-stage-failure.png',out).pathname,fullPage:true});
+   throw error;
+ }
  await page.locator('.ls-stage-outer').scrollIntoViewIfNeeded();
  await page.waitForTimeout(500);
  await page.screenshot({path:new URL(spec.name+'-langspan-start.png',out).pathname,fullPage:true});
