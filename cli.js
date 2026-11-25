@@ -207,6 +207,10 @@
       closePicker('selection');
       trigger.focus({ preventScroll: true });
       setRoute(skill);
+      if (currentSkill && currentSkill.view === skill.view && skill.view !== 'duck') {
+        if (source === 'keyboard') result.focus({ preventScroll: true });
+        return;
+      }
       var token = navigationToken;
       var startText = activeSkill.textContent || (currentSkill ? currentSkill.command : '/about');
       var focusResult = source === 'keyboard';
@@ -230,7 +234,8 @@
       var frames = [];
       for (var length = startText.length - 1; length >= 0; length--) frames.push(startText.slice(0, length));
       for (var position = 1; position <= skill.command.length; position++) frames.push(skill.command.slice(0, position));
-      var duration = 360;
+      // A command is high-frequency navigation, not a product film.
+      var duration = 140;
       frames.forEach(function (frame, index) {
         pendingTimers.push(window.setTimeout(function () {
           if (token !== navigationToken) return;
@@ -252,7 +257,11 @@
 
     function toggleTheme() {
       var light = document.documentElement.dataset.theme !== 'light';
-      document.documentElement.dataset.theme = light ? 'light' : 'dark';
+      var root = document.documentElement;
+      root.setAttribute('data-theme-switching', '');
+      root.dataset.theme = light ? 'light' : 'dark';
+      void root.offsetHeight;
+      window.requestAnimationFrame(function () { root.removeAttribute('data-theme-switching'); });
       updateThemeButton();
       status.textContent = (light ? 'Light' : 'Dark') + ' theme enabled.';
     }
