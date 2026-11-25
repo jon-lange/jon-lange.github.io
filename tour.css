@@ -152,3 +152,70 @@
 .botbench-tour .chapter{transition:background .18s,color .18s,border-color .18s}
 .botbench-tour .header-build{border-color:var(--line)}
 @media(prefers-reduced-motion:reduce){.botbench-tour .chapter{transition:none}}
+
+
+/* Experience layer: the actual recorded product screen is the hero. */
+.botbench-tour{
+  --paper:#efedf3;--ink:#25242d;--accent:#6247b6;--accent-soft:#efebf7;--side:#17191f;--line:#d7d3e0;
+  background:var(--paper);color:var(--ink)
+}
+.botbench-tour .tour-header{max-width:1520px;padding:clamp(20px,2.8vw,42px) clamp(20px,4vw,70px) 12px;border-bottom:1px solid #d9d5e2}
+.botbench-tour main{max-width:1520px;padding:0 clamp(20px,4vw,70px) 50px}
+.botbench-tour .tour-intro{padding:clamp(45px,7vw,104px) 0 clamp(31px,4vw,58px);align-items:end;gap:60px}
+.botbench-tour h1{font-size:clamp(3.5rem,6.5vw,7.7rem);font-weight:750;letter-spacing:-.04em;line-height:.99;max-width:850px;text-wrap:balance}
+.botbench-tour .tour-intro .eyebrow{font-size:12px;letter-spacing:.05em;color:#625c72;font-family:'DM Sans',sans-serif}
+.botbench-tour .intro-side{max-width:340px;padding-bottom:10px}
+.botbench-tour .intro-side>p:first-child{font-size:clamp(1.06rem,1.4vw,1.32rem);color:#4c4b59;line-height:1.5}
+.botbench-tour .recording-label{font-size:12px;color:#5e5c6d}
+.botbench-tour .tour-shell{border:1px solid #cbc6d5;border-radius:12px;background:#fff;box-shadow:0 18px 50px -45px #1e1a3080}
+.botbench-tour .tour-sidebar{background:#1b1c24;padding:30px 14px 28px}
+.botbench-tour .sidebar-heading{padding-bottom:27px;color:#f3efff}
+.botbench-tour .chapter-nav{gap:6px}
+.botbench-tour .chapter{position:relative;border-radius:6px;min-height:80px;transition:background .19s cubic-bezier(.16,1,.3,1),color .19s}
+.botbench-tour .chapter:hover{background:#343240}
+.botbench-tour .chapter.active{background:#373347;border-color:#83769e}
+.botbench-tour .chapter.active .chapter-number{color:#d9ceff}
+.botbench-tour .stage-heading{min-height:120px;padding:30px clamp(23px,3vw,42px)}
+.botbench-tour .stage-heading h2{font-size:clamp(1.4rem,2.2vw,2.1rem);line-height:1.18;font-weight:700;letter-spacing:-.027em}
+.botbench-tour .step-kicker{font-size:12px;color:#6350b2}
+.botbench-tour .screen-layout{background:#f8f7fa}
+.botbench-tour .screen-column{min-width:0}
+.botbench-tour .screen-figure{overflow:visible}
+.botbench-tour .screen-figure img{max-width:100%;height:auto}
+.botbench-tour .detail-panel{border-left-color:#ddd9e6}
+.botbench-tour .detail-content h3{letter-spacing:-.022em}
+.botbench-tour .detail-content p{line-height:1.58}
+.botbench-tour .hotspot{transition:transform .2s cubic-bezier(.16,1,.3,1),background .2s,border-color .2s}
+.botbench-tour .hotspot:hover{transform:scale(1.075)}
+.botbench-tour .tour-controls{background:#fff;border-top:1px solid #e7e3ed}
+.botbench-tour .next-button,.botbench-tour .primary-link{background:#6247b6;box-shadow:none}
+.botbench-tour .next-button:hover,.botbench-tour .primary-link:hover{background:#4b358e}
+.botbench-tour .finish-panel{background:#f8f7fa}
+.botbench-tour .finish-panel h3{font-weight:750;letter-spacing:-.035em}
+.botbench-tour .finish-image-button{transform:none}
+.botbench-tour .finish-image-button:hover{transform:scale(1.015)}
+.botbench-tour :is(button,a):focus-visible{outline:3px solid #6c52c5;outline-offset:3px}
+@media(max-width:950px){
+ .botbench-tour .tour-sidebar{padding:12px}
+ .botbench-tour .chapter{min-height:64px}
+ .botbench-tour .tour-intro{padding:54px 0 30px;gap:25px}
+ .botbench-tour h1{font-size:clamp(3rem,7vw,5.8rem)}
+ .botbench-tour .stage-heading{min-height:94px}
+}
+@media(max-width:700px){
+ .botbench-tour .tour-header{padding:18px 18px 10px}
+ .botbench-tour main{padding:0 14px 36px}
+ .botbench-tour .tour-intro{padding:44px 5px 26px}
+ .botbench-tour h1{font-size:clamp(3.2rem,11vw,4.2rem);letter-spacing:-.035em}
+ .botbench-tour .intro-side{max-width:34ch;padding-top:22px}
+ .botbench-tour .intro-side>p:first-child{font-size:1rem}
+ .botbench-tour .tour-shell{border-radius:10px}
+ .botbench-tour .tour-sidebar{padding:9px}
+ .botbench-tour .chapter{min-height:60px}
+ .botbench-tour .stage-heading{padding:22px 18px}
+ .botbench-tour .stage-heading h2{font-size:1.5rem}
+ .botbench-tour .detail-panel{border-left:0;border-top:1px solid #ddd9e6}
+ .botbench-tour .finish-panel{padding:34px 22px;background:#f8f7fa}
+ .botbench-tour .finish-panel h3{font-size:2.4rem}
+}
+@media(prefers-reduced-motion:reduce){.botbench-tour .hotspot:hover,.botbench-tour .finish-image-button:hover{transform:none}.botbench-tour .hotspot,.botbench-tour .chapter{transition:none}}

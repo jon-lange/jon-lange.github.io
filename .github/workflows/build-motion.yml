@@ -1,0 +1,70 @@
+name: build motion and visual review
+on:
+  push:
+    branches: [main, design/terminal-motion-overhaul]
+    paths:
+      - 'motion-src/**'
+      - 'template.html'
+      - 'tour.html'
+      - 'archive.template.html'
+      - 'cli.css'
+      - 'tour.css'
+      - 'archive.css'
+      - 'assets/langspan-living-canvas.svg'
+      - '.github/workflows/build-motion.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  stage-and-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: true }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install pinned original Stageshow kit
+        run: |
+          git clone https://github.com/benjitaylor/skills.git /tmp/benji-skills
+          git -C /tmp/benji-skills checkout 299140fafd08df55a9c234e610c3f64af3f45531
+          cp -r /tmp/benji-skills/stageshow/kit motion-src/kit
+          cp /tmp/benji-skills/stageshow/NOTICE.md motion-src/STAGESHOW-NOTICE.md
+      - name: Build original React Stageshow to static Pages assets
+        run: |
+          npm install --prefix motion-src --no-audit --no-fund
+          npm run --prefix motion-src build
+          python3 build.py
+          python3 build.py --check
+      - name: Install headless browser
+        run: npx --prefix motion-src playwright install --with-deps chromium
+      - name: Browser checks and motion frames
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 >/tmp/portfolio-http.log 2>&1 &
+          node motion-src/visual-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: portfolio-visual-evidence
+          path: motion-src/screenshots/
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Impeccable design detector
+        continue-on-error: true
+        run: |
+          npx --yes impeccable detect --json cli.css tour.css archive.css > /tmp/impeccable.json
+          cat /tmp/impeccable.json
+      - name: Publish validated static stage bundle to this branch
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html archive.html assets/langspan-stage.js assets/langspan-stage.css
+          if ! git diff --cached --quiet; then
+            git commit -m "build: publish validated Stageshow assets"
+            git push
+          fi

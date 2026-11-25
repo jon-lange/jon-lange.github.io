@@ -1,0 +1,50 @@
+import { chromium } from 'playwright';
+import { mkdir } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const base='http://127.0.0.1:8123';
+const out=new URL('./screenshots/',import.meta.url);
+await mkdir(out,{recursive:true});
+const browser=await chromium.launch({headless:true});
+const errors=[];
+for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844},{name:'compact',width:358,height:760}]){
+ const page=await browser.newPage({viewport:{width:spec.width,height:spec.height},deviceScaleFactor:1});
+ page.on('pageerror',e=>errors.push(spec.name+': '+e.message));
+ await page.goto(base+'/',{waitUntil:'networkidle'});
+ await page.locator('#skill-trigger:not([disabled])').waitFor();
+ await page.screenshot({path:new URL(spec.name+'-about.png',out).pathname,fullPage:true});
+ await page.goto(base+'/#langspan',{waitUntil:'networkidle'});
+ await page.locator('.ls-scene').waitFor({timeout:15000});
+ await page.locator('.ls-stage-outer').scrollIntoViewIfNeeded();
+ await page.waitForTimeout(500);
+ await page.screenshot({path:new URL(spec.name+'-langspan-start.png',out).pathname,fullPage:true});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2),false,spec.name+' overflow');
+ await page.waitForTimeout(2500);
+ await page.screenshot({path:new URL(spec.name+'-langspan-mid.png',out).pathname,fullPage:true});
+ await page.getByRole('button',{name:'Show outcome'}).click();
+ await page.locator('.ls-scene[data-step="4"]').waitFor();
+ await page.screenshot({path:new URL(spec.name+'-langspan-outcome.png',out).pathname,fullPage:true});
+ await page.getByRole('button',{name:'Replay demonstration'}).click();
+ await page.locator('.ls-scene[data-step="0"]').waitFor();
+ await page.locator('#theme-toggle').click();
+ assert.equal(await page.locator('html[data-theme="light"]').count(),1,'theme');
+ await page.screenshot({path:new URL(spec.name+'-light.png',out).pathname,fullPage:true});
+ await page.close();
+}
+const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+reduced.on('pageerror',e=>errors.push('reduced: '+e.message));
+await reduced.goto(base+'/#langspan',{waitUntil:'networkidle'});
+await reduced.locator('.ls-scene[data-step="4"]').waitFor({timeout:15000});
+await reduced.screenshot({path:new URL('reduced-motion-poster.png',out).pathname,fullPage:true});
+await reduced.close();
+for(const [name,path] of [['botbench-tour','tour.html#review'],['research-archive','archive.html']]){
+ const p=await browser.newPage({viewport:{width:390,height:844}});
+ p.on('pageerror',e=>errors.push(name+': '+e.message));
+ await p.goto(base+'/'+path,{waitUntil:'networkidle'});
+ await p.screenshot({path:new URL(name+'-mobile.png',out).pathname,fullPage:true});
+ if(name==='research-archive'){await p.locator('.study summary').first().click();assert.equal(await p.locator('.study[open]').count(),1)}
+ else assert.ok(await p.locator('.chapter').count()>2);
+ await p.close();
+}
+await browser.close();
+assert.deepEqual(errors,[],'browser errors');
+console.log('PASS: desktop, mobile, compact, stage replay/outcome, light theme, reduced motion, Botbench tour, archive.');
