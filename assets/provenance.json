@@ -70,5 +70,37 @@
       "copied_without_modification": true,
       "source_commit": "32d41cdd4d99972e9119e6a55d8478c38c3c09ae"
     }
+  ],
+  "langspan_assets": [
+    {
+      "file": "assets/langspan-icon-dark.svg",
+      "kind": "brand icon",
+      "source_repository": "Langspan/langspan.github.io",
+      "source_path": "assets/brand/langspan-icon-dark.svg",
+      "source_commit": "a348e232234848eabb4117380b88c52c48487f3d",
+      "source_git_blob_sha": "a093a6df6ed72b1af11bcb68464bd1dff473353a",
+      "sha256": "f255106ada3287a668e514b2563a1154bc95605ed842d4b6635bb87d1c0a9198",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/langspan-icon-light.svg",
+      "kind": "brand icon",
+      "source_repository": "Langspan/langspan.github.io",
+      "source_path": "assets/brand/langspan-icon-light.svg",
+      "source_commit": "a348e232234848eabb4117380b88c52c48487f3d",
+      "source_git_blob_sha": "fc092556c3082028e99309383c5439319b8e3ff5",
+      "sha256": "04b6387600f8d80ba7aa3f5767473ce45b4b9f21cc0bd8e186233f6e3d23d77b",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/langspan-overview.svg",
+      "kind": "authored workflow illustration",
+      "source_repository": "Langspan/langspan.github.io",
+      "source_path": "assets/product/langspan-overview.svg",
+      "source_commit": "a348e232234848eabb4117380b88c52c48487f3d",
+      "source_git_blob_sha": "81aa2617e43c967f21368212c9d39694c9e09236",
+      "sha256": "d078fa1c9c0f4599109297c984d2081017752a0bf554e2a8ac4228e7c8ade7bc",
+      "copied_without_modification": true
+    }
   ]
 }
