@@ -49,3 +49,7 @@ The CLI source scan is not a guarantee of visual quality, browser compatibility 
 **SHIP**, conditional on final CI and GitHub Pages publication. No P0 or P1 visual issues remain in the inspected browser matrix. Copyright notices from the original Stageshow are preserved separately under third_party/stageshow.
 
 Questions skipped: user requested end-to-end completion, not an interactive critique checkpoint.
+
+## Detector remediation
+
+The final HTML detector identified low-contrast secondary text in the tour, narrow record insets, and decorative legacy effects; these were remediated in the source styles. The generated Stageshow kit also contains unused upstream background-look CSS; the actual staged scene uses an authored solid charcoal surface, not the unused radial/grid presets. Detector output is recorded in CI and residual source findings are not silently treated as a clean scan.

@@ -98,3 +98,8 @@ body{background:var(--page)}
  .study-body dd{font-size:.95rem}
 }
 @media(prefers-reduced-motion:reduce){.study-body{animation:none}.study summary{transition:none}}
+
+/* Impeccable: link hover contrast, footnote sizing and record edge padding. */
+.skip-link:hover,.skip-link:focus-visible{color:var(--page)}
+.records{padding-bottom:16px}
+@media(max-width:640px){.archive-address,.eyebrow,.verdict{font-size:.75rem}}

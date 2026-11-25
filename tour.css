@@ -68,11 +68,11 @@
 .botbench-tour #tour-image{display:block;width:100%;height:auto;mix-blend-mode:multiply}
 .botbench-tour .screen-image-wrap.is-changing{animation:screen-enter .27s ease-out}
 .botbench-tour .hotspots{position:absolute;inset:0;pointer-events:none}
-.botbench-tour .hotspot{position:absolute;transform:translate(-50%,-50%);height:37px;min-width:37px;padding:0;border-radius:50%;border:2px solid #fff;background:#7a78eb;color:#fff;box-shadow:0 2px 9px #24207835;font-size:14px;font-weight:700;pointer-events:auto;z-index:2;transition:background .18s,box-shadow .18s}
+.botbench-tour .hotspot{position:absolute;transform:translate(-50%,-50%);height:37px;min-width:37px;padding:0;border-radius:50%;border:2px solid #fff;background:#7a78eb;color:#fff;box-shadow:0 2px 9px #11111730;font-size:14px;font-weight:700;pointer-events:auto;z-index:2;transition:background .18s,box-shadow .18s}
 .botbench-tour .hotspot::before{content:'';position:absolute;inset:-8px;border:1px solid #7875ed55;border-radius:50%;pointer-events:none;transition:inset .18s}
-.botbench-tour .hotspot.active{background:var(--accent);box-shadow:0 0 0 5px #4947e820,0 3px 12px #24207845}
+.botbench-tour .hotspot.active{background:var(--accent);box-shadow:0 0 0 5px #12121a20,0 3px 12px #11111742}
 .botbench-tour .hotspot.active::before{inset:-10px;border-color:#4947e870}
-.botbench-tour .hotspot:hover{background:#3532cf;box-shadow:0 0 0 7px #4947e820,0 3px 12px #24207845}
+.botbench-tour .hotspot:hover{background:#3532cf;box-shadow:0 0 0 7px #12121a20,0 3px 12px #11111742}
 .botbench-tour .screen-figure figcaption{font-size:12px;line-height:1.5;color:#878694;padding:14px 22px 4px;max-width:650px}
 .botbench-tour .detail-panel{position:relative;padding:30px 24px 24px;background:#fff;border-left:1px solid #e6e6ef;display:flex;flex-direction:column;align-items:flex-start}
 .botbench-tour .detail-panel::before{content:'';position:absolute;top:74px;left:-6px;width:10px;height:10px;background:white;border-left:1px solid #e6e6ef;border-bottom:1px solid #e6e6ef;transform:rotate(45deg)}
@@ -163,7 +163,7 @@
 .botbench-tour main{max-width:1520px;padding:0 clamp(20px,4vw,70px) 50px}
 .botbench-tour .tour-intro{padding:clamp(45px,7vw,104px) 0 clamp(31px,4vw,58px);align-items:end;gap:60px}
 .botbench-tour h1{font-size:clamp(3.5rem,6.5vw,7.7rem);font-weight:750;letter-spacing:-.04em;line-height:.99;max-width:850px;text-wrap:balance}
-.botbench-tour .tour-intro .eyebrow{font-size:12px;letter-spacing:.05em;color:#625c72;font-family:'DM Sans',sans-serif}
+.botbench-tour .tour-intro .eyebrow{font-size:12px;letter-spacing:.025em;color:#625c72;font-family:'DM Sans',sans-serif}
 .botbench-tour .intro-side{max-width:340px;padding-bottom:10px}
 .botbench-tour .intro-side>p:first-child{font-size:clamp(1.06rem,1.4vw,1.32rem);color:#4c4b59;line-height:1.5}
 .botbench-tour .recording-label{font-size:12px;color:#5e5c6d}
@@ -219,3 +219,26 @@
  .botbench-tour .finish-panel h3{font-size:2.4rem}
 }
 @media(prefers-reduced-motion:reduce){.botbench-tour .hotspot:hover,.botbench-tour .finish-image-button:hover{transform:none}.botbench-tour .hotspot,.botbench-tour .chapter{transition:none}}
+
+/* Impeccable: ensure captions and metadata remain readable in every tour state. */
+.botbench-tour .chapter-number,.botbench-tour .chapter-copy small{opacity:1}
+.botbench-tour .chapter{color:#bcbac9}
+.botbench-tour .sidebar-note p{color:#c0bfce}
+.botbench-tour .tour-count{color:#c0bfce}
+.botbench-tour .screen-column{background:#f8f7fa}
+.botbench-tour .screen-toolbar{color:#514c60}
+.botbench-tour .tap-hint{color:#554e62}
+.botbench-tour .screen-figure figcaption{color:#544c60}
+.botbench-tour .detail-eyebrow{color:#5c5268}
+.botbench-tour .progress-label{color:#5c5468}
+.botbench-tour .text-button{color:#5c5267}
+.botbench-tour .tour-footnote{color:#5f576b}
+.botbench-tour #dialog-caption{color:#5a5268}
+.botbench-tour .finish-image-button span{color:#5c5268}
+.botbench-tour .finish-copy>p:not(.eyebrow){color:#5e566a}
+.botbench-tour .finish-tags{color:#5b5269}
+.botbench-tour .chapter-extra{color:#5e566c}
+.botbench-tour .detail-dot{color:#5c5468}
+.botbench-tour .recording-label{color:#60586c}
+.botbench-tour .hotspot,.botbench-tour .hotspot.active,.botbench-tour .hotspot:hover{box-shadow:0 3px 12px -5px #10101860}
+.botbench-tour .hotspot::before,.botbench-tour .hotspot.active::before{border-color:#b1a7d0}

@@ -443,3 +443,8 @@ body{align-items:flex-start;padding:clamp(18px,3.5vw,54px) clamp(14px,3vw,52px);
  .quick-nav button[data-command="/contact"]{display:none}
  .quick-nav button[data-command="/help"]{display:block;margin-left:auto}
 }
+
+/* Impeccable: give rule-bordered metadata proper interior space and readable microcopy. */
+.about-details>div{padding-left:18px}
+.outline-badge{font-size:max(.75rem,12px)}
+.timeline-bar{background:var(--panel)}
