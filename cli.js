@@ -17,7 +17,8 @@
     var skills = [
       { command: '/about', view: 'about', title: 'About Jon', description: 'Meet the person behind the work', aliases: ['about', 'who is jon', 'who are you', 'whoami', 'hello', 'home', '/home'] },
       { command: '/work', view: 'work', title: 'Selected work', description: 'Explore products, systems, and experiments', aliases: ['work', 'what are you building', 'show me what youre building', 'show me your work', 'projects', 'ls'] },
-      { command: '/botbench', view: 'botbench', title: 'Botbench', description: 'Take the flagship product for a spin', aliases: ['botbench', 'show me botbench', 'open botbench', 'try botbench', 'tour'] },
+      { command: '/langspan', view: 'langspan', title: 'LangSpan', description: 'Explore the flagship: your agents, on the same page', aliases: ['langspan', 'lang span', 'show me langspan', 'open langspan', 'try langspan', 'flagship', 'agent coordination', 'tour'] },
+      { command: '/botbench', view: 'botbench', title: 'Botbench', description: 'Explore the coding-agent workbench', aliases: ['botbench', 'show me botbench', 'open botbench', 'try botbench', 'botbench tour'] },
       { command: '/writing', view: 'writing', title: 'Writing', description: 'Open the notebook', aliases: ['writing', 'what are you thinking about', 'notes', 'essay', 'open notebook'] },
       { command: '/lab', view: 'lab', title: 'The lab', description: 'Try a small feedback illustration', aliases: ['lab', 'let me try something', 'experiments', 'feedback', 'show me the lab'] },
       { command: '/contact', view: 'contact', title: 'Say hello', description: 'Find a way to connect', aliases: ['contact', 'lets talk', 'say hello', 'get in touch'] },
@@ -163,7 +164,7 @@
       if (!filteredSkills.length) {
         var empty = document.createElement('p');
         empty.className = 'skill-empty';
-        empty.textContent = 'No matching skills. Try a name like Botbench, writing, or lab.';
+        empty.textContent = 'No matching skills. Try a name like LangSpan, writing, or lab.';
         options.appendChild(empty);
       }
     }
@@ -302,7 +303,7 @@
         event.preventDefault();
         var exact = findSkill(search.value);
         if (exact || filteredSkills[0]) selectSkill(exact || filteredSkills[0], 'keyboard');
-        else status.textContent = 'No matching skills. Try Botbench, writing, or lab.';
+        else status.textContent = 'No matching skills. Try LangSpan, writing, or lab.';
       }
     });
     document.addEventListener('click', function (event) {

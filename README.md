@@ -1,10 +1,11 @@
 # jon-lange.github.io
 
 Jon Lange’s personal portfolio, led by
-[Botbench](https://botbenchhq.github.io/) as the flagship independent product.
+[LangSpan](https://langspan.github.io/) as the flagship independent product.
 One terminal is the front door: `/about` is already typed, and choosing a skill
-retypes the command before showing its output. A recorded product tour and a
-separate historical research archive provide the deeper paths.
+retypes the command before showing its output. `/langspan` introduces the
+current project. Botbench's recorded product tour and a separate historical
+research archive remain available as supporting work.
 
 ## Build
 
@@ -37,7 +38,16 @@ duplicated historical record identifiers.
 The personal promise is **“I build AI products and the systems that help teams
 ship them.”** Career context is separate from the independent projects.
 
-Botbench leads with **“Put your coding agents to work. Together.”** The tour
+LangSpan leads with **“Your agents. On the same page.”** Its mission is to help
+teams keep building together as their agents write more code. The skill explains
+shared work updates through native hooks, CLI and MCP, with an optional
+dashboard. Solo use with several agents is a secondary entry point. The goal is
+less manual relay and avoidable rework; those outcomes are not measured claims.
+The product is a source preview and the walkthrough is an authored illustration.
+Links use the working GitHub Pages site and public organization while the public
+core repository and custom domain are being prepared separately.
+
+Botbench remains a supporting project. Its recorded tour
 identifies it as an early, open-source macOS product. Its coordination example
 was recorded with two installations on one Mac; the receiving owner chooses
 how to handle an incoming question. The source-build guide is the next step.
@@ -50,7 +60,7 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
 ## Interaction and fallback behavior
 
 - **Skill picker:** click the pretyped command or use `/` or Command/Ctrl+K.
-  The native dialog offers `/about`, `/work`, `/botbench`, `/writing`, `/lab`,
+  The native dialog offers `/about`, `/work`, `/langspan`, `/botbench`, `/writing`, `/lab`,
   `/contact`, and `/duck`; `/help` explains the paths. Search, Tab, and Enter
   work from the keyboard. Escape dismisses the picker and restores focus.
   On narrow screens, opening it does not immediately summon the soft keyboard.
@@ -58,6 +68,10 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
   Direct hash links and browser history work. The terminal does not execute
   shell commands or call an AI model. About content and ordinary fallback
   links are present in the delivered HTML.
+- **LangSpan:** the About action and first Work card open `/langspan`; the
+  shareable route is `#langspan`. The About action and no-JavaScript fallback
+  link directly to the product website when scripts are unavailable. The
+  generic `tour` alias opens LangSpan; `botbench tour` opens Botbench.
 - **Product tour:** five stops use recorded screens to cover the task, boundaries, evidence,
   coordination, and source build. Chapter buttons and screen-detail controls
   work from the keyboard. Screens can be enlarged in a native modal dialog;
@@ -74,9 +88,15 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
 
 ## Assets and provenance
 
-All five screenshots are unchanged copies of repository images. Their exact
+All five Botbench/design-system screenshots are unchanged copies of repository images. Their exact
 Git blob identities and file SHA-256 hashes are recorded in
 [`assets/provenance.json`](assets/provenance.json).
+
+LangSpan's two theme-specific icons and workflow illustration are also copied
+unchanged from the public website, with source identities and hashes in the
+same provenance file. The icons come from the supplied brand kit. The
+illustration is labelled and is not a product screenshot. The current-build
+action switches the approved icon with the homepage's light/dark theme.
 
 | Local image | Source repository path |
 |---|---|
@@ -110,10 +130,9 @@ separate from a model’s review and explicitly labels the coordination setup.
 `assets/favicon.svg` is the personal mark, retained for the homepage and archive.
 The product tour uses `assets/botbench-favicon.svg`, copied unchanged from
 [`botbenchhq/botbench:web/src/brand/favicon.svg`](https://github.com/botbenchhq/botbench/blob/ff02c33ad152ddfe113236e87ee10449b793ea6f/web/src/brand/favicon.svg)
-(Git blob `8fc7019e6aa69342139eb1ed1ceda24cc851034d`). The About action and
-tour use the same Shared Seam path geometry: the first bracket follows the
-current text color and the second is brand cyan (`#03748F` on light surfaces,
-`#06B6D4` on dark surfaces). Recorded screenshots remain unchanged.
+(Git blob `8fc7019e6aa69342139eb1ed1ceda24cc851034d`). The Botbench tour retains
+its Shared Seam mark. The About action uses LangSpan's approved icon instead.
+Recorded screenshots remain unchanged.
 
 Images, scripts, and stylesheets are
 served locally. The terminal and tour request their web fonts from Google Fonts
