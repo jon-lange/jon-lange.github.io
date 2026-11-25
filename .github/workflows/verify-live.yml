@@ -4,6 +4,9 @@ on:
     workflows: ["pages build and deployment"]
     types: [completed]
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/verify-live.yml"]
 
 permissions:
   contents: read
