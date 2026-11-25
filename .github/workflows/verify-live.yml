@@ -1,0 +1,36 @@
+name: verify live portfolio after Pages deployment
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-site:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify public homepage and compiled motion assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="https://jon-lange.github.io"
+          curl -fsSL --retry 12 --retry-delay 6 --retry-all-errors --max-time 12 "$root/" -o /tmp/home.html
+          grep -Fq 'assets/langspan-stage.js' /tmp/home.html
+          grep -Fq 'data-langspan-stage' /tmp/home.html
+          grep -Fq 'assets/langspan-living-mobile.svg' /tmp/home.html
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-stage.js" -o /tmp/stage.js
+          test "$(wc -c < /tmp/stage.js)" -gt 100000
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-stage.css" -o /tmp/stage.css
+          test "$(wc -c < /tmp/stage.css)" -gt 10000
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-living-mobile.svg" -o /tmp/mobile.svg
+          grep -Fq 'LANGSPAN / SHARED CONTEXT' /tmp/mobile.svg
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/tour.html" -o /tmp/tour.html
+          grep -Fq 'Botbench' /tmp/tour.html
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/archive.html" -o /tmp/archive.html
+          grep -Fq 'Experiment archive' /tmp/archive.html
+          echo "PASS: PUBLIC GitHub Pages HTML, interactive motion JS/CSS, mobile illustration, Botbench tour and archive all served."

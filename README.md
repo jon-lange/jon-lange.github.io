@@ -198,3 +198,25 @@ and image dialog, and open an archive record with the keyboard and with
 JavaScript disabled. Build drift is enforced by CI; visual and interaction
 changes still need a focused browser review.
 
+
+
+## Portfolio motion experience
+
+The homepage keeps the interactive command palette and hash-backed skills. The LangSpan view includes an authored, clearly labelled React Stageshow scene compiled to static GitHub Pages JavaScript and CSS; it illustrates a second coding-agent session noticing overlapping file intent and redirecting independent work. The original illustrated workflow remains linked. The LangSpan stages are not a live product recording and make no collision-prevention guarantee.
+
+- **Stageshow by Benji Taylor** — original kit, pinned to commit 299140fafd08df55a9c234e610c3f64af3f45531, loaded from its upstream source at CI build time. See [stageshow/](https://github.com/benjitaylor/skills/tree/299140fafd08df55a9c234e610c3f64af3f45531/stageshow).
+- **Living Canvas** — the [accessible SVG story](assets/langspan-living-canvas.svg) follows the upstream [Living Canvas authoring skill](https://github.com/shouvik12/living-canvas/blob/14a4a4f160d951d9745090a8c7f4822edd32bb18/SKILL.md): the concrete conflict, shared signal, and independent progress, with animated focus and static reduced-motion path.
+- **Impeccable** — design-mode decisions in [DESIGN.md](DESIGN.md), source critique and detector in CI; see [Impeccable](https://github.com/pbakaus/impeccable/tree/9e460a87ef338ee9d12c7beed8fedc597a5af5f7).
+
+The [motion build workflow](.github/workflows/build-motion.yml) downloads and pins Stageshow, compiles into /assets/langspan-stage.{js,css}, builds the static HTML, checks generator parity, performs desktop/mobile browser interaction tests with Playwright, captures motion-sequence stills and reduced-motion screenshots as a CI artifact, and commits the distributable asset bundle only after browser validation. The original [check workflow](.github/workflows/check.yml) continues verifying the historical research archive and generated-pages invariants.
+
+To build locally:
+
+    git clone https://github.com/benjitaylor/skills.git /tmp/benji-skills
+    git -C /tmp/benji-skills checkout 299140fafd08df55a9c234e610c3f64af3f45531
+    cp -r /tmp/benji-skills/stageshow/kit motion-src/kit
+    npm install --prefix motion-src
+    npm run --prefix motion-src build
+    python3 build.py && python3 build.py --check
+
+**Important:** the React kit is source-bundled; do not add a runtime CDN dependency or silently replace its motion system with a CSS approximation.
