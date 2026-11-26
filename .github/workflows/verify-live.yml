@@ -28,15 +28,18 @@ jobs:
           grep -Fq 'Run agents in parallel. Build as a team.' /tmp/home.html
           grep -Fq 'https://langspan.dev/#why' /tmp/home.html
           grep -Fq 'LangSpan v0.1.0 is available for macOS and Linux.' /tmp/home.html
-          grep -Fq 'assets/langspan-living-mobile.svg' /tmp/home.html
+          grep -Fq 'data-flow' /tmp/home.html
+          grep -Fq 'href="#contact"' /tmp/home.html
           curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-stage.js" -o /tmp/stage.js
           test "$(wc -c < /tmp/stage.js)" -gt 100000
           curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-stage.css" -o /tmp/stage.css
           test "$(wc -c < /tmp/stage.css)" -gt 10000
-          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-living-mobile.svg" -o /tmp/mobile.svg
-          grep -Fq 'LANGSPAN / SHARED CONTEXT' /tmp/mobile.svg
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-card-dark-still.svg" -o /tmp/card.svg
+          grep -Fq 'tests/session.test.ts' /tmp/card.svg
+          curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/botbench-demo.mp4" -o /tmp/demo.mp4
+          test "$(wc -c < /tmp/demo.mp4)" -gt 100000
           curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/tour.html" -o /tmp/tour.html
           grep -Fq 'Botbench' /tmp/tour.html
           curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/archive.html" -o /tmp/archive.html
           grep -Fq 'Experiment archive' /tmp/archive.html
-          echo "PASS: PUBLIC GitHub Pages HTML, interactive motion JS/CSS, mobile illustration, Botbench tour and archive all served."
+          echo "PASS: public GitHub Pages HTML, the lazily loaded scene JS/CSS, the LangSpan card, the Botbench demo, tour and archive all served."

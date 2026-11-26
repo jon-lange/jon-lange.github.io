@@ -5,7 +5,8 @@
     python3 build.py --check    # fail if either generated page is not current
 
 The terminal's initial About output is generated from its own view-about
-template. Historical not-evidence records are generated from register.json
+template, and every other view is also rendered into a <noscript> block so
+its #hash link works without JavaScript. Historical not-evidence records are generated from register.json
 into a separate, fully static archive; verdicts are not entered separately.
 """
 
@@ -93,7 +94,19 @@ def build() -> dict[Path, str]:
     )
     if len(about) != 1:
         raise ValueError("template.html must contain exactly one view-about template")
-    index = Template(source).substitute(about=about[0].strip())
+    views = re.findall(
+        r'<template\b[^>]*\bid\s*=\s*["\']view-([a-z]+)["\'][^>]*>(.*?)</template\s*>',
+        source,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Without JavaScript, each route is a section shown by its #hash (:target),
+    # so the navigation links still work and every view can be read.
+    static_views = "\n".join(
+        f'<section class="static-view result-output" id="{name}" data-view="{name}">{body.strip()}</section>'
+        for name, body in views
+        if name != "about"
+    )
+    index = Template(source).substitute(about=about[0].strip(), static_views=static_views)
     rows = json.loads(DATA.read_text(encoding="utf-8"))
     if not isinstance(rows, list) or len(rows) != 12:
         raise ValueError("register.json must retain its twelve historical records")

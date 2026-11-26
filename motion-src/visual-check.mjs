@@ -1,104 +1,138 @@
+// Browser regression check for the portfolio. Serves from 127.0.0.1:8123.
+// Covers: nav links and Back, theme from the OS and remembered, the lazy
+// Stageshow bundle, Pause/Play/Replay, reduced motion, phone text sizes,
+// no horizontal overflow at 358, no-JavaScript routes, tour and archive.
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
-const base='http://127.0.0.1:8123';
-const out=new URL('./screenshots/',import.meta.url);
-await mkdir(out,{recursive:true});
-const browser=await chromium.launch({headless:true});
-const errors=[];
-for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844},{name:'compact',width:358,height:760}]){
- const page=await browser.newPage({viewport:{width:spec.width,height:spec.height},deviceScaleFactor:1});
- page.on('pageerror',e=>{errors.push(spec.name+': '+e.message);console.log('PAGE ERROR',spec.name,e.message);});
- page.on('console',msg=>{if(msg.type()==='error')console.log('CONSOLE ERROR',spec.name,msg.text());});
- page.on('response',response=>{if(response.status()>=400)console.log('HTTP ERROR',spec.name,response.status(),response.url());});
- await page.goto(base+'/',{waitUntil:'networkidle'});
- await page.locator('#skill-trigger:not([disabled])').waitFor();
- await page.screenshot({path:new URL(spec.name+'-about.png',out).pathname,fullPage:true});
- // Real navigation, rather than only direct hash routes: keyboard and pointer.
- await page.locator('.quick-nav button[data-command="/work"]').click();
- await page.locator('#result-output[data-view="work"]').waitFor();
- assert.equal(await page.locator('#active-skill').textContent(),'/work');
- await page.locator('.quick-nav button[data-command="/langspan"]').click();
- await page.locator('.quick-nav button[data-command="/botbench"]').click();
- await page.locator('#result-output[data-view="botbench"]').waitFor();
- assert.equal(await page.locator('#active-skill').textContent(),'/botbench');
- await page.goBack();
- await page.locator('#result-output[data-view="langspan"]').waitFor();
- await page.goto(base+'/',{waitUntil:'networkidle'});
- await page.locator('#skill-trigger:not([disabled])').waitFor();
- if(spec.width<=500){
-   await page.getByRole('button',{name:'More skills'}).click();
-   await page.locator('#result-output[data-view="help"]').waitFor();
-   await page.screenshot({path:new URL(spec.name+'-all-skills.png',out).pathname,fullPage:true});
- }
- if(spec.name!=='compact'){
-   for(const route of ['work','botbench','writing','lab','contact']){
-     await page.goto(base+'/#'+route,{waitUntil:'networkidle'});
-     await page.locator('#result-output[data-view="'+route+'"]').waitFor();
-     if(route==='work'||route==='botbench')await page.screenshot({path:new URL(spec.name+'-'+route+'.png',out).pathname,fullPage:true});
-   }
- }
- await page.goto(base+'/#langspan',{waitUntil:'networkidle'});
- try { await page.locator('.ls-scene').waitFor({timeout:15000}); }
- catch(error) {
-   const state=await page.evaluate(()=>({
-     url:location.href,
-     title:document.title,
-     view:document.querySelector('#result-output')?.dataset.view,
-     mountCount:document.querySelectorAll('[data-langspan-stage]').length,
-     stageCount:document.querySelectorAll('.ls-scene').length,
-     mountHTML:document.querySelector('[data-langspan-stage]')?.outerHTML.slice(0,2200),
-     scripts:[...document.scripts].map(s=>({src:s.src,readyState:s.readyState})),
-     rootText:document.querySelector('#result-output')?.textContent.slice(0,500)
-   }));
-   console.log('STAGE DIAG',spec.name,JSON.stringify(state,null,2));
-   console.log('ERRORS',errors);
-   await page.screenshot({path:new URL(spec.name+'-stage-failure.png',out).pathname,fullPage:true});
-   throw error;
- }
- await page.locator('.ls-stage-outer').scrollIntoViewIfNeeded();
- await page.waitForTimeout(500);
- await page.screenshot({path:new URL(spec.name+'-langspan-start.png',out).pathname,fullPage:true});
- assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2),false,spec.name+' overflow');
- if(spec.name==='desktop') {
-   let elapsed=500;
-   for(const mark of [1200,2400,3500,4700,6300,8000]){
-     await page.waitForTimeout(mark-elapsed);
-     await page.locator('.ls-stage-outer').screenshot({path:new URL('desktop-motion-'+String(mark).padStart(4,'0')+'.png',out).pathname});
-     elapsed=mark;
-   }
- } else await page.waitForTimeout(2500);
- await page.screenshot({path:new URL(spec.name+'-langspan-mid.png',out).pathname,fullPage:true});
- await page.getByRole('button',{name:'Show outcome'}).click();
- await page.locator('.ls-scene[data-step="4"]').waitFor();
- await page.screenshot({path:new URL(spec.name+'-langspan-outcome.png',out).pathname,fullPage:true});
- await page.getByRole('button',{name:'Replay demonstration'}).click();
- await page.locator('.ls-scene[data-step="0"]').waitFor();
- await page.locator('#theme-toggle').click();
- assert.equal(await page.locator('html[data-theme="light"]').count(),1,'theme');
- await page.screenshot({path:new URL(spec.name+'-light.png',out).pathname,fullPage:true});
- await page.close();
+const base = process.env.BASE || 'http://127.0.0.1:8123';
+const out = new URL('./screenshots/', import.meta.url);
+await mkdir(out, { recursive: true });
+const shot = (name) => new URL(name + '.png', out).pathname;
+const browser = await chromium.launch({ headless: true });
+const errors = [];
+const watch = (page, name) => {
+  page.on('pageerror', (e) => errors.push(name + ': ' + e.message));
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(name + ' console: ' + m.text()); });
+  page.on('response', (r) => { if (r.status() >= 400) errors.push(name + ' HTTP ' + r.status() + ' ' + r.url()); });
+};
+const routes = ['work', 'langspan', 'botbench', 'writing', 'lab', 'contact', 'help', 'duck'];
+
+for (const spec of [{ name: 'desktop', width: 1440, height: 900 }, { name: 'mobile', width: 390, height: 844 }, { name: 'compact', width: 358, height: 760 }]) {
+  for (const scheme of ['dark', 'light']) {
+    const ctx = await browser.newContext({ viewport: { width: spec.width, height: spec.height }, colorScheme: scheme });
+    const page = await ctx.newPage();
+    watch(page, `${spec.name}-${scheme}`);
+    await page.goto(base + '/', { waitUntil: 'networkidle' });
+    await page.locator('#skill-trigger:not([disabled])').waitFor();
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), scheme, 'theme follows the OS');
+    assert.equal(await page.locator('script[src*="langspan-stage"]').count(), 0, 'Stageshow is not loaded on /about');
+    assert.ok(await page.locator('.quick-nav a[href="#contact"]').isVisible(), 'Contact visible in the nav');
+    assert.ok(await page.locator('.contact-actions a[href*="linkedin"]').isVisible(), 'contact action on /about');
+    await page.screenshot({ path: shot(`${spec.name}-${scheme}-about`), fullPage: true });
+    for (const route of routes) {
+      await page.goto(base + '/#' + route, { waitUntil: 'networkidle' });
+      await page.locator(`#result-output[data-view="${route}"]`).waitFor();
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      assert.ok(over <= 0, `${spec.name} ${route} overflows by ${over}px`);
+    }
+    await ctx.close();
+  }
 }
-const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
-reduced.on('pageerror',e=>errors.push('reduced: '+e.message));
-await reduced.goto(base+'/#langspan',{waitUntil:'networkidle'});
-await reduced.locator('.ls-scene[data-step="4"]').waitFor({timeout:15000});
-await reduced.screenshot({path:new URL('reduced-motion-poster.png',out).pathname,fullPage:true});
-await reduced.close();
-for(const spec of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844}]){
- for(const [name,path] of [['botbench-tour','tour.html#review'],['research-archive','archive.html']]){
-   const p=await browser.newPage({viewport:{width:spec.width,height:spec.height}});
-   p.on('pageerror',e=>errors.push(name+'-'+spec.name+': '+e.message));
-   await p.goto(base+'/'+path,{waitUntil:'networkidle'});
-   await p.screenshot({path:new URL(name+'-'+spec.name+'.png',out).pathname,fullPage:true});
-   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false,name+'-'+spec.name+' horizontal overflow');
-   if(name==='research-archive'){
-     await p.locator('.study summary').first().click();
-     assert.equal(await p.locator('.study[open]').count(),1,'archive disclosure opens');
-   } else assert.ok(await p.locator('.chapter').count()>2,'tour chapters');
-   await p.close();
- }
+
+// Navigation: real links, intercepted; Back returns to the previous view.
+{
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  watch(page, 'nav');
+  await page.goto(base + '/', { waitUntil: 'networkidle' });
+  await page.locator('#skill-trigger:not([disabled])').waitFor();
+  assert.equal(await page.locator('.quick-nav a[href="#work"]').count(), 1, 'nav items are links');
+  await page.locator('.quick-nav a[href="#work"]').click();
+  await page.locator('#result-output[data-view="work"]').waitFor();
+  await page.locator('.quick-nav a[href="#botbench"]').click();
+  await page.locator('#result-output[data-view="botbench"]').waitFor();
+  assert.equal(await page.locator('#active-skill').textContent(), '/botbench');
+  await page.goBack();
+  await page.locator('#result-output[data-view="work"]').waitFor();
+  // Theme toggle is remembered across a reload.
+  const before = await page.evaluate(() => document.documentElement.dataset.theme);
+  await page.locator('#theme-toggle').click();
+  await page.reload({ waitUntil: 'networkidle' });
+  assert.notEqual(await page.evaluate(() => document.documentElement.dataset.theme), before, 'theme choice remembered');
+  await page.close();
+}
+
+// The scene: lazy bundle, Pause holds, Play resumes, it ends on its final frame.
+for (const spec of [{ name: 'desktop', width: 1280, height: 900 }, { name: 'compact', width: 358, height: 800 }]) {
+  const page = await browser.newPage({ viewport: { width: spec.width, height: spec.height } });
+  watch(page, 'scene-' + spec.name);
+  await page.goto(base + '/#langspan', { waitUntil: 'networkidle' });
+  await page.locator('.ls-scene').waitFor({ timeout: 15000 });
+  await page.locator('.ls-stage-outer').scrollIntoViewIfNeeded();
+  await page.locator('.ls-scene[data-step="1"]').waitFor({ timeout: 8000 });
+  await page.getByRole('button', { name: 'Pause', exact: true }).click();
+  await page.waitForTimeout(6000);
+  assert.equal(await page.locator('.ls-scene').getAttribute('data-step'), '1', 'Pause holds the scene');
+  await page.locator('.ls-stage-outer').screenshot({ path: shot(`scene-${spec.name}-paused`) });
+  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.locator('.ls-scene[data-step="2"]').waitFor({ timeout: 15000 });
+  await page.locator('.ls-stage-outer').screenshot({ path: shot(`scene-${spec.name}-final`) });
+  if (spec.name === 'compact') {
+    const small = await page.evaluate(() => [...document.querySelectorAll('.ls-scene *')].filter((e) => {
+      if (![...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) return false;
+      const box = e.getBoundingClientRect();
+      if (!box.width || getComputedStyle(e).opacity === '0') return false;
+      const stage = e.closest('.ss-stage');
+      const m = getComputedStyle(stage).transform.match(/matrix\(([^,]+)/);
+      return parseFloat(getComputedStyle(e).fontSize) * (m ? parseFloat(m[1]) : 1) < 12;
+    }).map((e) => e.className || e.tagName));
+    assert.deepEqual(small, [], 'compact scene text is at least 12px');
+  }
+  await page.getByRole('button', { name: 'Replay' }).first().click();
+  await page.locator('.ls-scene[data-step="0"]').waitFor();
+  await page.close();
+}
+
+// Reduced motion: the final frame, no playback controls; the About steps rest.
+{
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  watch(page, 'reduced');
+  await page.goto(base + '/#langspan', { waitUntil: 'networkidle' });
+  await page.locator('.ls-scene[data-step="2"]').waitFor({ timeout: 15000 });
+  assert.equal(await page.getByRole('button', { name: 'Pause', exact: true }).count(), 0);
+  await page.goto(base + '/', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1500);
+  assert.equal(await page.locator('[data-flow-active]').count(), 0, 'About illustration rests under reduced motion');
+  await page.screenshot({ path: shot('reduced-motion-about'), fullPage: true });
+  await page.close();
+}
+
+// Without JavaScript the nav links still reach every view.
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+  const page = await ctx.newPage();
+  await page.goto(base + '/', { waitUntil: 'load' });
+  await page.locator('.quick-nav a[href="#work"]').click();
+  assert.ok(await page.locator('#work.static-view').isVisible(), 'no-JS #work view');
+  assert.equal(await page.locator('#result-output').isVisible(), false);
+  await page.screenshot({ path: shot('nojs-work'), fullPage: true });
+  await ctx.close();
+}
+
+for (const spec of [{ name: 'desktop', width: 1440, height: 900 }, { name: 'compact', width: 358, height: 760 }]) {
+  for (const [name, path] of [['tour', 'tour.html#review'], ['archive', 'archive.html']]) {
+    const p = await browser.newPage({ viewport: { width: spec.width, height: spec.height } });
+    watch(p, name + '-' + spec.name);
+    await p.goto(base + '/' + path, { waitUntil: 'networkidle' });
+    await p.screenshot({ path: shot(name + '-' + spec.name), fullPage: true });
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, name + '-' + spec.name + ' horizontal overflow');
+    if (name === 'archive') {
+      await p.locator('.study summary').first().click();
+      assert.equal(await p.locator('.study[open]').count(), 1, 'archive disclosure opens');
+    } else assert.ok(await p.locator('.chapter').count() > 2, 'tour chapters');
+    await p.close();
+  }
 }
 await browser.close();
-assert.deepEqual(errors,[],'browser errors');
-console.log('PASS: desktop, mobile, compact, stage replay/outcome, light theme, reduced motion, Botbench tour, archive.');
+assert.deepEqual(errors, [], 'browser errors');
+console.log('PASS: routes x widths x themes without overflow, nav links and Back, remembered theme, lazy scene with Pause/Play/Replay, compact text >= 12px, reduced motion, no-JS routes, tour, archive.');

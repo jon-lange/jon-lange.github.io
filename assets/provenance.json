@@ -93,13 +93,85 @@
       "copied_without_modification": true
     },
     {
-      "file": "assets/langspan-overview.svg",
-      "kind": "authored workflow illustration",
+      "file": "assets/langspan-card-dark-still.svg",
+      "kind": "authored product card (motionless), labelled as an illustration on langspan.dev",
       "source_repository": "Langspan/langspan.github.io",
-      "source_path": "assets/product/langspan-overview.svg",
-      "source_commit": "a348e232234848eabb4117380b88c52c48487f3d",
-      "source_git_blob_sha": "81aa2617e43c967f21368212c9d39694c9e09236",
-      "sha256": "d078fa1c9c0f4599109297c984d2081017752a0bf554e2a8ac4228e7c8ade7bc",
+      "source_path": "assets/product/langspan-card-dark-still.svg",
+      "source_commit": "4617bc8ab02c089730c8ea3b2bc45e1027afedf2",
+      "source_git_blob_sha": "a4dcfceaa3a1f6f8e9e53316d2d52ba9ed31898e",
+      "sha256": "826c07fd8809b70b7d62f50d61ea66bc35de25e6ae3dfbb1041c74babba1180f",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/langspan-card-light-still.svg",
+      "kind": "authored product card (motionless), labelled as an illustration on langspan.dev",
+      "source_repository": "Langspan/langspan.github.io",
+      "source_path": "assets/product/langspan-card-light-still.svg",
+      "source_commit": "4617bc8ab02c089730c8ea3b2bc45e1027afedf2",
+      "source_git_blob_sha": "761b13bf16b69195f294d9125a67f5190ac307df",
+      "sha256": "b71364fb26754305e7baf8ac7983d66f0a528042ffd4be26394e87ff6d9dc1a4",
+      "copied_without_modification": true
+    }
+  ],
+  "botbench_media": [
+    {
+      "file": "assets/botbench-demo.mp4",
+      "kind": "screen recording (25 s, 1440x900, real speed; agents replayed from recorded sessions)",
+      "source_repository": "botbenchhq/botbench",
+      "source_path": "docs/media/botbench-demo.mp4",
+      "source_commit": "f1ab6448e13e3d03e610c4b00bd5e498a749f698",
+      "source_git_blob_sha": "cc58b4bd2bcf8216fa3c2f5edb683eefa43e12c5",
+      "sha256": "f85d01b87da56578ce4519534425a1fd99fe2a7030382ab956db48153129a2bb",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-demo-poster.png",
+      "kind": "still from the demo recording",
+      "source_repository": "botbenchhq/botbench",
+      "source_path": "docs/media/botbench-demo-thumbnail.png",
+      "source_commit": "f1ab6448e13e3d03e610c4b00bd5e498a749f698",
+      "source_git_blob_sha": "ddc5921c26c0c7d4a81fd6db712cb91a648a6ab1",
+      "sha256": "36c3421206b5a8e326d85dcf37e52f13ba765b3d077ef22335eedc15f6dcd0a7",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-card-still-dark.svg",
+      "kind": "authored README card (motionless), labelled on the card as an illustration in Botbench's words",
+      "source_repository": "botbenchhq/botbenchhq.github.io",
+      "source_path": "assets/cards/botbench-card-still-dark.svg",
+      "source_commit": "d6803485476d05c3f71cc2833fbf0e0c2707158a",
+      "source_git_blob_sha": "fc184ef9b8b4f394a61aa3f3a27d95f89e20aaef",
+      "sha256": "e02630bdcb795fd560212e2d30e28983008bd6d1e1b93bcfa07ace437c1d5f0d",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-card-still-light.svg",
+      "kind": "authored README card (motionless), labelled on the card as an illustration in Botbench's words",
+      "source_repository": "botbenchhq/botbenchhq.github.io",
+      "source_path": "assets/cards/botbench-card-still-light.svg",
+      "source_commit": "d6803485476d05c3f71cc2833fbf0e0c2707158a",
+      "source_git_blob_sha": "2b80373b45316bd17a89a8f5c2f798a2845c249b",
+      "sha256": "890cddd899f0300401f245a12907486e17523a5760e2e65d16e5ad9f1c6127d7",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-card-compact-still-dark.svg",
+      "kind": "authored README card (motionless), labelled on the card as an illustration in Botbench's words",
+      "source_repository": "botbenchhq/botbenchhq.github.io",
+      "source_path": "assets/cards/botbench-card-compact-still-dark.svg",
+      "source_commit": "d6803485476d05c3f71cc2833fbf0e0c2707158a",
+      "source_git_blob_sha": "51567f4225a48e2638993365d55b4e2cc59e550f",
+      "sha256": "54a9fabcf7e2595252b358a68d650ac26ff7828b479b3e26d561750c1676da5b",
+      "copied_without_modification": true
+    },
+    {
+      "file": "assets/botbench-card-compact-still-light.svg",
+      "kind": "authored README card (motionless), labelled on the card as an illustration in Botbench's words",
+      "source_repository": "botbenchhq/botbenchhq.github.io",
+      "source_path": "assets/cards/botbench-card-compact-still-light.svg",
+      "source_commit": "d6803485476d05c3f71cc2833fbf0e0c2707158a",
+      "source_git_blob_sha": "60c75b9680b29683ec1c70a0f86e4fe24b72c227",
+      "sha256": "66b6b24b13644b39b40b407202f8da5e5bf4a1b1ed90629d3ce08492082245a5",
       "copied_without_modification": true
     }
   ]

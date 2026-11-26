@@ -146,7 +146,8 @@
       imageWrap.classList.remove('is-changing');
       if (!reducedMotion.matches) requestAnimationFrame(() => imageWrap.classList.add('is-changing'));
     }
-    if (options.hash !== false) history.replaceState(null, '', `#${step.id}`);
+    if (options.history === 'push' && location.hash !== `#${step.id}`) history.pushState({ tourStep: index }, '', `#${step.id}`);
+    else if (options.history === 'replace') history.replaceState({ tourStep: index }, '', location.href);
     $('tour-announcer').textContent = `Chapter ${index + 1} of ${steps.length}. ${step.title}`;
     if (options.focus) {
       $('step-title').focus({ preventScroll: true });
@@ -158,7 +159,7 @@
 
   function restart() {
     trail = [];
-    showStep(0, { record: false, focus: true });
+    showStep(0, { record: false, focus: true, history: 'push' });
   }
 
   function openScreen() {
@@ -173,7 +174,7 @@
   }
 
   chapters.forEach((button, index) => {
-    button.addEventListener('click', () => showStep(index, { focus: true }));
+    button.addEventListener('click', () => showStep(index, { focus: true, history: 'push' }));
     button.addEventListener('keydown', (event) => {
       const directions = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
       if (event.key === 'Home' || event.key === 'End' || directions[event.key]) {
@@ -183,19 +184,56 @@
       }
     });
   });
-  $('next-step').addEventListener('click', () => current === steps.length - 1 ? restart() : showStep(current + 1, { focus: true }));
-  $('previous-step').addEventListener('click', () => showStep(trail.length ? trail.pop() : Math.max(0, current - 1), { record: false, focus: true }));
+  $('next-step').addEventListener('click', () => current === steps.length - 1 ? restart() : showStep(current + 1, { focus: true, history: 'push' }));
+  $('previous-step').addEventListener('click', () => showStep(trail.length ? trail.pop() : Math.max(0, current - 1), { record: false, focus: true, history: 'push' }));
   $('restart-tour').addEventListener('click', restart);
-  $('skip-to-build').addEventListener('click', () => showStep(4, { focus: true }));
+  $('skip-to-build').addEventListener('click', () => showStep(4, { focus: true, history: 'push' }));
   $('enlarge-screen').addEventListener('click', openScreen);
   $('finish-enlarge').addEventListener('click', openScreen);
   $('close-dialog').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
   dialog.addEventListener('close', () => { if (dialogReturnFocus instanceof HTMLElement) dialogReturnFocus.focus({ preventScroll: true }); });
-  window.addEventListener('hashchange', () => {
-    const index = steps.findIndex((step) => `#${step.id}` === location.hash);
-    if (index >= 0 && index !== current) showStep(index, { hash: false, focus: true });
-  });
+  // Back and Forward move between chapters; a typed hash opens that chapter.
+  function followLocation(event) {
+    const state = event && event.state;
+    let index = state && Number.isInteger(state.tourStep) ? state.tourStep : steps.findIndex((step) => `#${step.id}` === location.hash);
+    if (index < 0 && !location.hash) index = 0;
+    if (index < 0 || index === current) return;
+    if (trail.length && trail[trail.length - 1] === index) trail.pop();
+    else trail.push(current);
+    showStep(index, { record: false, focus: true });
+  }
+  window.addEventListener('popstate', followLocation);
+  window.addEventListener('hashchange', () => followLocation(null));
+
+  // Theme: same key and behaviour as the homepage.
+  const root = document.documentElement;
+  const themeButton = $('theme-toggle');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)');
+  function storedTheme() {
+    try { const value = localStorage.getItem('jl-theme'); return value === 'light' || value === 'dark' ? value : null; } catch (error) { return null; }
+  }
+  function applyTheme(theme) {
+    root.setAttribute('data-theme-switching', '');
+    root.dataset.theme = theme;
+    requestAnimationFrame(() => requestAnimationFrame(() => root.removeAttribute('data-theme-switching')));
+    const light = theme === 'light';
+    themeButton.setAttribute('aria-pressed', String(light));
+    themeButton.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    themeButton.textContent = light ? 'Dark mode' : 'Light mode';
+  }
+  if (themeButton) {
+    applyTheme(root.dataset.theme === 'light' || root.dataset.theme === 'dark' ? root.dataset.theme : (prefersLight.matches ? 'light' : 'dark'));
+    themeButton.hidden = false;
+    themeButton.addEventListener('click', () => {
+      const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem('jl-theme', next); } catch (error) { /* Storage can be unavailable; the switch still applies to this page. */ }
+      $('tour-announcer').textContent = `${next === 'light' ? 'Light' : 'Dark'} theme enabled.`;
+    });
+    prefersLight.addEventListener('change', (event) => { if (!storedTheme()) applyTheme(event.matches ? 'light' : 'dark'); });
+  }
+
   const initial = steps.findIndex((step) => `#${step.id}` === location.hash);
-  showStep(initial < 0 ? 0 : initial, { hash: false, record: false });
+  showStep(initial < 0 ? 0 : initial, { record: false, history: 'replace' });
 })();
