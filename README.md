@@ -38,11 +38,17 @@ duplicated historical record identifiers.
 The personal promise is **“I build AI products and the systems that help teams
 ship them.”** Career context is separate from the independent projects.
 
-LangSpan leads with **“Your agents. On the same page.”** Its mission is to help
-teams keep building together as their agents write more code. The skill explains
-shared work updates through native hooks, CLI and MCP, with an optional
-dashboard. Solo use with several agents is a secondary entry point. The goal is
-less manual relay and avoidable rework; those outcomes are not measured claims.
+LangSpan leads with **“Run agents in parallel. Build as a team.”** Its brand
+line remains **“Your agents. On the same page.”** The project is the open-source
+coordination layer for parallel agentic development. Worktrees isolate files,
+not intent; the product connects work through relevant briefings, supported
+local edit checks, session-attributed commits and exact-tree integration
+evidence. Opt-in Git metadata provides advisory awareness across machines.
+Compatible parallel work with less repair and manual relay is a hypothesis,
+not a measured claim. Link to the [product story](https://langspan.dev/),
+[semantic example](https://langspan.dev/#why),
+[parallel-work illustration](https://langspan.dev/#scale) and
+[canonical positioning](https://github.com/Langspan/LangSpan.dev/blob/main/docs/positioning.md).
 Version 0.1.0 is released for macOS and Linux, and the walkthrough is an
 authored illustration of the product's real mechanism: for Claude Code and
 Codex in one checkout, the hook refuses an edit that overlaps another session's

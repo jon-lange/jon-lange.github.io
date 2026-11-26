@@ -352,3 +352,5 @@ h1{font-size:clamp(2.15rem,4vw,3rem)}
   .typing-cursor{animation:none}
   .result-scroll.is-transitioning{opacity:1}
 }
+.scene-lead{max-width:740px;margin:8px 0 0;color:var(--muted);font-size:.95rem}
+.scene-lead strong{color:var(--text);font-weight:600}
