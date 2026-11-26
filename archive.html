@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#16181d">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#efedf3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111216" media="(prefers-color-scheme: dark)">
   <title>Experiment archive — Jon Lange</title>
   <meta name="description" content="Historical records from Jon Lange’s not-evidence catalogue: bounded experiments, original outcomes, methods, and limitations from August 5, 2026.">
   <link rel="canonical" href="https://jon-lange.github.io/archive.html">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>(function(){var t;try{t=localStorage.getItem('jl-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t}())</script>
   <link rel="stylesheet" href="archive.css">
 </head>
 <body>
@@ -16,7 +18,10 @@
   <div class="archive-wrap">
     <header class="archive-header">
       <a class="back-link" href="index.html#lab"><span aria-hidden="true">←</span> Back to <code>/lab</code></a>
-      <span class="archive-address" aria-hidden="true">jon@web <span>~ /archive</span></span>
+      <div class="archive-tools">
+        <span class="archive-address" aria-hidden="true">jon@web <span>~ /archive</span></span>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to light mode" hidden>Light mode</button>
+      </div>
     </header>
     <main class="archive-shell">
       <div class="archive-intro">
@@ -43,5 +48,32 @@
     </main>
     <footer class="archive-footer"><p>Independent experiments. Methods and limits travel with the results.</p><a href="index.html#lab">Return to the lab <span aria-hidden="true">↗</span></a></footer>
   </div>
+  <script>
+  (function () {
+    var root = document.documentElement;
+    var button = document.getElementById('theme-toggle');
+    var prefersLight = window.matchMedia('(prefers-color-scheme: light)');
+    function stored() {
+      try { var value = localStorage.getItem('jl-theme'); return value === 'light' || value === 'dark' ? value : null; } catch (error) { return null; }
+    }
+    function apply(theme) {
+      root.setAttribute('data-theme-switching', '');
+      root.dataset.theme = theme;
+      requestAnimationFrame(function () { requestAnimationFrame(function () { root.removeAttribute('data-theme-switching'); }); });
+      var light = theme === 'light';
+      button.setAttribute('aria-pressed', String(light));
+      button.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+      button.textContent = light ? 'Dark mode' : 'Light mode';
+    }
+    apply(root.dataset.theme === 'light' ? 'light' : 'dark');
+    button.hidden = false;
+    button.addEventListener('click', function () {
+      var next = root.dataset.theme === 'light' ? 'dark' : 'light';
+      apply(next);
+      try { localStorage.setItem('jl-theme', next); } catch (error) { /* Storage can be unavailable; the switch still applies to this page. */ }
+    });
+    prefersLight.addEventListener('change', function (event) { if (!stored()) apply(event.matches ? 'light' : 'dark'); });
+  }());
+  </script>
 </body>
 </html>

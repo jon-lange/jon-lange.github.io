@@ -43,14 +43,20 @@ teams keep building together as their agents write more code. The skill explains
 shared work updates through native hooks, CLI and MCP, with an optional
 dashboard. Solo use with several agents is a secondary entry point. The goal is
 less manual relay and avoidable rework; those outcomes are not measured claims.
-The product is a source preview and the walkthrough is an authored illustration.
-Links use the working GitHub Pages site and public organization while the public
-core repository and custom domain are being prepared separately.
+Version 0.1.0 is released for macOS and Linux, and the walkthrough is an
+authored illustration of the product's real mechanism: for Claude Code and
+Codex in one checkout, the hook refuses an edit that overlaps another session's
+hold, and says why. Its refusal text is quoted from a recorded Codex run in
+LangSpan's evidence. Adapters for Cursor, Gemini CLI and Antigravity are named
+as unverified, as LangSpan's README does.
 
-Botbench remains a supporting project. Its recorded tour
-identifies it as an early, open-source macOS product. Its coordination example
-was recorded with two installations on one Mac; the receiving owner chooses
-how to handle an incoming question. The source-build guide is the next step.
+Botbench remains a supporting project, shown at 0.3.2: its real 25-second demo
+recording (poster, controls, no autoplay), the four shipped team features
+(issue claims, the overlap warning, checking two changes together, paired
+questions) with their "early" caveat, and its own README card as a labelled
+illustration. The recorded tour identifies it as an early, open-source macOS
+product. Its coordination example was recorded with two installations on one
+Mac.
 
 The work view also links to Botbench’s design system. The lab’s five-day
 feedback schedule is explicitly an illustration, not measured results.
@@ -59,6 +65,15 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
 
 ## Interaction and fallback behavior
 
+- **Navigation:** the section bar is ordinary links (`#work`, `#langspan`, …),
+  so they open in a new tab and can be copied; JavaScript intercepts a plain
+  click to retype the command. Without JavaScript, `build.py` renders every
+  view into a `<noscript>` block and each link shows its view by `:target`.
+  On phones the bar keeps About, Work, LangSpan and Contact, with More for the
+  rest.
+- **Theme:** follows the operating system until the visitor chooses; the
+  choice is stored in `localStorage` (`jl-theme`) and set before first paint
+  on the homepage, the tour and the archive. Switching never animates colour.
 - **Skill picker:** click the pretyped command or use `/` or Command/Ctrl+K.
   The native dialog offers `/about`, `/work`, `/langspan`, `/botbench`, `/writing`, `/lab`,
   `/contact`, and `/duck`; `/help` explains the paths. Search, Tab, and Enter
@@ -69,8 +84,9 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
   shell commands or call an AI model. About content and ordinary fallback
   links are present in the delivered HTML.
 - **LangSpan:** the About action and first Work card open `/langspan`; the
-  shareable route is `#langspan`. The About action and no-JavaScript fallback
-  link directly to the product website when scripts are unavailable. The
+  shareable route is `#langspan`. The Stageshow bundle
+  (`assets/langspan-stage.{js,css}`) is loaded only when that view first opens;
+  until then, and without JavaScript, LangSpan's own still card is shown. The
   generic `tour` alias opens LangSpan; `botbench tour` opens Botbench.
 - **Product tour:** five stops use recorded screens to cover the task, boundaries, evidence,
   coordination, and source build. Chapter buttons and screen-detail controls
@@ -82,8 +98,13 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
   stored data, or external actions are involved.
 - **Archive:** every historical record uses native `details` and `summary`
   elements. It requires no JavaScript and links directly to the source results.
-- **Motion:** reduced-motion preferences disable the command animation and
-  tour transitions. Focus indicators, semantic landmarks, and skip links
+- **Motion:** two moments, both finite. On `/about` the three-step LangSpan
+  illustration highlights each step once (about 3.7 s) and rests with all
+  three visible. The LangSpan scene plays once when in view (about 9 s),
+  pauses offscreen, has Pause/Play and Replay, and rests on its final frame.
+  Beats use transform and opacity, 240 to 320 ms, `cubic-bezier(.2,0,0,1)`.
+  Under reduced motion both show their final frame, and the command animation
+  and tour transitions are off. Focus indicators, semantic landmarks, and skip links
   remain available throughout.
 
 ## Assets and provenance
@@ -125,8 +146,14 @@ view. Screenshots contain example activity and are not customer testimonials
 or portfolio performance metrics. The tour keeps a project’s recorded check
 separate from a model’s review and explicitly labels the coordination setup.
 
-`assets/social-card.svg` is the editable code-native social-card source;
-`assets/social-card.png` is the 1200 × 630 export used by Open Graph and Twitter.
+`assets/social-card.svg` is the editable code-native social-card source in the
+site's charcoal and lilac with DM Sans and IBM Plex Mono;
+`assets/social-card.png` is its 1200 × 630 export (rendered in Chromium with the
+web fonts loaded), used by Open Graph and Twitter.
+
+The Botbench demo recording and poster, Botbench's motionless README cards and
+LangSpan's motionless product cards are unchanged copies; their sources,
+commits, Git blob identities and SHA-256 hashes are in `assets/provenance.json`.
 `assets/favicon.svg` is the personal mark, retained for the homepage and archive.
 The product tour uses `assets/botbench-favicon.svg`, copied unchanged from
 [`botbenchhq/botbench:web/src/brand/favicon.svg`](https://github.com/botbenchhq/botbench/blob/ff02c33ad152ddfe113236e87ee10449b793ea6f/web/src/brand/favicon.svg)
@@ -136,8 +163,7 @@ Recorded screenshots remain unchanged.
 
 Images, scripts, and stylesheets are
 served locally. The terminal and tour request their web fonts from Google Fonts
-and retain system-font fallbacks. The archive uses system fonts only. The old
-`og.png` is no longer referenced.
+and retain system-font fallbacks. The archive uses system fonts only. 
 
 ## Historical archive
 
@@ -202,13 +228,27 @@ changes still need a focused browser review.
 
 ## Portfolio motion experience
 
-The homepage keeps the interactive command palette and hash-backed skills. The LangSpan view includes an authored, clearly labelled React Stageshow scene compiled to static GitHub Pages JavaScript and CSS; it illustrates a second coding-agent session noticing overlapping file intent and redirecting independent work. The original illustrated workflow remains linked. The LangSpan stages are not a live product recording and make no collision-prevention guarantee.
+The LangSpan view's scene is built with the original Stageshow React kit by
+Benji Taylor, pinned to commit 299140fafd08df55a9c234e610c3f64af3f45531 and
+fetched at build time ([stageshow/](https://github.com/benjitaylor/skills/tree/299140fafd08df55a9c234e610c3f64af3f45531/stageshow)).
+It is labelled as an illustration: Claude Code holds `src/auth/session.ts`,
+Codex's overlapping edit is refused by the hook with LangSpan's own wording,
+Codex chooses `tests/session.test.ts`, and both continue. Its colours are the
+site's tokens, so it follows the theme. Upstream defaults are overridden here:
+no overshoot, beats at or under 450 ms, visible Pause/Play and Replay.
 
-- **Stageshow by Benji Taylor** — original kit, pinned to commit 299140fafd08df55a9c234e610c3f64af3f45531, loaded from its upstream source at CI build time. See [stageshow/](https://github.com/benjitaylor/skills/tree/299140fafd08df55a9c234e610c3f64af3f45531/stageshow).
-- **Living Canvas** — the [accessible SVG story](assets/langspan-living-canvas.svg) follows the upstream [Living Canvas authoring skill](https://github.com/shouvik12/living-canvas/blob/14a4a4f160d951d9745090a8c7f4822edd32bb18/SKILL.md): the concrete conflict, shared signal, and independent progress, with animated focus and static reduced-motion path.
-- **Impeccable** — design-mode decisions in [DESIGN.md](DESIGN.md), source critique and detector in CI; see [Impeccable](https://github.com/pbakaus/impeccable/tree/9e460a87ef338ee9d12c7beed8fedc597a5af5f7).
+The `/about` illustration is plain HTML and CSS in the page, applying the
+[Living Canvas](https://github.com/shouvik12/living-canvas/blob/14a4a4f160d951d9745090a8c7f4822edd32bb18/SKILL.md)
+method (labelled stages that pass the still-frame test, each highlighted in
+turn, every stage visible under reduced motion) without a loop.
 
-The [motion build workflow](.github/workflows/build-motion.yml) downloads and pins Stageshow, compiles into /assets/langspan-stage.{js,css}, builds the static HTML, checks generator parity, performs desktop/mobile browser interaction tests with Playwright, captures motion-sequence stills and reduced-motion screenshots as a CI artifact, and commits the distributable asset bundle only after browser validation. The original [check workflow](.github/workflows/check.yml) continues verifying the historical research archive and generated-pages invariants.
+The [motion build workflow](.github/workflows/build-motion.yml) fetches the kit,
+compiles `assets/langspan-stage.{js,css}`, checks generator parity and runs
+[`motion-src/visual-check.mjs`](motion-src/visual-check.mjs) on pull requests
+and on `main`: every route at 1440, 390 and 358 in light and dark without
+horizontal overflow, nav links and Back, the remembered theme, the lazy
+bundle, Pause/Play/Replay, compact scene text of at least 12 px, reduced
+motion, no-JavaScript routes, the tour and the archive.
 
 To build locally:
 
@@ -218,5 +258,7 @@ To build locally:
     npm install --prefix motion-src
     npm run --prefix motion-src build
     python3 build.py && python3 build.py --check
+    python3 -m http.server 8123 --bind 127.0.0.1 &   # then:
+    node motion-src/visual-check.mjs
 
 **Important:** the React kit is source-bundled; do not add a runtime CDN dependency or silently replace its motion system with a CSS approximation.

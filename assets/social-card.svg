@@ -1,16 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Jon Lange — AI products. Teams that ship.</title>
-  <desc id="desc">Building LangSpan. Your agents. On the same page.</desc>
-  <rect width="1200" height="630" fill="#0b0f14"/>
-  <rect x="64" y="64" width="1072" height="502" rx="20" fill="#121820" stroke="#2b3543"/>
-  <rect x="102" y="108" width="6" height="34" rx="3" fill="#86dce8"/>
-  <g font-family="sans-serif">
-    <text font-family="sans-serif" x="128" y="135" fill="#f0f3f7" font-size="29" font-weight="600">Jon Lange</text>
-    <text font-family="sans-serif" x="104" y="252" fill="#f0f3f7" font-size="72" font-weight="700" letter-spacing="-2">AI products.</text>
-    <text font-family="sans-serif" x="104" y="338" fill="#f0f3f7" font-size="72" font-weight="700" letter-spacing="-2">Teams that ship.</text>
-    <path d="M104 390h992" stroke="#2b3543"/>
-    <text font-family="sans-serif" x="104" y="447" fill="#86dce8" font-size="25" font-weight="600">Building LangSpan</text>
-    <text font-family="sans-serif" x="104" y="490" fill="#a2adbb" font-size="26">Your agents. On the same page.</text>
-    <text font-family="sans-serif" x="1096" y="536" text-anchor="end" fill="#a2adbb" font-size="17">jon-lange.github.io</text>
+  <title id="title">Jon Lange. I build AI products and the systems that help teams ship them.</title>
+  <desc id="desc">Currently building LangSpan, the open-source coordination layer for coding agents.</desc>
+  <rect width="1200" height="630" fill="#111216"/>
+  <rect x="48" y="48" width="1104" height="534" rx="20" fill="#191b21" stroke="#363a46" stroke-width="2"/>
+  <path d="M48 116h1104" stroke="#363a46" stroke-width="2"/>
+  <g font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="22">
+    <text x="96" y="91" fill="#f3f1eb">jon<tspan fill="#929bab">@</tspan>web <tspan fill="#c5b8ff" dx="8">~</tspan></text>
+    <text x="96" y="190" fill="#929bab" font-size="30">&gt; <tspan fill="#c5b8ff" dx="10">/about</tspan></text>
+    <text x="1104" y="91" fill="#929bab" text-anchor="end">jon-lange.github.io</text>
+  </g>
+  <g font-family="'DM Sans', ui-sans-serif, system-ui, sans-serif">
+    <text x="92" y="318" fill="#f3f1eb" font-size="112" font-weight="540" letter-spacing="-3.5">Jon Lange<tspan fill="#c5b8ff">.</tspan></text>
+    <text x="96" y="392" fill="#f3f1eb" font-size="38" letter-spacing="-0.8">I build AI products and the systems</text>
+    <text x="96" y="442" fill="#f3f1eb" font-size="38" letter-spacing="-0.8">that help teams ship them.</text>
+    <rect x="96" y="482" width="368" height="58" rx="8" fill="none" stroke="#363a46" stroke-width="2"/>
+    <text x="120" y="520" fill="#b4b9c5" font-size="24">Currently building <tspan fill="#f3f1eb" font-weight="600">LangSpan</tspan></text>
   </g>
 </svg>

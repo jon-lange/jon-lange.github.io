@@ -33,6 +33,40 @@
     var pendingTimers = [];
     var navigating = false;
     var duckIndex = 0;
+    var homeTitle = document.title;
+    var flowTimers = [];
+    var stageRequested = false;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // The About illustration highlights each step once, then rests with all
+    // three visible. Under reduced motion it starts at rest.
+    function playFlow() {
+      flowTimers.forEach(function (timer) { window.clearTimeout(timer); });
+      flowTimers = [];
+      var flow = result.querySelector('[data-flow]');
+      if (!flow || reducedMotion.matches) return;
+      [1, 2, 3].forEach(function (step, index) {
+        flowTimers.push(window.setTimeout(function () { flow.dataset.flowActive = String(step); }, 400 + index * 1100));
+      });
+      flowTimers.push(window.setTimeout(function () { flow.dataset.flowActive = 'done'; }, 400 + 3 * 1100));
+    }
+
+    // The Stageshow bundle is loaded only when the LangSpan view first opens.
+    function loadStage() {
+      if (stageRequested) return;
+      var host = result.querySelector('[data-langspan-stage]');
+      if (!host) return;
+      stageRequested = true;
+      var css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = host.dataset.stageCss;
+      document.head.appendChild(css);
+      var script = document.createElement('script');
+      script.src = host.dataset.stageJs;
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
     var duckQuestions = [
       'What is the smallest thing you could learn next?',
       'Is the hard part the code, or the decision?',
@@ -124,10 +158,12 @@
       currentSkill = skill;
       activeSkill.textContent = skill.command;
       result.dataset.view = skill.view;
-      document.title = 'Jon Lange — ' + skill.title;
+      document.title = skill.view === 'about' ? homeTitle : skill.title + ' · Jon Lange';
       setBusy(false);
       updateCurrentControls();
       if (skill.view === 'lab') initializeLab();
+      if (skill.view === 'about') playFlow();
+      if (skill.view === 'langspan') loadStage();
       if (skill.view === 'duck') {
         var question = result.querySelector('#duck-question');
         if (question) question.textContent = duckQuestions[duckIndex++ % duckQuestions.length];
@@ -224,7 +260,7 @@
           result.focus({ preventScroll: true });
         }
       };
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (reducedMotion.matches) {
         finish();
         return;
       }
@@ -248,23 +284,35 @@
     function updateThemeButton() {
       if (!themeButton) return;
       var light = document.documentElement.dataset.theme === 'light';
-      themeButton.setAttribute('aria-pressed', String(light));
-      themeButton.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+      themeButton.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
       var label = themeButton.querySelector('[data-theme-label]');
       if (label) label.textContent = light ? 'Dark mode' : 'Light mode';
       else themeButton.textContent = light ? 'Dark mode' : 'Light mode';
     }
 
-    function toggleTheme() {
-      var light = document.documentElement.dataset.theme !== 'light';
+    function applyTheme(light) {
       var root = document.documentElement;
       root.setAttribute('data-theme-switching', '');
       root.dataset.theme = light ? 'light' : 'dark';
       void root.offsetHeight;
       window.requestAnimationFrame(function () { root.removeAttribute('data-theme-switching'); });
       updateThemeButton();
-      status.textContent = (light ? 'Light' : 'Dark') + ' theme enabled.';
     }
+
+    function toggleTheme() {
+      var light = document.documentElement.dataset.theme !== 'light';
+      applyTheme(light);
+      try { window.localStorage.setItem('jl-theme', light ? 'light' : 'dark'); } catch (error) { /* storage unavailable: the choice lasts for this page */ }
+      status.textContent = (light ? 'Light' : 'Dark') + ' mode on.';
+    }
+
+    // With no stored choice, follow the operating system as it changes.
+    var schemeQuery = window.matchMedia('(prefers-color-scheme: light)');
+    schemeQuery.addEventListener('change', function (event) {
+      var stored = null;
+      try { stored = window.localStorage.getItem('jl-theme'); } catch (error) { stored = null; }
+      if (stored !== 'light' && stored !== 'dark') applyTheme(event.matches);
+    });
 
     function activate(value, source) {
       var normalized = normalize(value);
@@ -357,7 +405,7 @@
     updateThemeButton();
     readRoute(false);
     trigger.disabled = false;
-    if (themeButton) themeButton.disabled = false;
+    if (themeButton) themeButton.hidden = false;
     document.documentElement.dataset.enhanced = 'true';
   }
 

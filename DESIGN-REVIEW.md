@@ -1,3 +1,5 @@
+> Historical review of the second pass (November 25, 2026). The Living Canvas SVGs it mentions were retired in the third pass; see DESIGN.md.
+
 ⚠️ DEGRADED: single-context (no sub-agent runner available in this session)
 
 # Impeccable design critique — Jon Lange portfolio
