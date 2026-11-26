@@ -38,14 +38,18 @@ duplicated historical record identifiers.
 The personal promise is **“I build AI products and the systems that help teams
 ship them.”** Career context is separate from the independent projects.
 
-LangSpan leads with **“Your agents. On the same page.”** Its mission is to help
-teams keep building together as their agents write more code. The skill explains
-shared work updates through native hooks, CLI and MCP, with an optional
-dashboard. Solo use with several agents is a secondary entry point. The goal is
-less manual relay and avoidable rework; those outcomes are not measured claims.
-The product is a source preview and the walkthrough is an authored illustration.
-Links use the working GitHub Pages site and public organization while the public
-core repository and custom domain are being prepared separately.
+LangSpan leads with **“Run agents in parallel. Build as a team.”** Its brand
+line remains **“Your agents. On the same page.”** The project is the open-source
+coordination layer for parallel agentic development. Worktrees isolate files,
+not intent; the product connects work through relevant briefings, supported
+local edit checks, session-attributed commits and exact-tree integration
+evidence. Opt-in Git metadata provides advisory awareness across machines.
+Compatible parallel work with less repair and manual relay is a hypothesis,
+not a measured claim. LangSpan v0.1.0 is available for macOS and Linux; the
+portfolio's local coordination walkthrough is an authored illustration.
+Link to the [product story](https://langspan.dev/), [semantic example](https://langspan.dev/#why),
+[parallel-work illustration](https://langspan.dev/#scale) and
+[canonical positioning](https://github.com/Langspan/LangSpan.dev/blob/main/docs/positioning.md).
 
 Botbench remains a supporting project. Its recorded tour
 identifies it as an early, open-source macOS product. Its coordination example

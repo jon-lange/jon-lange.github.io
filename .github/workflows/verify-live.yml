@@ -25,6 +25,9 @@ jobs:
           curl -fsSL --retry 12 --retry-delay 6 --retry-all-errors --max-time 12 "$root/" -o /tmp/home.html
           grep -Fq 'assets/langspan-stage.js' /tmp/home.html
           grep -Fq 'data-langspan-stage' /tmp/home.html
+          grep -Fq 'Run agents in parallel. Build as a team.' /tmp/home.html
+          grep -Fq 'https://langspan.dev/#why' /tmp/home.html
+          grep -Fq 'LangSpan v0.1.0 is available for macOS and Linux.' /tmp/home.html
           grep -Fq 'assets/langspan-living-mobile.svg' /tmp/home.html
           curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors "$root/assets/langspan-stage.js" -o /tmp/stage.js
           test "$(wc -c < /tmp/stage.js)" -gt 100000

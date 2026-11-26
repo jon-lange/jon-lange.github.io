@@ -30,6 +30,7 @@ Use LangSpan's approved icon assets without redrawing them.
 Retain the career context and other independent work.
 Keep authored illustrations and historical experiments accurately qualified.
 Use the README's positioning and provenance when updating product references.
+For LangSpan, follow the [canonical product positioning](https://github.com/Langspan/LangSpan.dev/blob/main/docs/positioning.md). Keep the personal career identity distinct from product messaging.
 
 ## Source and delivery
 
