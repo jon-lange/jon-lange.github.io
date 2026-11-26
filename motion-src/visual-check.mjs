@@ -75,7 +75,7 @@ for (const spec of [{ name: 'desktop', width: 1280, height: 900 }, { name: 'comp
   assert.equal(await page.locator('.ls-scene').getAttribute('data-step'), '1', 'Pause holds the scene');
   await page.locator('.ls-stage-outer').screenshot({ path: shot(`scene-${spec.name}-paused`) });
   await page.getByRole('button', { name: 'Play', exact: true }).click();
-  await page.locator('.ls-scene[data-step="3"]').waitFor({ timeout: 15000 });
+  await page.locator('.ls-scene[data-step="2"]').waitFor({ timeout: 15000 });
   await page.locator('.ls-stage-outer').screenshot({ path: shot(`scene-${spec.name}-final`) });
   if (spec.name === 'compact') {
     const small = await page.evaluate(() => [...document.querySelectorAll('.ls-scene *')].filter((e) => {
@@ -98,7 +98,7 @@ for (const spec of [{ name: 'desktop', width: 1280, height: 900 }, { name: 'comp
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   watch(page, 'reduced');
   await page.goto(base + '/#langspan', { waitUntil: 'networkidle' });
-  await page.locator('.ls-scene[data-step="3"]').waitFor({ timeout: 15000 });
+  await page.locator('.ls-scene[data-step="2"]').waitFor({ timeout: 15000 });
   assert.equal(await page.getByRole('button', { name: 'Pause', exact: true }).count(), 0);
   await page.goto(base + '/', { waitUntil: 'networkidle' });
   await page.waitForTimeout(1500);

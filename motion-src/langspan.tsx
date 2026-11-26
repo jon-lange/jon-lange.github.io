@@ -13,16 +13,15 @@ import './langspan.css';
 
 type Scene = { step: number };
 const initial: Scene = { step: 0 };
-const poster: Scene = { step: 3 };
-const LAST = 3;
+const poster: Scene = { step: 2 };
+const LAST = 2;
 
 const captions = [
   'Claude Code is editing src/auth/session.ts. LangSpan admits the edit and holds the file for that session.',
   'Codex tries to edit the same file. Its hook refuses the overlapping edit and says why.',
-  'Codex chooses other work: tests/session.test.ts is a different file, so its edit is admitted.',
-  'Claude Code keeps its edit; Codex writes tests in a different file. People review the combined result.'
+  'Codex chooses other work: tests/session.test.ts is a different file, so its edit is admitted. Both sessions keep working; people review the combined result.'
 ];
-const shortCaptions = ['Claude Code holds the file.', 'The hook refuses the overlapping edit.', 'Codex chooses a different file.', 'Both sessions keep working.'];
+const shortCaptions = ['Claude Code holds the file.', 'The hook refuses the overlapping edit.', 'Codex chooses a different file. Both keep working.'];
 
 // A pausable wait: while paused, the script holds at the next 100 ms slice.
 type Control = { paused: boolean };
@@ -49,10 +48,6 @@ function makeStory(ctl: Control, onStep: (n: number) => void) {
     await a.click('codex-choose');
     await a.set({ step: 2 });
     onStep(2);
-    a.mark('different-file');
-    await hold(a, ctl, 2200);
-    await a.set({ step: 3 });
-    onStep(3);
     a.mark('both-continue');
   };
 }
@@ -104,9 +99,9 @@ function Scenario({ step, layout }: Scene & { layout: string }) {
               <span className="ls-choice" data-target="codex-choose">Choose other work</span>
             </div>
             <div className={'ls-editor ls-test' + (moved ? ' is-on' : '')}>
-              <div><em>01</em><span>{compact ? "test('refresh', () => {" : "test('refresh extends expiry', () => {"}</span></div>
-              <div className="ls-added"><em>02</em><span>  const r = refresh(session);</span></div>
-              <div className="ls-added"><em>03</em><span>{compact ? '  assert(r.expires > t);' : '  expect(r.expires).toBeGreaterThan(t);'}</span></div>
+              <div><em>01</em><span>test('refresh', () =&gt; {'{'}</span></div>
+              <div className="ls-added"><em>02</em><span>  const s = refresh(newSession());</span></div>
+              <div className="ls-added"><em>03</em><span>  assert(s.expires &gt; Date.now());</span></div>
               <div><em>04</em><span>{'});'}</span></div>
             </div>
           </div>
@@ -161,7 +156,7 @@ function Demonstration() {
           fill
           theme={theme as 'light' | 'dark'}
           accent={theme === 'light' ? '#6247b6' : '#c5b8ff'}
-          cursor={{ at: { wide: { x: 860, y: 70 }, compact: { x: 296, y: 300 } }, style: 'real', ripple: true }}
+          cursor={{ at: { wide: { x: 860, y: 70 }, compact: { x: 296, y: 300 } }, style: 'real', ripple: true, idle: 1200 }}
         >
           {(state, _rect, layout) => <Scenario step={state.step} layout={layout} />}
         </Stage>

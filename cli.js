@@ -46,9 +46,10 @@
       var flow = result.querySelector('[data-flow]');
       if (!flow || reducedMotion.matches) return;
       [1, 2, 3].forEach(function (step, index) {
-        flowTimers.push(window.setTimeout(function () { flow.dataset.flowActive = String(step); }, 400 + index * 1100));
+        if (index === 0) flow.dataset.flowActive = '1';
+        else flowTimers.push(window.setTimeout(function () { flow.dataset.flowActive = String(step); }, index * 1200));
       });
-      flowTimers.push(window.setTimeout(function () { flow.dataset.flowActive = 'done'; }, 400 + 3 * 1100));
+      flowTimers.push(window.setTimeout(function () { flow.dataset.flowActive = 'done'; }, 3 * 1200));
     }
 
     // The Stageshow bundle is loaded only when the LangSpan view first opens.

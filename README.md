@@ -105,8 +105,8 @@ presented as validation of Botbench, prevalence data, or universal AI rules.
 - **Archive:** every historical record uses native `details` and `summary`
   elements. It requires no JavaScript and links directly to the source results.
 - **Motion:** two moments, both finite. On `/about` the three-step LangSpan
-  illustration highlights each step once (about 3.7 s) and rests with all
-  three visible. The LangSpan scene plays once when in view (about 9 s),
+  illustration highlights each step once (about 3.6 s) and rests with all
+  three visible. The LangSpan scene plays once when in view (about 7 s),
   pauses offscreen, has Pause/Play and Replay, and rests on its final frame.
   Beats use transform and opacity, 240 to 320 ms, `cubic-bezier(.2,0,0,1)`.
   Under reduced motion both show their final frame, and the command animation
